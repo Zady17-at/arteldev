@@ -1,0 +1,383 @@
+{% doc %}
+  @prompt
+    create a header that has logo in center on right there are 3 icons of search account and shopping cart or left thhere is one one image with link
+
+{% enddoc %}
+{% assign ai_gen_id = block.id | replace: '_', '' | downcase %}
+
+{% style %}
+  .ai-header-{{ ai_gen_id }} {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: {{ block.settings.padding_vertical }}px {{ block.settings.padding_horizontal }}px;
+    background-color: {{ block.settings.background_color }};
+    border-bottom: 1px solid {{ block.settings.border_color }};position: relative;
+  }
+
+  .ai-header-left-{{ ai_gen_id }} {
+    flex: 1;
+    display: flex;
+    align-items: center;
+  }
+
+  .ai-header-left-link-{{ ai_gen_id }} {
+    display: inline-block;
+    line-height: 0;
+  }
+
+  .ai-header-left-image-{{ ai_gen_id }} {
+    height: {{ block.settings.left_image_height }}px;
+    width: auto;
+    object-fit: contain;
+  }
+
+  .ai-header-left-placeholder-{{ ai_gen_id }} {
+    height: {{ block.settings.left_image_height }}px;
+    width: {{ block.settings.left_image_height }}px;
+    background-color: #f4f4f4;
+    border-radius: 4px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+  }
+
+  .ai-header-left-placeholder-{{ ai_gen_id }} svg {
+    width: 60%;
+    height: 60%;
+    color: #999;
+  }
+
+  .ai-header-left-empty-state-{{ ai_gen_id }} {
+    position: absolute;
+    bottom: -25px;
+    left: 50%;
+    transform: translateX(-50%);
+    font-size: 12px;
+    color: #666;
+    white-space: nowrap;
+    pointer-events: none;
+  }
+
+  .ai-header-center-{{ ai_gen_id }} {
+    flex: 1;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+
+  .ai-header-logo-link-{{ ai_gen_id }} {
+    display: inline-block;
+    line-height: 0;
+  }
+
+  .ai-header-logo-{{ ai_gen_id }} {
+    height: {{ block.settings.logo_height }}px;
+    width: auto;
+    object-fit: contain;
+  }
+
+  .ai-header-logo-placeholder-{{ ai_gen_id }} {
+    height: {{ block.settings.logo_height }}px;
+    width: {{ block.settings.logo_height | times: 2 }}px;
+    background-color: #f4f4f4;
+    border-radius: 4px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+  }
+
+  .ai-header-logo-placeholder-{{ ai_gen_id }} svg {
+    width: 60%;
+    height: 60%;
+    color: #999;
+  }
+
+  .ai-header-logo-empty-state-{{ ai_gen_id }} {
+    position: absolute;
+    bottom: -25px;
+    left: 50%;
+    transform: translateX(-50%);
+    font-size: 12px;
+    color: #666;
+    white-space: nowrap;
+    pointer-events: none;
+  }
+
+  .ai-header-right-{{ ai_gen_id }} {
+    flex: 1;
+    display: flex;
+    justify-content: flex-end;align-items: center;
+    gap: {{ block.settings.icon_spacing }}px;
+  }
+
+  .ai-header-icon-{{ ai_gen_id }} {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: {{ block.settings.icon_size }}px;
+    height: {{ block.settings.icon_size }}px;
+    color: {{ block.settings.icon_color }};text-decoration: none;
+    transition: color 0.3s ease;
+  }
+
+  .ai-header-icon-{{ ai_gen_id }}:hover {
+    color: {{ block.settings.icon_hover_color }};
+  }
+
+  .ai-header-icon-{{ ai_gen_id }} svg {
+    width: 100%;
+    height: 100%;
+  }
+
+  @media screen and (max-width: 749px) {
+    .ai-header-{{ ai_gen_id }} {
+      padding: {{ block.settings.padding_vertical | times: 0.75 }}px {{ block.settings.padding_horizontal | times: 0.75 }}px;
+    }
+
+    .ai-header-left-image-{{ ai_gen_id }},
+    .ai-header-left-placeholder-{{ ai_gen_id }} {
+      height: {{ block.settings.left_image_height | times: 0.8 }}px;
+      width: {{ block.settings.left_image_height | times: 0.8 }}px;
+    }
+
+    .ai-header-logo-{{ ai_gen_id }},
+    .ai-header-logo-placeholder-{{ ai_gen_id }} {
+      height: {{ block.settings.logo_height | times: 0.8 }}px;
+    }
+
+    .ai-header-logo-placeholder-{{ ai_gen_id }} {
+      width: {{ block.settings.logo_height | times: 1.6 }}px;
+    }
+
+    .ai-header-icon-{{ ai_gen_id }} {
+      width: {{ block.settings.icon_size | times: 0.9 }}px;
+      height: {{ block.settings.icon_size | times: 0.9 }}px;
+    }
+
+    .ai-header-right-{{ ai_gen_id }} {
+      gap: {{ block.settings.icon_spacing | times: 0.8 }}px;
+    }
+  }
+{% endstyle %}<header class="ai-header-{{ ai_gen_id }}" {{ block.shopify_attributes }}>
+  <div class="ai-header-left-{{ ai_gen_id }}">
+    {% if block.settings.left_image %}
+      <a href="{{ block.settings.left_image_link | default: '#' }}" class="ai-header-left-link-{{ ai_gen_id }}"><img
+          src="{{ block.settings.left_image | image_url: width: 200}}"
+          alt="{{ block.settings.left_image.alt | escape }}"
+          class="ai-header-left-image-{{ ai_gen_id }}"
+          loading="lazy"
+          width="{{ block.settings.left_image.width }}"
+          height="{{ block.settings.left_image.height }}"
+        >
+      </a>
+    {% else %}
+      <div class="ai-header-left-placeholder-{{ ai_gen_id }}">
+        {{ 'image' | placeholder_svg_tag }}
+        <div class="ai-header-left-empty-state-{{ ai_gen_id }}">
+          Add left image
+        </div>
+      </div>
+    {% endif %}
+  </div>
+
+  <div class="ai-header-center-{{ ai_gen_id }}">
+    {% if block.settings.logo %}
+      <a href="{{ block.settings.logo_link | default: '/' }}" class="ai-header-logo-link-{{ ai_gen_id }}">
+        <img
+          src="{{ block.settings.logo | image_url: width: 400 }}"
+          alt="{{ block.settings.logo.alt | escape }}"
+          class="ai-header-logo-{{ ai_gen_id }}"
+          loading="lazy"
+          width="{{ block.settings.logo.width }}"
+          height="{{ block.settings.logo.height }}"
+        >
+      </a>
+    {% else %}
+      <div class="ai-header-logo-placeholder-{{ ai_gen_id }}">
+        {{ 'image' | placeholder_svg_tag }}
+        <div class="ai-header-logo-empty-state-{{ ai_gen_id }}">
+          Add your logo
+        </div>
+      </div>
+    {% endif %}
+  </div>
+
+  <div class="ai-header-right-{{ ai_gen_id }}">
+    <a href="{{ block.settings.search_link | default: '/search' }}" class="ai-header-icon-{{ ai_gen_id }}" aria-label="Search">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <circle cx="11" cy="11" r="8"></circle>
+        <path d="m21 21-4.35-4.35"></path>
+      </svg>
+    </a>
+
+    <a href="{{ block.settings.account_link | default: '/account' }}" class="ai-header-icon-{{ ai_gen_id }}" aria-label="Account">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+        <circle cx="12" cy="7" r="4"></circle>
+      </svg>
+    </a>
+
+    <a href="{{ block.settings.cart_link | default: '/cart' }}" class="ai-header-icon-{{ ai_gen_id }}" aria-label="Shopping cart">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <circle cx="8" cy="21" r="1"></circle>
+        <circle cx="19" cy="21" r="1"></circle>
+        <path d="M2.05 2.05h2l2.66 12.42a2 2 0 0 0 2 1.58h9.78a2 2 0 0 0 1.95-1.57L23 6H6"></path>
+      </svg>
+    </a>
+  </div>
+</header>
+
+{% schema %}
+{
+  "name": "Header with center logo",
+  "settings": [
+    {
+      "type": "header",
+      "content": "Left image"
+    },
+    {
+      "type": "image_picker",
+      "id": "left_image",
+      "label": "Left image"
+    },
+    {
+      "type": "url",
+      "id": "left_image_link",
+      "label": "Left image link"
+    },
+    {
+      "type": "range",
+      "id": "left_image_height",
+      "min": 20,
+      "max": 80,
+      "step": 5,
+      "unit": "px",
+      "label": "Left image height",
+      "default": 40
+    },
+    {
+      "type": "header",
+      "content": "Center logo"
+    },
+    {
+      "type": "image_picker",
+      "id": "logo",
+      "label": "Logo"
+    },
+    {
+      "type": "url",
+      "id": "logo_link",
+      "label": "Logo link"
+    },
+    {
+      "type": "range",
+      "id": "logo_height",
+      "min": 30,
+      "max": 120,
+      "step": 5,
+      "unit": "px",
+      "label": "Logo height",
+      "default": 60
+    },
+    {
+      "type": "header",
+      "content": "Right icons"
+    },
+    {
+      "type": "url",
+      "id": "search_link",
+      "label": "Search link"
+    },
+    {
+      "type": "url",
+      "id": "account_link",
+      "label": "Account link"
+    },
+    {
+      "type": "url",
+      "id": "cart_link",
+      "label": "Cart link"
+    },
+    {
+      "type": "range",
+      "id": "icon_size",
+      "min": 16,
+      "max": 32,
+      "step": 2,
+      "unit": "px",
+      "label": "Icon size",
+      "default": 24
+    },
+    {
+      "type": "range",
+      "id": "icon_spacing",
+      "min": 8,
+      "max": 32,
+      "step": 2,
+      "unit": "px",
+      "label": "Icon spacing",
+      "default": 16
+    },
+    {
+      "type": "header",
+      "content": "Colors"
+    },
+    {
+      "type": "color",
+      "id": "background_color",
+      "label": "Background color",
+      "default": "#ffffff"
+    },
+    {
+      "type": "color",
+      "id": "border_color",
+      "label": "Border color",
+      "default": "#e5e5e5"
+    },
+    {
+      "type": "color",
+      "id": "icon_color",
+      "label": "Icon color",
+      "default": "#000000"
+    },
+    {
+      "type": "color",
+      "id": "icon_hover_color",
+      "label": "Icon hover color",
+      "default": "#666666"
+    },
+    {
+      "type": "header",
+      "content": "Spacing"
+    },
+    {
+      "type": "range",
+      "id": "padding_vertical",
+      "min": 8,
+      "max": 40,
+      "step": 2,
+      "unit": "px",
+      "label": "Vertical padding",
+      "default": 16
+    },
+    {
+      "type": "range",
+      "id": "padding_horizontal",
+      "min": 16,
+      "max": 80,
+      "step": 4,
+      "unit": "px",
+      "label": "Horizontal padding",
+      "default": 32
+    }
+  ],
+  "presets": [
+    {
+      "name": "Header with center logo"
+    }
+  ]
+}
+{% endschema %}

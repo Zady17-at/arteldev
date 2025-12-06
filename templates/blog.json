@@ -1,0 +1,83 @@
+/*
+ * ------------------------------------------------------------
+ * IMPORTANT: The contents of this file are auto-generated.
+ *
+ * This file may be updated by the Shopify admin theme editor
+ * or related systems. Please exercise caution as any changes
+ * made to this file may be overwritten.
+ * ------------------------------------------------------------
+ */
+{
+  "sections": {
+    "heading": {
+      "type": "page-heading",
+      "blocks": {
+        "5659749c-c173-4efb-ba0e-4024da8ccb86": {
+          "type": "description",
+          "settings": {
+            "page_description": "Latest from our journal"
+          }
+        }
+      },
+      "block_order": [
+        "5659749c-c173-4efb-ba0e-4024da8ccb86"
+      ],
+      "disabled": true,
+      "settings": {
+        "section_width": "fix_width",
+        "text_alignment": "center",
+        "eb_breadcrumb": true,
+        "padding_top": 83,
+        "padding_bottom": 40
+      }
+    },
+    "main-blog-carousel": {
+      "type": "main-blog-carousel",
+      "settings": {
+        "section_width": "expand_full_width",
+        "color_scheme": "",
+        "image_overlay_opacity": 35,
+        "blog_cate": "",
+        "post_limit": 3,
+        "show_author": true,
+        "show_blog": true,
+        "show_date": true,
+        "show_excerpt": true,
+        "show_navigation": false,
+        "show_pagination": true,
+        "slide_auto_change": false,
+        "change_slide_every": 5,
+        "image_height": "large",
+        "padding_top": 0,
+        "padding_bottom": 31
+      }
+    },
+    "main": {
+      "type": "main-blog",
+      "settings": {
+        "section_width": "stretch_width",
+        "text_alignment": "left",
+        "title": "Blog posts",
+        "show_all_tags": true,
+        "aspect_ratio": "adapt",
+        "blog_desgin": "desgin_modern",
+        "post_limit": 12,
+        "columns_desktop": 4,
+        "column_gap": "large",
+        "pagination": "load_more",
+        "show_author": true,
+        "show_cate": false,
+        "show_tags": true,
+        "show_date": true,
+        "show_excerpt": false,
+        "padding_top": 40,
+        "padding_bottom": 60
+      }
+    }
+  },
+  "order": [
+    "heading",
+    "main-blog-carousel",
+    "main"
+  ]
+}

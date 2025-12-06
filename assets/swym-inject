@@ -1,0 +1,7 @@
+
+<script>
+  window.SwymCallbacks = window.SwymCallbacks || [];
+  window.SwymCallbacks.push(function(swym) {
+    console.log("Swym initialized:", swym);
+  });
+</script>

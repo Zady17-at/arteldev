@@ -1,0 +1,474 @@
+{% doc %}
+  @prompt
+    create a header that has logo in center on right there are 3 icons of search account and shopping cart with heading of each  or left there is one one image with link, SIGN IN WISHLIDT SHOPPING BAG i need these 3 icons with text in display flex position, Add logo in cenetr and icon text and link on left 
+    also change the icon of sign in with account as it was beofre and show the count of wishlist and shoppingbag, dont add badge on icons for count , simple text under heading, the text and icon should be in display flex, they should be in one row on mobile, create a header that has logo in center on right there are 3 icons of search account and shopping cart with heading of each  or left there is one one image with link, SIGN IN WISHLIDT SHOPPING BAG i need these 3 icons with text in display flex position, Add logo in cenetr and image and link on that image on left 
+    also change the icon of sign in with account as it was beofre and show the count of wishlist and shoppingbag, dont add badge on icons for count , simple text under heading, the text and icon should be in display flex, they should be in one row on mobile, there should eb also the text option with left image and remove search from right  and the test of right icons should be in display flex and the count of wishkist and shopping list should be like 1 Item etc, the icon and text on right shoould be opposite to each other and wishlist also show counts and they should be left align the text and count, the icons and text should be exactly like tis but the icon should be on left anfd text on right
+
+{% enddoc %}
+{% assign ai_gen_id = block.id | replace: '_', '' | downcase %}
+
+{% style %}
+  .ai-header-{{ ai_gen_id }} {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: {{ block.settings.padding_vertical }}px {{ block.settings.padding_horizontal }}px;
+    background-color: {{ block.settings.background_color }};
+    border-bottom: 1px solid {{ block.settings.border_color }};
+  }
+
+  .ai-header-left-{{ ai_gen_id }} {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+
+  .ai-header-left-image-{{ ai_gen_id }} {
+    width: {{ block.settings.left_image_width }}px;
+    height: auto;
+    text-decoration: none;
+    display: block;
+  }
+
+  .ai-header-left-image-{{ ai_gen_id }} img {
+    width: 100%;
+    height: auto;
+    object-fit: contain;
+  }
+
+  .ai-header-left-placeholder-{{ ai_gen_id }} {
+    width: {{ block.settings.left_image_width }}px;
+    height: 40px;
+    background-color: #f4f4f4;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 4px;
+  }
+
+  .ai-header-left-placeholder-{{ ai_gen_id }} svg {
+    width: 100%;
+    height: 100%;
+    max-width: 40px;
+    max-height: 40px;
+  }
+
+  .ai-header-left-text-{{ ai_gen_id }} {
+    color: {{ block.settings.text_color }};
+    font-size: {{ block.settings.left_text_size }}px;
+    font-weight: 500;
+    text-decoration: none;
+  }
+
+  .ai-header-left-text-{{ ai_gen_id }}:hover {
+    color: {{ block.settings.text_hover_color }};
+  }
+
+  .ai-header-center-{{ ai_gen_id }} {
+    flex: 1;
+    display: flex;
+    justify-content: center;
+  }
+
+  .ai-header-logo-{{ ai_gen_id }} {
+    width: {{ block.settings.logo_width }}px;
+    height: auto;
+    text-decoration: none;
+    display: block;
+  }
+
+  .ai-header-logo-{{ ai_gen_id }} img {
+    width: 100%;
+    height: auto;
+    object-fit: contain;
+  }
+
+  .ai-header-logo-placeholder-{{ ai_gen_id }} {
+    width: {{ block.settings.logo_width }}px;
+    height: 60px;
+    background-color: #f4f4f4;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 4px;
+  }
+
+  .ai-header-logo-placeholder-{{ ai_gen_id }} svg {
+    width: 100%;
+    height: 100%;
+    max-width: 80px;
+    max-height: 60px;
+  }
+
+  .ai-header-right-{{ ai_gen_id }} {
+    display: flex;
+    align-items: center;
+    gap: 24px;
+  }
+
+  .ai-header-icon-item-{{ ai_gen_id }} {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    text-decoration: none;
+    color: {{ block.settings.text_color }};
+    transition: color 0.3s ease;
+  }
+
+  .ai-header-icon-item-{{ ai_gen_id }}:hover {
+    color: {{ block.settings.text_hover_color }};
+  }
+
+  .ai-header-icon-{{ ai_gen_id }} {
+    width: {{ block.settings.icon_size }}px;
+    height: {{ block.settings.icon_size }}px;
+    stroke: currentColor;
+    fill: none;
+    flex-shrink: 0;
+  }
+
+  .ai-header-icon-content-{{ ai_gen_id }} {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 2px;
+  }
+
+  .ai-header-icon-text-{{ ai_gen_id }} {
+    font-size: {{ block.settings.text_size }}px;
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    text-align: left;
+    line-height: 1;
+  }
+
+  .ai-header-count-{{ ai_gen_id }} {
+    font-size: {{ block.settings.count_size }}px;
+    color: {{ block.settings.count_color }};
+    text-align: left;
+    line-height: 1;
+  }
+
+  @media screen and (max-width: 768px) {
+    .ai-header-{{ ai_gen_id }} {
+      padding: {{ block.settings.padding_vertical | times: 0.7 }}px {{ block.settings.padding_horizontal | times: 0.7 }}px;
+      gap: 12px;
+    }
+
+    .ai-header-left-{{ ai_gen_id }} {
+      gap: 8px;
+    }
+
+    .ai-header-right-{{ ai_gen_id }} {
+      gap: 16px;
+    }
+
+    .ai-header-icon-item-{{ ai_gen_id }} {
+      gap: 6px;
+    }
+
+    .ai-header-icon-{{ ai_gen_id }} {
+      width: {{ block.settings.icon_size | times: 0.8 }}px;
+      height: {{ block.settings.icon_size | times: 0.8 }}px;
+    }
+
+    .ai-header-icon-text-{{ ai_gen_id }} {
+      font-size: {{ block.settings.text_size | times: 0.9 }}px;
+    }
+
+    .ai-header-count-{{ ai_gen_id }} {
+      font-size: {{ block.settings.count_size | times: 0.9 }}px;
+    }
+
+    .ai-header-left-image-{{ ai_gen_id }},
+    .ai-header-left-placeholder-{{ ai_gen_id }} {
+      width: {{ block.settings.left_image_width | times: 0.8 }}px;
+    }
+
+    .ai-header-left-text-{{ ai_gen_id }} {
+      font-size: {{ block.settings.left_text_size | times: 0.9 }}px;
+    }
+
+    .ai-header-logo-{{ ai_gen_id }},
+    .ai-header-logo-placeholder-{{ ai_gen_id }} {
+      width: {{ block.settings.logo_width | times: 0.8 }}px;
+    }
+  }
+{% endstyle %}
+
+<header class="ai-header-{{ ai_gen_id }}" {{ block.shopify_attributes }}>
+  <div class="ai-header-left-{{ ai_gen_id }}">
+    {% if block.settings.left_image %}
+      <a href="{{ block.settings.left_image_link | default: '#' }}" class="ai-header-left-image-{{ ai_gen_id }}">
+        <img
+          src="{{ block.settings.left_image | image_url: width: 200 }}"
+          alt="{{ block.settings.left_image.alt | escape }}"
+          loading="lazy"
+          width="{{ block.settings.left_image.width }}"
+          height="{{ block.settings.left_image.height }}"
+        >
+      </a>
+    {% else %}
+      <div class="ai-header-left-placeholder-{{ ai_gen_id }}">
+        {{ 'image' | placeholder_svg_tag }}
+      </div>
+    {% endif %}
+    
+    {% if block.settings.left_text != blank %}
+      <a href="{{ block.settings.left_text_link | default: '#' }}" class="ai-header-left-text-{{ ai_gen_id }}">
+        {{ block.settings.left_text }}
+      </a>
+    {% endif %}
+  </div>
+
+  <div class="ai-header-center-{{ ai_gen_id }}">
+    {% if block.settings.logo %}
+      <a href="{{ routes.root_url }}" class="ai-header-logo-{{ ai_gen_id }}">
+        <img
+          src="{{ block.settings.logo | image_url: width: 400 }}"
+          alt="{{ shop.name | escape }}"
+          loading="lazy"
+          width="{{ block.settings.logo.width }}"
+          height="{{ block.settings.logo.height }}"
+        >
+      </a>
+    {% else %}
+      <div class="ai-header-logo-placeholder-{{ ai_gen_id }}">
+        {{ 'image' | placeholder_svg_tag }}
+      </div>
+    {% endif %}
+  </div>
+
+  <div class="ai-header-right-{{ ai_gen_id }}">
+    <a href="{{ block.settings.account_link | default: routes.account_url }}" class="ai-header-icon-item-{{ ai_gen_id }}">
+      <svg class="ai-header-icon-{{ ai_gen_id }}" viewBox="0 0 24 24" stroke-width="1.5">
+        <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+        <circle cx="12" cy="7" r="4"></circle>
+      </svg>
+      <div class="ai-header-icon-content-{{ ai_gen_id }}">
+        <div class="ai-header-icon-text-{{ ai_gen_id }}">Sign In</div>
+      </div>
+    </a>
+
+    <a href="{{ block.settings.wishlist_link | default: '#' }}" class="ai-header-icon-item-{{ ai_gen_id }}">
+      <svg class="ai-header-icon-{{ ai_gen_id }}" viewBox="0 0 24 24" stroke-width="1.5">
+        <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path>
+      </svg>
+      <div class="ai-header-icon-content-{{ ai_gen_id }}">
+        <div class="ai-header-icon-text-{{ ai_gen_id }}">Wishlist</div>
+        <div class="ai-header-count-{{ ai_gen_id }}">
+          {{ block.settings.wishlist_count }}
+          {% if block.settings.wishlist_count == 1 %}
+            Item
+          {% else %}
+            Items
+          {% endif %}
+        </div>
+      </div>
+    </a>
+
+    <a href="{{ routes.cart_url }}" class="ai-header-icon-item-{{ ai_gen_id }}">
+      <svg class="ai-header-icon-{{ ai_gen_id }}" viewBox="0 0 24 24" stroke-width="1.5">
+        <path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"></path>
+        <line x1="3" y1="6" x2="21" y2="6"></line>
+        <path d="M16 10a4 4 0 0 1-8 0"></path>
+      </svg>
+      <div class="ai-header-icon-content-{{ ai_gen_id }}">
+        <div class="ai-header-icon-text-{{ ai_gen_id }}">Shopping Bag</div>
+        <div class="ai-header-count-{{ ai_gen_id }}">
+          {{ cart.item_count }}
+          {% if cart.item_count == 1 %}
+            Item
+          {% else %}
+            Items
+          {% endif %}
+        </div>
+      </div>
+    </a>
+  </div>
+</header>
+
+{% schema %}
+{
+  "name": "Header with icons",
+  "settings": [
+    {
+      "type": "header",
+      "content": "Left section"
+    },
+    {
+      "type": "image_picker",
+      "id": "left_image",
+      "label": "Left image"
+    },
+    {
+      "type": "url",
+      "id": "left_image_link",
+      "label": "Left image link"
+    },
+    {
+      "type": "range",
+      "id": "left_image_width",
+      "min": 30,
+      "max": 120,
+      "step": 5,
+      "unit": "px",
+      "label": "Left image width",
+      "default": 60
+    },
+    {
+      "type": "text",
+      "id": "left_text",
+      "label": "Left text"
+    },
+    {
+      "type": "url",
+      "id": "left_text_link",
+      "label": "Left text link"
+    },
+    {
+      "type": "range",
+      "id": "left_text_size",
+      "min": 12,
+      "max": 20,
+      "step": 1,
+      "unit": "px",
+      "label": "Left text size",
+      "default": 14
+    },
+    {
+      "type": "header",
+      "content": "Center logo"
+    },
+    {
+      "type": "image_picker",
+      "id": "logo",
+      "label": "Logo"
+    },
+    {
+      "type": "range",
+      "id": "logo_width",
+      "min": 80,
+      "max": 300,
+      "step": 10,
+      "unit": "px",
+      "label": "Logo width",
+      "default": 150
+    },
+    {
+      "type": "header",
+      "content": "Right icons"
+    },
+    {
+      "type": "url",
+      "id": "account_link",
+      "label": "Account link"
+    },
+    {
+      "type": "url",
+      "id": "wishlist_link",
+      "label": "Wishlist link"
+    },
+    {
+      "type": "range",
+      "id": "wishlist_count",
+      "min": 0,
+      "max": 99,
+      "step": 1,
+      "label": "Wishlist count",
+      "default": 0
+    },
+    {
+      "type": "header",
+      "content": "Style"
+    },
+    {
+      "type": "color",
+      "id": "background_color",
+      "label": "Background color",
+      "default": "#ffffff"
+    },
+    {
+      "type": "color",
+      "id": "text_color",
+      "label": "Text color",
+      "default": "#000000"
+    },
+    {
+      "type": "color",
+      "id": "text_hover_color",
+      "label": "Text hover color",
+      "default": "#666666"
+    },
+    {
+      "type": "color",
+      "id": "count_color",
+      "label": "Count color",
+      "default": "#666666"
+    },
+    {
+      "type": "color",
+      "id": "border_color",
+      "label": "Border color",
+      "default": "#e5e5e5"
+    },
+    {
+      "type": "range",
+      "id": "icon_size",
+      "min": 16,
+      "max": 32,
+      "step": 2,
+      "unit": "px",
+      "label": "Icon size",
+      "default": 24
+    },
+    {
+      "type": "range",
+      "id": "text_size",
+      "min": 10,
+      "max": 16,
+      "step": 1,
+      "unit": "px",
+      "label": "Text size",
+      "default": 12
+    },
+    {
+      "type": "range",
+      "id": "count_size",
+      "min": 8,
+      "max": 14,
+      "step": 1,
+      "unit": "px",
+      "label": "Count size",
+      "default": 10
+    },
+    {
+      "type": "range",
+      "id": "padding_vertical",
+      "min": 10,
+      "max": 40,
+      "step": 2,
+      "unit": "px",
+      "label": "Vertical padding",
+      "default": 20
+    },
+    {
+      "type": "range",
+      "id": "padding_horizontal",
+      "min": 15,
+      "max": 60,
+      "step": 5,
+      "unit": "px",
+      "label": "Horizontal padding",
+      "default": 30
+    }
+  ],
+  "presets": [
+    {
+      "name": "Header with icons"
+    }
+  ],
+  "tag": null
+}
+{% endschema %}

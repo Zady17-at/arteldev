@@ -1,0 +1,24 @@
+<div class="w-full mx-auto xl:px-20 max-w-1400 pb-100">
+  <div class="lg:grid flex flex-col gap-30 2xl:gap-60 xl:gap-30 lg:grid-cols-11">
+    {% content_for 'blocks' %}
+  </div>
+</div>
+{% schema %}
+{
+  "name": "t:sections.shopable-social.block.modal_content.name",
+  "class": "shopable-social-modal-content custom-scrollbar lg:px-21 px-20",
+  "blocks": [
+    {
+      "type": "_social-post"
+    },
+    {
+      "type": "_social-image-with-product"
+    }
+  ],
+  "presets": [
+    {
+      "name": "t:sections.shopable-social.block.modal_content.name"
+    }
+  ]
+}
+{% endschema %}

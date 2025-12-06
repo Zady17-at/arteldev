@@ -1,0 +1,104 @@
+{% liquid
+  assign block_st = block.settings
+  assign section_st = section.settings
+  assign aspect_ratio = section_st.aspect_ratio
+  assign ratio = ''
+  assign image = block_st.image
+  if aspect_ratio != 'adapt'
+    assign ratio = ''
+    case aspect_ratio
+      when 'square'
+        assign ratio = '1/1'
+      when 'portrait'
+        assign ratio = '3/4'
+      when 'landscape'
+        assign ratio = '4/3'
+      else
+        assign ratio = '3/4'
+    endcase
+  else
+    if ratio == blank
+      if image != blank
+        assign ratio = image.aspect_ratio
+      else
+        assign ratio = '3/4'
+      endif
+    endif
+  endif
+%}
+{%- capture sizes -%}
+  (min-width: {{ settings.page_width }}px) {{ settings.page_width | minus: 100 }}px, (min-width: 750px)
+  calc(100vw - 10rem), 100vw
+{%- endcapture -%}
+<div class="relative group">
+  <div class="outfit-idea-block__image  overflow-hidden rounded-base *:group-hover:scale-105 *:transition *:duration-300 *:origin-top" style="--aspect-ratio: {{ ratio }};">
+    {% if image != blank %}
+      {%- assign image_alt = image.alt | escape -%}
+      {{
+        image
+        | image_url: width: 3840
+        | image_tag: loading: 'lazy', sizes: sizes, widths: '375, 750, 1100, 1500, 1780, 2000, 3000, 3840', alt: image_alt
+      }}
+
+    {% else %}
+      {%- render 'placeholder-render', type: 'lifestyle' -%}
+    {% endif %}
+  </div>
+  <idea-product
+    data-id="modal-outfit-idea-mobile"
+    data-title="{{ 'sections.cart.shop_this_look' | t }}"
+    class="absolute inset-0 flex flex-col justify-end gap-20 idea-product lg:p-20 p-15 z-2 group-has-[.active]:z-10!">
+    <span class="fixed inset-0 invisible block transition duration-300 opacity-0 pointer-events-none card-overlay sm:hidden bg-black/40"></span>
+    <div tabindex="-1" class="fade fixed hidden inset-x-0 space-y-20 transition  bg-white shadow-lg  z-3 bottom-0 sm:absolute idea-product-list lg:bottom-20 lg:inset-x-20 sm:inset-x-12 sm:bottom-12 sm:rounded-2xl rounded-t-2xl xl:p-30 p-15 duration-400">
+      <div class="idea-product-list_header flex justify-between items-center uppercase text-black/90 border-b border-[#DDDDDD4D] pb-12">
+        <div class="inline-flex items-center gap-5 idea-product-list_header-title xl:gap-10 xl:text-xl">
+          {% render 'icon-cart', custom_width: 30 %}
+          <span>{{ 'sections.cart.shop_this_look' | t }}</span>
+        </div>
+        <div tabindex="0" class="close cursor-pointer *:transition *:duration-300 *:hover:scale-110 *:hover:rotate-90">
+          {% render 'icon-close', custom_width: 22 %}
+        </div>
+      </div>
+      <div class="space-y-20 mobile-popup overflow-hidden overflow-y-auto custom-scrollbar xl:max-h-350 max-h-250 scroll-p-20 touch-pan-y scroll-mx-20 pe-10 lg:pe-0">
+          {% content_for 'blocks' %}
+      </div>
+    </div>
+    <div tabindex="0" class="view_idea_product cursor-pointer bg-white rounded-full flex items-center justify-center gap-10 uppercase text-sm xl:text-lg text-black/90 p-10 shadow-lg font-normal xl:min-h-[7rem] transition duration-300  hover:opacity-90   relative z-1 ">
+      {% render 'icon-cart', custom_width: 32 %}
+      <span>{{ 'sections.cart.shop_this_look' | t }}</span>
+    </div>
+  </idea-product>
+</div>
+{% schema %}
+{
+  "name": "t:sections.outfit-idea.block.group.name",
+  "settings": [
+    {
+      "type": "image_picker",
+      "id": "image",
+      "label": "t:sections.all.image.label"
+    }
+  ],
+  "blocks": [
+    {
+      "type": "_product-item-list"
+    }
+  ],
+  "presets": [
+    {
+      "name": "t:sections.outfit-idea.block.group.name",
+      "blocks": [
+        {
+          "type": "_product-item-list"
+        },
+        {
+          "type": "_product-item-list"
+        },
+        {
+          "type": "_product-item-list"
+        }
+      ]
+    }
+  ]
+}
+{% endschema %}

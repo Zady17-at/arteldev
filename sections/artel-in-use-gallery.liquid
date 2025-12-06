@@ -1,0 +1,522 @@
+{% comment %}
+  Advanced Custom Gallery Section
+  - Single image per block
+  - Multiple captions under image (up to 3)
+  - Image hover effects: scale, brightness, shadow, opacity
+  - Caption styling: color, font size, alignment
+  - Load More pagination (per section)
+  - Fully responsive with columns control
+  - Images cover container like Artel Press
+  - Lightbox popup with next/prev navigation
+{% endcomment %}
+
+<section
+  id="gallery-{{ section.id }}"
+  class="custom-gallery-wrapper"
+  data-items-per-page="{{ section.settings.items_per_page }}"
+>
+  <div
+    class="custom-gallery"
+    style="
+      --gallery-cols-desktop: {{ section.settings.columns_desktop }};
+      --gallery-cols-mobile: {{ section.settings.columns_mobile }};
+      gap: {{ section.settings.grid_gap }}px;
+    "
+  >
+    {% for block in section.blocks %}
+      {% if block.settings.gallery_image != blank %}
+        <div class="gallery-item" {{ block.shopify_attributes }}>
+          <a href="{{ block.settings.gallery_image | image_url: width: 1600 }}" class="lightbox-link">
+            <div class="img-wrapper" style="position: relative;">
+              <img
+                src="{{ block.settings.gallery_image | image_url: width: 1200 }}"
+                alt="{{ block.settings.caption_1 | escape }}"
+                loading="lazy"
+              >
+              <div class="gallery-overlay">
+                <span class="plus-sign">+</span>
+              </div>
+            </div>
+          </a>
+          <div class="gallery-captions alignment-{{ section.settings.caption_alignment }}">
+            <div class="caption-row">
+              {% for i in (1..2) %}
+                {% assign caption_key = 'caption_' | append: i %}
+                {% assign caption_text = block.settings[caption_key] %}
+                {% assign link_key = 'caption_link_' | append: i %}
+                {% assign caption_link = block.settings[link_key] %}
+                {% if caption_text != blank %}
+                  {% if caption_link != blank %}
+                    <div class="gallery-caption caption-{{ i }}">
+                      <a href="{{ caption_link }}" target="_blank">{{ caption_text }}</a>
+                    </div>
+                  {% else %}
+                    <div class="gallery-caption caption-{{ i }}">{{ caption_text }}</div>
+                  {% endif %}
+                {% endif %}
+              {% endfor %}
+            </div>
+
+            <div class="caption-stack">
+              {% for i in (3..4) %}
+                {% assign caption_key = 'caption_' | append: i %}
+                {% assign caption_text = block.settings[caption_key] %}
+                {% assign link_key = 'caption_link_' | append: i %}
+                {% assign caption_link = block.settings[link_key] %}
+                {% if caption_text != blank %}
+                  {% if caption_link != blank %}
+                    <div class="gallery-caption caption-{{ i }}">
+                      <a href="{{ caption_link }}" target="_blank">{{ caption_text }}</a>
+                    </div>
+                  {% else %}
+                    <div class="gallery-caption caption-{{ i }}">{{ caption_text }}</div>
+                  {% endif %}
+                {% endif %}
+              {% endfor %}
+            </div>
+          </div>
+        </div>
+      {% endif %}
+    {% endfor %}
+  </div>
+
+  <button type="button" class="load-more">{{ section.settings.load_more_text }}</button>
+
+  <!-- Lightbox Modal -->
+  <div id="lightbox-{{ section.id }}" class="lightbox">
+    <span class="lightbox-close">&times;</span>
+    <img class="lightbox-content" src="" alt="">
+    {% comment %}
+      <div class="lightbox-caption"></div>
+      <a class="lightbox-prev">&#10094;</a>
+      <a class="lightbox-next">&#10095;</a>
+    {% endcomment %}
+  </div>
+</section>
+
+<style>
+    /* Desktop */
+.custom-gallery-wrapper {
+  margin: 50px;
+}
+
+/* Tablet */
+@media (max-width: 1024px) {
+  .custom-gallery-wrapper {
+    margin: 30px;
+  }
+}
+
+/* Mobile */
+@media (max-width: 767px) {
+  .custom-gallery-wrapper {
+    margin: 15px;
+  }
+}
+
+      #gallery-{{ section.id }} .custom-gallery {
+        display: grid;
+        grid-template-columns: repeat(var(--gallery-cols-mobile), 1fr);
+        gap: {{ section.settings.grid_gap }}px;
+      }
+
+      #gallery-{{ section.id }} .gallery-item {
+        position: relative;
+        overflow: hidden;
+        border-radius: {{ section.settings.image_radius }}px;
+      }
+      #gallery-{{ section.id }} .gallery-item {
+      position: relative;
+      overflow: hidden;
+      border-radius: {{ section.settings.image_radius }}px;
+    }
+
+   #gallery-{{ section.id }} .gallery-item img {
+    width: 100%;
+    height: 700px;      /* fixed height */
+    object-fit: cover;
+    display: block;
+    border: 1px solid #E0E0E0;
+    transition: transform 0.3s ease, filter 0.3s ease, box-shadow 0.3s ease, opacity 0.3s ease;
+  }
+
+
+  #gallery-{{ section.id }} .caption-row {
+  display: flex;
+  justify-content: space-between; /* 1 & 2 in a row */
+  margin-bottom: 5px;
+}
+
+#gallery-{{ section.id }} .caption-stack {
+  display: flex;
+  flex-direction: column;       /* stack 3 & 4 vertically */
+  gap: 4px;
+}
+
+#gallery-{{ section.id }} .gallery-caption {
+  font-size: {{ section.settings.caption_font_size }}px;
+  color: {{ section.settings.caption_color }};
+}
+
+    /* Overlay */
+    #gallery-{{ section.id }} .gallery-overlay {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0,0,0,0.4);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      opacity: 0;
+      transition: opacity 0.3s ease;
+    }
+
+    /* Plus sign */
+    #gallery-{{ section.id }} .plus-sign {
+      font-size: 3rem;
+      color: #fff;
+      font-weight: bold;
+      pointer-events: none;
+      transform: scale(0.8);
+      transition: transform 0.3s ease;
+    }
+
+    /* Hover effect */
+    #gallery-{{ section.id }} .gallery-item:hover .gallery-overlay {
+      opacity: 1;
+    }
+
+    #gallery-{{ section.id }} .gallery-item:hover .plus-sign {
+      transform: scale(1);
+    }
+
+
+      #gallery-{{ section.id }} .gallery-item img {
+        width: 100%;
+        height: 700px; /* like Artel Press page */
+        min-height: 180px;
+        max-height: 670px;
+        object-fit: cover;
+        display: block;
+        border : 1px solid #E0E0E0;
+        transition: transform 0.3s ease, filter 0.3s ease, box-shadow 0.3s ease, opacity 0.3s ease;
+      }
+
+      #gallery-{{ section.id }} .gallery-item:hover img {
+        transform: scale({{ section.settings.hover_scale }});
+        filter: brightness({{ section.settings.hover_brightness }}%);
+        box-shadow: {{ section.settings.hover_shadow }};
+        opacity: {{ section.settings.hover_opacity | divided_by: 100 }};
+        border : 1px solid #C49B37 ;
+      }
+
+      #gallery-{{ section.id }} .gallery-caption {
+        font-size: {{ section.settings.caption_font_size }}px;
+        color: {{ section.settings.caption_color }};
+        text-align: {{ section.settings.caption_alignment }};
+        text-decoration: none;
+      }
+
+      #gallery-{{ section.id }} .gallery-caption:hover {
+        text-decoration: underline;
+      }
+
+      #gallery-{{ section.id }} .load-more {
+        display: block;
+        margin: 20px auto 0;
+        padding: 10px 18px;
+        border-radius: {{ section.settings.button_radius }}px;
+        border: 1px solid #1e355b;
+        background: {{ section.settings.button_bg }};
+        color: {{ section.settings.button_color }};
+        cursor: pointer;
+        transition: all 0.2s ease;
+      }
+
+      #gallery-{{ section.id }} .load-more:hover {
+        background: {{ section.settings.button_bg_hover }};
+        color: {{ section.settings.button_color_hover }};
+      }
+
+      @media (min-width: 768px) {
+        #gallery-{{ section.id }} .custom-gallery {
+          grid-template-columns: repeat(var(--gallery-cols-desktop), 1fr);
+        }
+      }
+
+      /* Lightbox styles */
+      #lightbox-{{ section.id }} {
+        display: none;
+        position: fixed;
+        z-index: 9999;
+        padding-top: 60px;
+        left: 0;
+        top: 0;
+        width: 100%;
+        height: 100%;
+        overflow: auto;
+        background-color: rgba(0,0,0,0.9);
+      }
+
+      #lightbox-{{ section.id }} .lightbox-content {
+        margin: auto;
+        display: block;
+        max-width: 90%;
+        max-height: 80vh;
+      }
+
+      #lightbox-{{ section.id }} .lightbox-caption {
+        margin: 15px auto;
+        text-align: center;
+        color: #fff;
+        max-width: 80%;
+      }
+
+      #lightbox-{{ section.id }} .lightbox-close {
+        position: absolute;
+        top: 15px;
+        right: 35px;
+        color: #fff;
+        font-size: 40px;
+        font-weight: bold;
+        cursor: pointer;
+      }
+
+      #lightbox-{{ section.id }} .lightbox-prev,
+      #lightbox-{{ section.id }} .lightbox-next {
+        cursor: pointer;
+        position: absolute;
+        top: 50%;
+        width: auto;
+        margin-top: -30px;
+        padding: 16px;
+        color: #fff;
+        font-size: 40px;
+        font-weight: bold;
+        transition: 0.3s;
+        user-select: none;
+      }
+      #lightbox-{{ section.id }} .lightbox-prev { left: 0; }
+      #lightbox-{{ section.id }} .lightbox-next { right: 0; }
+
+      #lightbox-{{ section.id }} .lightbox-prev:hover,
+      #lightbox-{{ section.id }} .lightbox-next:hover,
+      #lightbox-{{ section.id }} .lightbox-close:hover {
+        color: #ddd;
+      }
+</style>
+
+<script>
+  (function () {
+    const wrapper = document.getElementById('gallery-{{ section.id }}');
+    if (!wrapper) return;
+
+    /* Load More */
+    const perPage = parseInt(wrapper.dataset.itemsPerPage || '12', 10); // initial images
+    const batchSize = 38; // 👈 how many images to show per click
+    const items = wrapper.querySelectorAll('.gallery-item');
+    const btn = wrapper.querySelector('.load-more');
+    let visible = perPage;
+
+    // Hide extra items initially
+    items.forEach((item, i) => {
+      if (i >= visible) item.style.display = 'none';
+    });
+
+    if (!btn || items.length <= visible) {
+      if (btn) btn.style.display = 'none';
+    }
+
+    if (btn) {
+      btn.addEventListener('click', function () {
+        const nextVisible = Math.min(visible + batchSize, items.length);
+        for (let i = visible; i < nextVisible; i++) items[i].style.display = '';
+        visible = nextVisible;
+        if (visible >= items.length) btn.style.display = 'none';
+      });
+    }
+
+    /* Lightbox */
+    const lightbox = document.getElementById('lightbox-{{ section.id }}');
+    const lightboxImg = lightbox.querySelector('.lightbox-content');
+    const lightboxCaption = lightbox.querySelector('.lightbox-caption');
+    const closeBtn = lightbox.querySelector('.lightbox-close');
+    const prevBtn = lightbox.querySelector('.lightbox-prev');
+    const nextBtn = lightbox.querySelector('.lightbox-next');
+
+    let currentIndex = 0;
+    const links = wrapper.querySelectorAll('.lightbox-link');
+
+    function openLightbox(index) {
+      currentIndex = index;
+      const link = links[currentIndex];
+      lightbox.style.display = 'block';
+      lightboxImg.src = link.getAttribute('href');
+      lightboxCaption.innerText = link.parentElement.querySelector('.gallery-caption')?.innerText || '';
+    }
+
+    links.forEach((link, i) => {
+      link.addEventListener('click', (e) => {
+        e.preventDefault();
+        openLightbox(i);
+      });
+    });
+
+    function closeLightbox() {
+      lightbox.style.display = 'none';
+    }
+    function showPrev() {
+      openLightbox((currentIndex - 1 + links.length) % links.length);
+    }
+    function showNext() {
+      openLightbox((currentIndex + 1) % links.length);
+    }
+
+    closeBtn.addEventListener('click', closeLightbox);
+    prevBtn.addEventListener('click', showPrev);
+    nextBtn.addEventListener('click', showNext);
+
+    window.addEventListener('keydown', (e) => {
+      if (lightbox.style.display === 'block') {
+        if (e.key === 'Escape') closeLightbox();
+        if (e.key === 'ArrowLeft') showPrev();
+        if (e.key === 'ArrowRight') showNext();
+      }
+    });
+  })();
+</script>
+
+{% schema %}
+{
+  "name": "Advanced Custom Gallery",
+  "settings": [
+    { "type": "header", "content": "Layout" },
+    {
+      "type": "range",
+      "id": "columns_desktop",
+      "label": "Columns on desktop",
+      "min": 2,
+      "max": 6,
+      "step": 1,
+      "default": 3
+    },
+    {
+      "type": "select",
+      "id": "columns_mobile",
+      "label": "Columns on mobile",
+      "options": [
+        { "value": "1", "label": "1" },
+        { "value": "2", "label": "2" },
+        { "value": "3", "label": "3" }
+      ],
+      "default": "2"
+    },
+    { "type": "range", "id": "grid_gap", "label": "Grid gap (px)", "min": 0, "max": 100, "step": 2, "default": 16 },
+    {
+      "type": "range",
+      "id": "image_radius",
+      "label": "Image corner radius px",
+      "min": 0,
+      "max": 50,
+      "step": 1,
+      "default": 6
+    },
+
+    { "type": "header", "content": "Caption Styling" },
+    { "type": "color", "id": "caption_color", "label": "Caption text color", "default": "#ffffff" },
+    {
+      "type": "range",
+      "id": "caption_font_size",
+      "label": "Caption font size (px)",
+      "min": 8,
+      "max": 50,
+      "step": 1,
+      "default": 14
+    },
+    {
+      "type": "select",
+      "id": "caption_alignment",
+      "label": "Caption alignment",
+      "options": [
+        { "value": "left", "label": "Left" },
+        { "value": "center", "label": "Center" },
+        { "value": "right", "label": "Right" }
+      ],
+      "default": "center"
+    },
+
+    { "type": "header", "content": "Image Hover Effects" },
+    {
+      "type": "range",
+      "id": "hover_scale",
+      "label": "Scale on hover",
+      "min": 1,
+      "max": 2,
+      "step": 0.1,
+      "default": 1.1
+    },
+    {
+      "type": "range",
+      "id": "hover_brightness",
+      "label": "Brightness % on hover",
+      "min": 50,
+      "max": 150,
+      "step": 5,
+      "default": 100
+    },
+    { "type": "text", "id": "hover_shadow", "label": "Box shadow on hover", "default": "0 4px 12px rgba(0,0,0,0.15)" },
+    {
+      "type": "range",
+      "id": "hover_opacity",
+      "label": "Opacity on hover (%)",
+      "min": 50,
+      "max": 100,
+      "step": 5,
+      "default": 100
+    },
+
+    { "type": "header", "content": "Load More Button" },
+    { "type": "text", "id": "load_more_text", "label": "Button text", "default": "Load More" },
+    { "type": "color", "id": "button_bg", "label": "Button background", "default": "#1a1446" },
+    { "type": "color", "id": "button_color", "label": "Button text color", "default": "#ffffff" },
+    { "type": "color", "id": "button_bg_hover", "label": "Button hover background", "default": "#333333" },
+    { "type": "color", "id": "button_color_hover", "label": "Button hover text color", "default": "#ffffff" },
+    {
+      "type": "range",
+      "id": "button_radius",
+      "label": "Button corner radius",
+      "min": 0,
+      "max": 30,
+      "step": 1,
+      "default": 4
+    },
+    {
+      "type": "range",
+      "id": "items_per_page",
+      "label": "Items per page",
+      "min": 1,
+      "max": 50,
+      "step": 1,
+      "default": 12
+    }
+  ],
+  "blocks": [
+    {
+      "type": "image",
+      "name": "Gallery item",
+      "settings": [
+        { "type": "image_picker", "id": "gallery_image", "label": "Image" },
+        { "type": "text", "id": "caption_1", "label": "Caption 1", "default": "Caption 1" },
+        { "type": "url", "id": "caption_link_1", "label": "Caption 1 link (optional)" },
+        { "type": "text", "id": "caption_2", "label": "Caption 2", "default": "Caption 2" },
+        { "type": "url", "id": "caption_link_2", "label": "Caption 2 link (optional)" },
+        { "type": "text", "id": "caption_3", "label": "Caption 3", "default": "Caption 3" },
+        { "type": "url", "id": "caption_link_3", "label": "Caption 3 link (optional)" }
+      ]
+    }
+  ],
+  "presets": [{ "name": "Advanced Custom Gallery" }]
+}
+{% endschema %}

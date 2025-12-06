@@ -1,0 +1,114 @@
+{% liquid
+  assign block_st = block.settings
+%}
+<div class="section-btn d-flex flex-wrap gap-10 justify-between border-t-white/30! pt-25 not-[.border-top]:p-0 items-center {% if block_st.show_border_top %}border-top{% endif %}">
+  {% if block_st.text_1 != blank %}
+    <div class="text-item {% if block_st.letter_spacing %}tracking-widest{% endif %} {{ block_st.size }}">
+      {{ block_st.text_1 | escape }}
+    </div>
+  {% endif %}
+  {% if block_st.text_2 != blank or block_st.button_label != blank %}
+    {% if block_st.text_2 != blank %}
+      <div class="text-item {% if block_st.letter_spacing %}tracking-widest{% endif %} {{ block_st.size }}">
+        {{ block_st.text_2 | escape }}
+      </div>
+    {% endif %}
+    {% if block_st.button_label != blank %}
+      <a
+        {% if block_st.button_link == blank %}
+          role="link" aria-disabled="true"
+        {% else %}
+          href="{{ block_st.button_link | default: "#" }}"
+        {% endif %}
+        aria-label="{{ block_st.button_label }}"
+        class="btn hidden sm:inline-flex! rounded-full! remove-underline{% if block_st.button_style %} btn-outline{% else %} btn-primary{% endif %}"
+      >
+        {{ block_st.button_label }}
+      </a>
+    {% endif %}
+  {% endif %}
+</div>
+{% schema %}
+{
+  "name": "t:sections.group_blocks.text_with_button.name",
+  "settings": [
+    {
+      "type": "text",
+      "id": "text_1",
+      "label": "t:sections.group_blocks.text_with_button.settings.text_1.label",
+      "default": "Add your text here",
+    },
+    {
+      "type": "text",
+      "id": "text_2",
+      "label": "t:sections.group_blocks.text_with_button.settings.text_2.label",
+      "default": "Add your text here",
+    },
+    {
+      "type": "select",
+      "id": "size",
+      "default": "text-base",
+      "label": "t:sections.all.size.label",
+      "options": [
+        {
+          "value": "text-xs",
+          "label": "t:sections.all.size.options.text_xs.label"
+        },
+        {
+          "value": "text-sm",
+          "label": "t:sections.all.size.options.text_sm.label"
+        },
+        {
+          "value": "text-base",
+          "label": "t:sections.all.size.options.text_base.label"
+        },
+        {
+          "value": "text-lg",
+          "label": "t:sections.all.size.options.text_lg.label"
+        },
+        {
+          "value": "lg:text-xl text-lg",
+          "label": "t:sections.all.size.options.text_xl.label"
+        }
+      ]
+    },
+    {
+      "type": "checkbox",
+      "id": "letter_spacing",
+      "label": "t:sections.group_blocks.text_with_button.settings.text_letter_spacing.label",
+      "default": false
+    },
+    {
+      "type": "header",
+      "content": "t:sections.group_blocks.text_with_button.settings.button_label.label"
+    },
+    {
+      "type": "text",
+      "id": "button_label",
+      "label": "t:sections.all.content_setting.button_label.label",
+      "info": "t:sections.all.content_setting.button_label.info"
+    },
+    {
+      "type": "url",
+      "id": "button_link",
+      "label": "t:sections.all.content_setting.link.label"
+    },
+    {
+      "type": "checkbox",
+      "id": "button_style",
+      "label": "t:sections.all.button_style.use_outline_button_style"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_border_top",
+      "label": "t:sections.header.settings.show_border_top.label",
+      "default": true
+    }
+  ],
+  "presets": [
+    {
+      "name": "t:sections.group_blocks.text_with_button.name"
+    }
+  ]
+}
+{% endschema %}

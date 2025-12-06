@@ -1,0 +1,35 @@
+<div class="flex justify-between flex-wrap gap-15 items-center  mb-40! max-w-1400 w-full mx-auto px-20">
+  <div class="inline-flex items-baseline gap-10">
+    <h3 class="shopable-social-modal-title m-0!">{{ block.settings.title }}</h3>
+    <p class="shopable-social-modal-count m-0!">{{ block.settings.count_posts }}</p>
+  </div>
+  
+</div>
+<close-modal-shopable tabindex="0" class="*:p-3 *:hover:rotate-90 *:hover:scale-110 *:transition *:duration-300 cursor-pointer text-black/90 absolute right-20 top-20 lg:right-30 lg:top-30 z-3">
+  {% render 'icon-close', custom_width: 30 %}
+</close-modal-shopable>
+{% schema %}
+{
+  "name": "t:sections.shopable-social.block.modal_header.name",
+  "class": "shopable-social-modal-header",
+  "settings": [
+    {
+      "type": "text",
+      "id": "title",
+      "label": "t:sections.shopable-social.block.modal_header.settings.social_heading",
+      "default": "#Hashtag"
+    },
+    {
+      "type": "text",
+      "id": "count_posts",
+      "label": "t:sections.shopable-social.block.modal_header.settings.social_count_posts",
+      "default": "1 post"
+    }
+  ],
+  "presets": [
+    {
+      "name": "t:sections.shopable-social.block.modal_header.name"
+    }
+  ]
+}
+{% endschema %}

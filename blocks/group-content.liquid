@@ -1,0 +1,50 @@
+<div class="content-wrapper content-append space-y-10 sticky top-0 grid {{ block.settings.desktop_content_position }}">
+  {% content_for 'blocks' %}
+</div>
+{% schema %}
+{
+  "name": "t:sections.group_blocks.content.label",
+  "settings": [
+    {
+      "type": "select",
+      "id": "desktop_content_position",
+      "default": "middle-left",
+      "label": "t:sections.all.desktop_content_position.label",
+      "info": "t:sections.all.desktop_content_position.info",
+      "options": [
+        {
+          "value": "top-left",
+          "label": "t:sections.all.desktop_content_position.options__1.label"
+        },
+        {
+          "value": "middle-left",
+          "label": "t:sections.all.desktop_content_position.options__4.label"
+        },
+        {
+          "value": "bottom-left",
+          "label": "t:sections.all.desktop_content_position.options__7.label"
+        }
+      ]
+    }
+  ],
+  "blocks": [
+    {
+      "type": "_heading"
+    },
+    {
+      "type": "_subheading"
+    },
+    {
+      "type": "_description"
+    },
+    {
+      "type": "_products-list"
+    }
+  ],
+  "presets": [
+    {
+      "name": "t:sections.group_blocks.content.label"
+    }
+  ]
+}
+{% endschema %}

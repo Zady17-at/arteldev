@@ -1,0 +1,701 @@
+{% doc %}
+  @prompt
+    Create a custom section with two columns on one row.
+    The left column should have a title and a few images up to ten with text labels underneath each image.
+    The right column should have a title and also a few images with text labels underneath each image., both sides should be separated, put it back, Both sides should be controlled separately so that it would be possible to turn off one of the sides., SEPARATE THE TITLE AND THE IMAGE WITH A LINE, ADD THE OPTION TO CHANGE LINE STYLE AND COLOR, ADD THE OPTION TO CHANGE THE STYLE AND SIZE OF THE IMAGES, TITLE IN THE CENTER, UP TO SEVEN PICTURES PER ROW
+{% enddoc %}
+{% assign ai_gen_id = block.id | replace: '_', '' | downcase %}
+
+{% style %}
+  .ai-two-column-{{ ai_gen_id }} {
+    padding: 40px 20px;
+    background-color: {{ block.settings.background_color }};
+  }
+
+  .ai-two-column-container-{{ ai_gen_id }} {
+    display: grid;
+    grid-template-columns: {% if block.settings.show_left_column and block.settings.show_right_column %}1fr 1fr{% elsif block.settings.show_left_column or block.settings.show_right_column %}1fr{% else %}1fr{% endif %};
+    gap: {{ block.settings.column_gap }}px;
+    max-width: 1290px;
+    margin: 0 auto;
+  }
+
+  .ai-two-column-column-{{ ai_gen_id }} {
+    display: flex;
+    flex-direction: column;
+    gap: {{ block.settings.content_gap }}px;
+  }
+
+  .ai-two-column-title-{{ ai_gen_id }} {
+    font-size: {{ block.settings.title_size }}px;
+    color: {{ block.settings.title_color }};
+    margin: 0 0 {{ block.settings.title_spacing }}px;
+    text-transform: uppercase;
+    padding-bottom: {{ block.settings.title_spacing }}px;
+    border-bottom: {{ block.settings.separator_width }}px {{ block.settings.separator_style }} {{ block.settings.separator_color }};
+    text-align: center;
+  }
+
+  .ai-two-column-items-{{ ai_gen_id }} {
+    display: grid;
+    grid-template-columns: repeat({{ block.settings.items_per_row }}, 1fr);
+    gap: {{ block.settings.item_gap }}px;
+  }
+
+  .ai-two-column-item-{{ ai_gen_id }} {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+
+  .ai-two-column-image-wrapper-{{ ai_gen_id }} {
+    width: 100%;
+    {% if block.settings.image_aspect_ratio == 'square' %}
+      aspect-ratio: 1;
+    {% elsif block.settings.image_aspect_ratio == 'portrait' %}
+      aspect-ratio: 3 / 4;
+    {% elsif block.settings.image_aspect_ratio == 'landscape' %}
+      aspect-ratio: 4 / 3;
+    {% elsif block.settings.image_aspect_ratio == 'wide' %}
+      aspect-ratio: 16 / 9;
+    {% endif %}
+    overflow: hidden;
+    border-radius: {{ block.settings.image_border_radius }}px;
+    {% if block.settings.image_border_width > 0 %}
+      border: {{ block.settings.image_border_width }}px {{ block.settings.image_border_style }} {{ block.settings.image_border_color }};
+    {% endif %}
+    {% if block.settings.image_shadow %}
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    {% endif %}
+  }
+
+  .ai-two-column-image-wrapper-{{ ai_gen_id }} img {
+    width: 100%;
+    height: 100%;
+    object-fit: {{ block.settings.image_fit }};
+  }
+
+  .ai-two-column-image-placeholder-{{ ai_gen_id }} {
+    width: 100%;
+    height: 100%;
+    background-color: #f4f4f4;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .ai-two-column-image-placeholder-{{ ai_gen_id }} svg {
+    width: 50%;
+    height: 50%;
+  }
+
+  .ai-two-column-label-{{ ai_gen_id }} {
+    font-size: {{ block.settings.label_size }}px;
+    color: {{ block.settings.label_color }};
+    text-align: center;
+    line-height: 1.4;
+  }
+
+  @media screen and (max-width: 749px) {
+    .ai-two-column-container-{{ ai_gen_id }} {
+      grid-template-columns: 1fr;
+      gap: 40px;
+    }
+
+    .ai-two-column-items-{{ ai_gen_id }} {
+      grid-template-columns: repeat({{ block.settings.items_per_row_mobile }}, 1fr);
+    }
+  }
+{% endstyle %}
+
+<div class="ai-two-column-{{ ai_gen_id }}" {{ block.shopify_attributes }}>
+  <div class="ai-two-column-container-{{ ai_gen_id }}">
+    {% if block.settings.show_left_column %}
+      <div class="ai-two-column-column-{{ ai_gen_id }}">
+        {% if block.settings.left_title != blank %}
+          <h2 class="ai-two-column-title-{{ ai_gen_id }}">{{ block.settings.left_title }}</h2>
+        {% endif %}
+        
+        <div class="ai-two-column-items-{{ ai_gen_id }}">
+          {% for i in (1..10) %}
+            {% liquid
+              assign image_key = 'left_image_' | append: i
+              assign label_key = 'left_label_' | append: i
+              assign image = block.settings[image_key]
+              assign label = block.settings[label_key]
+            %}
+            
+            {% if image != blank or label != blank %}
+              <div class="ai-two-column-item-{{ ai_gen_id }}">
+                <div class="ai-two-column-image-wrapper-{{ ai_gen_id }}">
+                  {% if image != blank %}
+                    <img
+                      src="{{ image | image_url: width: 400 }}"
+                      alt="{{ image.alt | escape }}"
+                      loading="lazy"
+                      width="400"
+                      height="400"
+                    >
+                  {% else %}
+                    <div class="ai-two-column-image-placeholder-{{ ai_gen_id }}">
+                      {{ 'image' | placeholder_svg_tag }}
+                    </div>
+                  {% endif %}
+                </div>
+                
+                {% if label != blank %}
+                  <div class="ai-two-column-label-{{ ai_gen_id }}">{{ label }}</div>
+                {% endif %}
+              </div>
+            {% endif %}
+          {% endfor %}
+        </div>
+      </div>
+    {% endif %}
+
+    {% if block.settings.show_right_column %}
+      <div class="ai-two-column-column-{{ ai_gen_id }}">
+        {% if block.settings.right_title != blank %}
+          <h2 class="ai-two-column-title-{{ ai_gen_id }}">{{ block.settings.right_title }}</h2>
+        {% endif %}
+        
+        <div class="ai-two-column-items-{{ ai_gen_id }}">
+          {% for i in (1..10) %}
+            {% liquid
+              assign image_key = 'right_image_' | append: i
+              assign label_key = 'right_label_' | append: i
+              assign image = block.settings[image_key]
+              assign label = block.settings[label_key]
+            %}
+            
+            {% if image != blank or label != blank %}
+              <div class="ai-two-column-item-{{ ai_gen_id }}">
+                <div class="ai-two-column-image-wrapper-{{ ai_gen_id }}">
+                  {% if image != blank %}
+                    <img
+                      src="{{ image | image_url: width: 400 }}"
+                      alt="{{ image.alt | escape }}"
+                      loading="lazy"
+                      width="400"
+                      height="400"
+                    >
+                  {% else %}
+                    <div class="ai-two-column-image-placeholder-{{ ai_gen_id }}">
+                      {{ 'image' | placeholder_svg_tag }}
+                    </div>
+                  {% endif %}
+                </div>
+                
+                {% if label != blank %}
+                  <div class="ai-two-column-label-{{ ai_gen_id }}">{{ label }}</div>
+                {% endif %}
+              </div>
+            {% endif %}
+          {% endfor %}
+        </div>
+      </div>
+    {% endif %}
+  </div>
+</div>
+
+{% schema %}
+{
+  "name": "Two column gallery",
+  "tag": null,
+  "settings": [
+    {
+      "type": "header",
+      "content": "Layout"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_left_column",
+      "label": "Show left column",
+      "default": true
+    },
+    {
+      "type": "checkbox",
+      "id": "show_right_column",
+      "label": "Show right column",
+      "default": true
+    },
+    {
+      "type": "range",
+      "id": "column_gap",
+      "min": 20,
+      "max": 100,
+      "step": 10,
+      "unit": "px",
+      "label": "Column gap",
+      "default": 60
+    },
+    {
+      "type": "range",
+      "id": "content_gap",
+      "min": 10,
+      "max": 60,
+      "step": 5,
+      "unit": "px",
+      "label": "Content gap",
+      "default": 30
+    },
+    {
+      "type": "range",
+      "id": "item_gap",
+      "min": 10,
+      "max": 50,
+      "step": 5,
+      "unit": "px",
+      "label": "Item gap",
+      "default": 20
+    },
+    {
+      "type": "range",
+      "id": "items_per_row",
+      "min": 1,
+      "max": 7,
+      "step": 1,
+      "label": "Items per row",
+      "default": 2
+    },
+    {
+      "type": "range",
+      "id": "items_per_row_mobile",
+      "min": 1,
+      "max": 3,
+      "step": 1,
+      "label": "Items per row on mobile",
+      "default": 2
+    },
+    {
+      "type": "header",
+      "content": "Style"
+    },
+    {
+      "type": "color",
+      "id": "background_color",
+      "label": "Background",
+      "default": "#ffffff"
+    },
+    {
+      "type": "range",
+      "id": "title_size",
+      "min": 16,
+      "max": 48,
+      "step": 2,
+      "unit": "px",
+      "label": "Title size",
+      "default": 24
+    },
+    {
+      "type": "color",
+      "id": "title_color",
+      "label": "Title color",
+      "default": "#000000"
+    },
+    {
+      "type": "range",
+      "id": "title_spacing",
+      "min": 10,
+      "max": 50,
+      "step": 5,
+      "unit": "px",
+      "label": "Title spacing",
+      "default": 20
+    },
+    {
+      "type": "header",
+      "content": "Separator"
+    },
+    {
+      "type": "range",
+      "id": "separator_width",
+      "min": 1,
+      "max": 5,
+      "step": 1,
+      "unit": "px",
+      "label": "Width",
+      "default": 1
+    },
+    {
+      "type": "select",
+      "id": "separator_style",
+      "label": "Style",
+      "options": [
+        {
+          "value": "solid",
+          "label": "Solid"
+        },
+        {
+          "value": "dashed",
+          "label": "Dashed"
+        },
+        {
+          "value": "dotted",
+          "label": "Dotted"
+        },
+        {
+          "value": "double",
+          "label": "Double"
+        }
+      ],
+      "default": "solid"
+    },
+    {
+      "type": "color",
+      "id": "separator_color",
+      "label": "Color",
+      "default": "#dddddd"
+    },
+    {
+      "type": "header",
+      "content": "Labels"
+    },
+    {
+      "type": "range",
+      "id": "label_size",
+      "min": 12,
+      "max": 24,
+      "step": 1,
+      "unit": "px",
+      "label": "Label size",
+      "default": 14
+    },
+    {
+      "type": "color",
+      "id": "label_color",
+      "label": "Label color",
+      "default": "#666666"
+    },
+    {
+      "type": "header",
+      "content": "Images"
+    },
+    {
+      "type": "select",
+      "id": "image_aspect_ratio",
+      "label": "Aspect ratio",
+      "options": [
+        {
+          "value": "square",
+          "label": "Square (1:1)"
+        },
+        {
+          "value": "portrait",
+          "label": "Portrait (3:4)"
+        },
+        {
+          "value": "landscape",
+          "label": "Landscape (4:3)"
+        },
+        {
+          "value": "wide",
+          "label": "Wide (16:9)"
+        }
+      ],
+      "default": "square"
+    },
+    {
+      "type": "select",
+      "id": "image_fit",
+      "label": "Image fit",
+      "options": [
+        {
+          "value": "cover",
+          "label": "Cover"
+        },
+        {
+          "value": "contain",
+          "label": "Contain"
+        },
+        {
+          "value": "fill",
+          "label": "Fill"
+        }
+      ],
+      "default": "cover"
+    },
+    {
+      "type": "range",
+      "id": "image_border_radius",
+      "min": 0,
+      "max": 20,
+      "step": 2,
+      "unit": "px",
+      "label": "Border radius",
+      "default": 0
+    },
+    {
+      "type": "range",
+      "id": "image_border_width",
+      "min": 0,
+      "max": 5,
+      "step": 1,
+      "unit": "px",
+      "label": "Border width",
+      "default": 0
+    },
+    {
+      "type": "select",
+      "id": "image_border_style",
+      "label": "Border style",
+      "options": [
+        {
+          "value": "solid",
+          "label": "Solid"
+        },
+        {
+          "value": "dashed",
+          "label": "Dashed"
+        },
+        {
+          "value": "dotted",
+          "label": "Dotted"
+        },
+        {
+          "value": "double",
+          "label": "Double"
+        }
+      ],
+      "default": "solid"
+    },
+    {
+      "type": "color",
+      "id": "image_border_color",
+      "label": "Border color",
+      "default": "#dddddd"
+    },
+    {
+      "type": "checkbox",
+      "id": "image_shadow",
+      "label": "Add shadow",
+      "default": false
+    },
+    {
+      "type": "header",
+      "content": "Left column"
+    },
+    {
+      "type": "text",
+      "id": "left_title",
+      "label": "Title",
+      "default": "Left column"
+    },
+    {
+      "type": "image_picker",
+      "id": "left_image_1",
+      "label": "Image 1"
+    },
+    {
+      "type": "text",
+      "id": "left_label_1",
+      "label": "Label 1"
+    },
+    {
+      "type": "image_picker",
+      "id": "left_image_2",
+      "label": "Image 2"
+    },
+    {
+      "type": "text",
+      "id": "left_label_2",
+      "label": "Label 2"
+    },
+    {
+      "type": "image_picker",
+      "id": "left_image_3",
+      "label": "Image 3"
+    },
+    {
+      "type": "text",
+      "id": "left_label_3",
+      "label": "Label 3"
+    },
+    {
+      "type": "image_picker",
+      "id": "left_image_4",
+      "label": "Image 4"
+    },
+    {
+      "type": "text",
+      "id": "left_label_4",
+      "label": "Label 4"
+    },
+    {
+      "type": "image_picker",
+      "id": "left_image_5",
+      "label": "Image 5"
+    },
+    {
+      "type": "text",
+      "id": "left_label_5",
+      "label": "Label 5"
+    },
+    {
+      "type": "image_picker",
+      "id": "left_image_6",
+      "label": "Image 6"
+    },
+    {
+      "type": "text",
+      "id": "left_label_6",
+      "label": "Label 6"
+    },
+    {
+      "type": "image_picker",
+      "id": "left_image_7",
+      "label": "Image 7"
+    },
+    {
+      "type": "text",
+      "id": "left_label_7",
+      "label": "Label 7"
+    },
+    {
+      "type": "image_picker",
+      "id": "left_image_8",
+      "label": "Image 8"
+    },
+    {
+      "type": "text",
+      "id": "left_label_8",
+      "label": "Label 8"
+    },
+    {
+      "type": "image_picker",
+      "id": "left_image_9",
+      "label": "Image 9"
+    },
+    {
+      "type": "text",
+      "id": "left_label_9",
+      "label": "Label 9"
+    },
+    {
+      "type": "image_picker",
+      "id": "left_image_10",
+      "label": "Image 10"
+    },
+    {
+      "type": "text",
+      "id": "left_label_10",
+      "label": "Label 10"
+    },
+    {
+      "type": "header",
+      "content": "Right column"
+    },
+    {
+      "type": "text",
+      "id": "right_title",
+      "label": "Title",
+      "default": "Right column"
+    },
+    {
+      "type": "image_picker",
+      "id": "right_image_1",
+      "label": "Image 1"
+    },
+    {
+      "type": "text",
+      "id": "right_label_1",
+      "label": "Label 1"
+    },
+    {
+      "type": "image_picker",
+      "id": "right_image_2",
+      "label": "Image 2"
+    },
+    {
+      "type": "text",
+      "id": "right_label_2",
+      "label": "Label 2"
+    },
+    {
+      "type": "image_picker",
+      "id": "right_image_3",
+      "label": "Image 3"
+    },
+    {
+      "type": "text",
+      "id": "right_label_3",
+      "label": "Label 3"
+    },
+    {
+      "type": "image_picker",
+      "id": "right_image_4",
+      "label": "Image 4"
+    },
+    {
+      "type": "text",
+      "id": "right_label_4",
+      "label": "Label 4"
+    },
+    {
+      "type": "image_picker",
+      "id": "right_image_5",
+      "label": "Image 5"
+    },
+    {
+      "type": "text",
+      "id": "right_label_5",
+      "label": "Label 5"
+    },
+    {
+      "type": "image_picker",
+      "id": "right_image_6",
+      "label": "Image 6"
+    },
+    {
+      "type": "text",
+      "id": "right_label_6",
+      "label": "Label 6"
+    },
+    {
+      "type": "image_picker",
+      "id": "right_image_7",
+      "label": "Image 7"
+    },
+    {
+      "type": "text",
+      "id": "right_label_7",
+      "label": "Label 7"
+    },
+    {
+      "type": "image_picker",
+      "id": "right_image_8",
+      "label": "Image 8"
+    },
+    {
+      "type": "text",
+      "id": "right_label_8",
+      "label": "Label 8"
+    },
+    {
+      "type": "image_picker",
+      "id": "right_image_9",
+      "label": "Image 9"
+    },
+    {
+      "type": "text",
+      "id": "right_label_9",
+      "label": "Label 9"
+    },
+    {
+      "type": "image_picker",
+      "id": "right_image_10",
+      "label": "Image 10"
+    },
+    {
+      "type": "text",
+      "id": "right_label_10",
+      "label": "Label 10"
+    }
+  ],
+  "presets": [
+    {
+      "name": "Two column gallery"
+    }
+  ]
+}
+{% endschema %}

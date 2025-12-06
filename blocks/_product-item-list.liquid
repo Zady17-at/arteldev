@@ -1,0 +1,34 @@
+{% assign block_st = block.settings %}
+<div
+  class="product-list-block space-y-20"
+>
+  {% render 'card-product',
+    card_product: block_st.product,
+    section_id: section.id,
+    disable_quickview: true,
+    show_quick_add: true,
+    disable_badge: true,
+    disable_rate: true,
+    disable_swatch: true,
+    enable_view_product: false,
+    disable_vendor: false,
+    type: 'list'
+  %}
+</div>
+{% schema %}
+{
+  "name": "t:sections.header.settings.blocks.product.all.header",
+  "settings": [
+    {
+      "type": "product",
+      "id": "product",
+      "label": "t:sections.outfit-idea.block.select_product.label"
+    }
+  ],
+  "presets": [
+    {
+      "name": "t:sections.header.settings.blocks.product.all.header"
+    }
+  ]
+}
+{% endschema %}

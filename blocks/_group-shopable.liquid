@@ -1,0 +1,45 @@
+<template>
+  {% content_for 'block', id: 'header', type: '_modal-header-shopable' %}
+  {% content_for 'blocks' %}
+</template>
+{% schema %}
+{
+  "name": "t:sections.shopable-social.block.group.name",
+  "class": "shopable-social-group",
+  "settings": [],
+  "blocks": [
+    {
+      "type": "_modal-content-shopable"
+    }
+  ],
+  "presets": [
+    {
+      "name": "t:sections.shopable-social.block.group.name",
+      "blocks": {
+        "header": {
+          "type": "_modal-header-shopable",
+          "static": true
+        },
+        "_modal-content-shopable": {
+          "type": "_modal-content-shopable",
+          "blocks": {
+            "_social-post": {
+              "type": "_social-post"
+            },
+            "_social-image-with-product": {
+              "type": "_social-image-with-product"
+            }
+          },
+          "block_order": [
+            "_social-post",
+            "_social-image-with-product"
+          ]
+        }
+      },
+      "block_order": [
+        "_modal-content-shopable"
+      ]
+    }
+  ]
+}
+{% endschema %}

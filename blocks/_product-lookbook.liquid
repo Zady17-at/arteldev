@@ -1,0 +1,121 @@
+{% liquid
+  assign block_st = block.settings
+  assign position_top = block_st.position_top
+  assign position_left = block_st.position_left
+  assign position_top_mb = block_st.position_top_mb
+  assign position_left_mb = block_st.position_left_mb
+  assign product = block_st.product
+%}
+<shopable-image-lookbook>
+  <div
+    class="no-js-hover shopable-image-item absolute"
+    style="--position-top: {{ position_top }}%; --position-left: {{ position_left }}%; --position-top-mb: {{ position_top_mb }}%; --position-left-mb: {{ position_left_mb }}%;"
+    {{ block.shopify_attributes }}
+  >
+    <div
+      class="shopable-image-hotspot pointer"
+    >
+      <button-quickview
+        tabindex="0"
+        data-item="overlay-quickbuy"
+        data-shopable-image="true"
+        data-url="{{ shop.url }}/products/{{ product.handle }}?section_id=product-quickview"
+      >
+        <span class="icon-dot dot pointer-none"> </span>
+      </button-quickview>
+    </div>
+    {%- liquid
+      assign position_x = ''
+      if position_left > 80
+        assign position_x = ' right'
+      elsif position_left < 20
+        assign position_x = ' left'
+      endif
+      assign position_y = ''
+      if position_top > 65
+        assign position_y = ' bottom'
+      elsif position_top < 35
+        assign position_y = ' top'
+      endif
+    -%}
+    <div
+      class="shopable-image-product transition bg-default rounded-corner-item p-15 p-sm-20 overflow-visible{{ position_x }}{{ position_y }}"
+    >
+      {% render 'card-product',
+        card_product: product,
+        section_id: section.id,
+        customClass: ' scroll-trigger animate--slide-in',
+        disable_quickview: true,
+        disable_badge: true,
+        disable_rate: true,
+        disable_swatch: false,
+        enable_view_product: true
+      %}
+    </div>
+  </div>
+</shopable-image-lookbook>
+{% schema %}
+{
+  "name": "t:sections.shopable-image.blocks.product.name",
+  "settings": [
+    {
+      "type": "header",
+      "content": "t:sections.shopable-image.blocks.product.desktop_position"
+    },
+    {
+      "type": "range",
+      "id": "position_top",
+      "label": "t:sections.shopable-image.blocks.product.position_top",
+      "min": 0,
+      "max": 100,
+      "unit": "%",
+      "step": 1,
+      "default": 50
+    },
+    {
+      "type": "range",
+      "id": "position_left",
+      "label": "t:sections.shopable-image.blocks.product.position_left",
+      "min": 0,
+      "max": 100,
+      "unit": "%",
+      "step": 1,
+      "default": 50
+    },
+    {
+      "type": "header",
+      "content": "t:sections.shopable-image.blocks.product.mobile_position"
+    },
+    {
+      "type": "range",
+      "id": "position_top_mb",
+      "label": "t:sections.shopable-image.blocks.product.position_top",
+      "min": 0,
+      "max": 100,
+      "unit": "%",
+      "step": 1,
+      "default": 50
+    },
+    {
+      "type": "range",
+      "id": "position_left_mb",
+      "label": "t:sections.shopable-image.blocks.product.position_left",
+      "min": 0,
+      "max": 100,
+      "unit": "%",
+      "step": 1,
+      "default": 50
+    },
+    {
+      "type": "product",
+      "id": "product",
+      "label": "t:sections.shopable-image.blocks.product.select_product"
+    }
+  ],
+  "presets": [
+    {
+      "name": "t:sections.shopable-image.blocks.product.name"
+    }
+  ]
+}
+{% endschema %}

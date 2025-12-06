@@ -1,0 +1,86 @@
+{% liquid
+  assign block_st = block.settings
+  assign section_st = section.settings
+  assign aspect_ratio = section_st.aspect_ratio
+  assign ratio = ''
+  assign image = block_st.image
+  if aspect_ratio != 'adapt'
+    assign ratio = ''
+    case aspect_ratio
+      when 'square'
+        assign ratio = '1/1'
+      when 'portrait'
+        assign ratio = '3/4'
+      when 'landscape'
+        assign ratio = '4/3'
+      else
+        assign ratio = '3/4'
+    endcase
+  else
+    if ratio == blank
+      if image != blank
+        assign ratio = image.aspect_ratio
+      else
+        assign ratio = '3/4'
+      endif
+    endif
+  endif
+%}
+<div class="relative product-item-banner group">
+  <div
+    class="overflow-hidden product-item-banner__image rounded-base"
+    style="--aspect-ratio: 0.649"
+  >
+    <div
+      class="banner__media overflow-hidden rounded-base! *:group-hover:scale-105 *:transition *:duration-300 *:rounded-base  {% if block_st.image == blank %}placeholder{% endif %}"
+      style="--aspect-ratio: 0.649"
+    >
+      {%- if block_st.image != blank -%}
+        {{
+          block_st.image
+          | image_url: width: block_st.image.width
+          | image_tag: loading: 'lazy', sizes: '100vw', widths: '165, 360, 535, 750, 1070, 1500'
+        }}
+      {%- else -%}
+        {%- render 'placeholder-render', type: 'product' -%}
+      {%- endif -%}
+    </div>
+  </div>
+  <div class="product-item-banner__content bg-[#FFFFFF1A] backdrop-blur-3xl rounded-base z-2 absolute bottom-20 end-20 start-20 text-start">
+    {% render 'card-product',
+      card_product: block_st.product,
+      section_id: section.id,
+      disable_quickview: true,
+      show_quick_add: true,
+      disable_badge: true,
+      disable_rate: true,
+      disable_swatch: false,
+      enable_view_product: false,
+      disable_vendor: false,
+      type: 'list'
+    %}
+  </div>
+</div>
+{% schema %}
+{
+  "name": "t:sections.multi_content.blocks.product_item_banner.name",
+  "class": "product-item-banner",
+  "settings": [
+    {
+      "type": "image_picker",
+      "id": "image",
+      "label": "t:sections.all.image.label"
+    },
+    {
+      "type": "product",
+      "id": "product",
+      "label": "t:sections.multi_content.blocks.settings.select_product.label"
+    }
+  ],
+  "presets": [
+    {
+      "name": "t:sections.multi_content.blocks.product_item_banner.name"
+    }
+  ]
+}
+{% endschema %}

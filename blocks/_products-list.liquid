@@ -1,0 +1,68 @@
+{% assign block_st = block.settings %}
+<div class="product-list-block spacing-bottom space-y-20 {% if block_st.show_border_top %}show-border-top{% endif %}" style="--space-bottom: {{ block_st.spacing_bottom }};">
+  {% if block_st.product_list != blank %}
+    {% for product in block_st.product_list %}
+      {% render 'card-product',
+        card_product: product,
+        section_id: section.id,
+        disable_quickview: true,
+        show_quick_add: true,
+        disable_badge: true,
+        disable_rate: true,
+        disable_swatch: true,
+        enable_view_product: false,
+        disable_vendor: false,
+        type: 'list'
+      %}
+    {% endfor %}
+  {% else %}
+    {% for i in (1..2) %}
+      {% render 'card-product',
+        card_product: null,
+        section_id: section.id,
+        disable_quickview: true,
+        show_quick_add: true,
+        disable_badge: true,
+        disable_rate: true,
+        disable_swatch: true,
+        enable_view_product: false,
+        disable_vendor: false,
+        type: 'list'
+      %}
+    {% endfor %}
+  {% endif %}
+</div>
+{% schema %}
+{
+  "name": "t:sections.header.settings.blocks.product.all.header",
+  "settings": [
+    {
+      "type": "product_list",
+      "id": "product_list",
+      "label": "t:sections.shopable-video.settings.block.product.select_product",
+      "limit": 2
+    },
+    {
+      "type": "checkbox",
+      "id": "show_border_top",
+      "label": "t:sections.header.settings.show_border_top.label",
+      "default": true
+    },
+    {
+      "type": "range",
+      "id": "spacing_bottom",
+      "min": 0,
+      "max": 30,
+      "step": 1,
+      "unit": "px",
+      "label": "t:sections.all.padding.spacing_bottom",
+      "default": 10
+    }
+  ],
+  "presets": [
+    {
+      "name": "t:sections.header.settings.blocks.product.all.header"
+    }
+  ]
+}
+{% endschema %}

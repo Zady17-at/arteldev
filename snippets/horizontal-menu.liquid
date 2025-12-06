@@ -1,0 +1,713 @@
+{%- comment -%}
+  horizontal-menu.liquid
+  Responsive Drawer + Accordion Mega Menu (multi-level)
+  - Desktop hover
+  - Mobile drawer + accordion
+  - Rotating arrows fix
+  - Clean styles
+{%- endcomment -%}
+
+<!-- Drawer Toggle (Mobile Only) -->
+<button class="menu-toggle" aria-label="Open Menu">☰</button>
+
+<div class="menu-drawer">
+  <button class="menu-close" aria-label="Close Menu">✕</button>
+
+  <ul class="main-menu list-unstyled m-0" role="list">
+    {% assign menu = linklists[menu_handle] %}
+    {% for link in menu.links %}
+  {% assign link_title_handle = link.title | handleize %}
+  <li class="menu-link menu-link--{{ link_title_handle }} {% if link.links.size > 0 %}have-child{% endif %}" role="listitem">
+        {% if link.links.size > 0 %}
+          <div class="menu-item-with-toggle">
+            <a href="{{ link.url }}" class="link_text"><span>{{ link.title }}</span></a>
+            <button class="submenu-toggle" aria-label="Toggle Submenu">
+              <svg
+                class="arrow"
+                width="12"
+                height="12"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              >
+                <polyline points="6 9 12 15 18 9"></polyline>
+              </svg>
+            </button>
+          </div>
+
+          <!-- First-level dropdown -->
+          <div class="level-1-menu">
+            <ul class="menu list-unstyled">
+              {% for child in link.links %}
+                
+                <li class="menu-link level-1 {% if child.links.size > 0 %}have-child{% endif %}">
+
+                  {% assign collection_handle = child.object.handle %}
+{% assign collection_obj = collections[collection_handle] %}
+{% assign icon_url = collection_obj.metafields.custom.menu_icon | file_url %}
+
+<a href="{{ child.url }}" class="submenu__item-text link_text">
+  {% if icon_url %}
+    <img src="{{ icon_url }}" alt="{{ child.title }} icon" class="submenu-icon" />
+  {% endif %}
+   <span>{{ child.title }} </span>
+</a>
+
+                  
+                  {% comment %} <a href="{{ child.url }}" class="submenu__item-text link_text">{{ child.title }}</a> {% endcomment %}
+                  {% if child.links.size > 0 %}
+                    <button class="submenu-toggle" aria-label="Toggle Submenu">
+                      
+                      <svg
+                        class="arrow"
+                        width="24"
+                        height="24"
+                        viewBox="0 0 34 34"
+                        fill="none"
+                        stroke="currentColor"
+                        stroke-width="2"
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                      >
+                        <polyline points="6 9 12 15 18 9"></polyline>
+                      </svg>
+                    </button>
+
+
+                    <div class="sub-children-menu">
+                      <ul>
+                        {% for subchild in child.links %}
+                {% assign subcollection_handle = subchild.object.handle %}
+                {% assign subcollection_obj = collections[subcollection_handle] %}
+                {% assign sub_icon_url = subcollection_obj.metafields.custom.menu_icon | file_url %}
+
+                <li>
+                  <a href="{{ subchild.url }}">
+                    {% if sub_icon_url %}
+                     <img src="{{ sub_icon_url }}" alt="{{ subchild.title }} icon" class="menu-icon" />
+                    {% endif %}
+                    <span>{{ subchild.title }}</span>
+                  </a>
+                </li>
+              {% endfor %}
+                      </ul>
+                    </div>
+                  {% endif %}
+                </li>
+              {% endfor %}
+            </ul>
+          </div>
+        {% else %}
+          <a href="{{ link.url }}" class="link_text">{{ link.title }}</a>
+        {% endif %}
+      </li>
+    {% endfor %}
+  </ul>
+</div>
+
+<script>
+  document.addEventListener('DOMContentLoaded', function () {
+    const drawer = document.querySelector('.menu-drawer');
+    const openBtn = document.querySelector('.menu-toggle');
+    const closeBtn = document.querySelector('.menu-close');
+
+    if (openBtn && drawer && closeBtn) {
+      openBtn.addEventListener('click', () => drawer.classList.add('open'));
+      closeBtn.addEventListener('click', () => drawer.classList.remove('open'));
+    }
+
+    // Accordion toggle (mobile only)
+    document.querySelectorAll('.submenu-toggle').forEach(function (toggle) {
+      toggle.addEventListener('click', function (e) {
+        if (window.innerWidth <= 1024) {
+          e.preventDefault();
+          const parentLink = this.closest('.menu-link');
+          parentLink.classList.toggle('open');
+        }
+      });
+    });
+  });
+</script>
+<style>
+{% comment %}   
+  .sub-children-menu ul {
+    display: grid !important;
+    grid-template-rows: repeat(4, auto) !important;
+    grid-auto-flow: column !important;
+     grid-auto-columns: 300px !important;  
+  gap: 12px !important;
+   max-width: calc(280px * 5);  
+  
+   white-space: nowrap !important;  /* prevent text from wrapping */
+    font-weight: normal !important;  /* remove bold */
+    
+    overflow-y: auto !important;
+    overflow-x: hidden !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    gap: 12px !important;
+    justify-content: start !important;
+    align-content: start !important;
+} {% endcomment %}
+
+
+
+
+
+/* Sub-children menu links */
+.sub-children-menu li a {
+  display: flex !important;     /* flex for icon + text */
+  align-items: center !important;
+  gap: 8px;
+  padding: 6px 12px;
+  text-decoration: none;
+  color: #1e335b;
+}
+  {% comment %} a.submenu__item-text.link_text {
+    display: inline-block !important;
+} {% endcomment %}
+  .sub-children-menu > ul > li > a {
+    padding: 8px !important;
+    display: flex !important;
+    align-items: center !important;
+}
+.menu-icon {
+    border-radius: 50%;
+    width: 50px;
+    height: 50px;
+    margin-right: 5px;
+    vertical-align: middle;
+    object-fit: cover;
+    display: flex;
+}
+  .submenu-icon {  
+    width: 80px;      
+    border-radius : 50% ;     
+    margin-right: 8px;   
+    vertical-align: middle; 
+    object-fit: cover;  
+}
+.main-menu a,
+.level-1-menu a,
+.sub-children-menu a {
+    border-bottom: none;
+    padding-bottom: 0;
+    position: relative;
+}
+
+
+ {% comment %} transition: width 0.3s ease; {% endcomment %}
+.main-menu a span::after, .level-1-menu a span::after, .sub-children-menu a span::after {
+    content: '';
+    display: block;
+    height: 1px;
+    width: 0%;
+    background-color: #1e335b;
+    margin-top: -5px;
+}
+
+.main-menu a:hover span::after,
+.level-1-menu a:hover span::after,
+.sub-children-menu a:hover span::after {
+    width: 100%;
+}
+
+
+  .main-menu a {
+    display: inline-block ;
+    padding: 20px 0px 4px 12px !important;
+    color: #1e355b !important;
+    text-decoration: none;
+}
+ .submenu a  {
+    display: flex !important ;
+    {% comment %} padding: 20px 0px 4px 12px !important; {% endcomment %}
+    color: #1e355b !important;
+    text-decoration: none;
+}
+  .sub-children-menu li a.active,
+.sub-children-menu li a.current,
+.sub-children-menu li a[aria-current="page"] {
+  border-bottom: 2px solid #000; /* underline */
+  padding-bottom: 2px;
+}
+.main-menu > li > a:hover,
+.main-menu > li > a.active,
+.main-menu > li > a[aria-current="page"] {
+  border-bottom: 2px solid #000;
+  padding-bottom: 4px; /* space for underline */
+}
+
+/* ---------------------- */
+/* Base / Reset */
+/* ---------------------- */
+body { overflow-x: hidden; }
+.main-menu, .main-menu ul { list-style: none; margin: 0; padding: 0; }
+.main-menu a { display: block; padding: 5px 0; color: #1e35b3; text-decoration: none; }
+
+.level-1-menu {
+    background: #f2f2f2 !important;
+}
+
+/* ---------------------- */
+/* Drawer (Mobile) */
+/* ---------------------- */
+.menu-drawer {
+  position: fixed;
+  top: 0; left: -100%;
+  width: 320px; 
+  height: 100%;
+  background: #fff;
+  overflow-y: auto;
+  box-shadow: 2px 0 8px rgba(0,0,0,0.2);
+  transition: left 0.3s ease;
+  z-index: 9999;
+  padding: 20px;
+}
+.menu-drawer.open { left: 0; }
+.menu-close { background: none; border: none; font-size: 20px; float: right; cursor: pointer; }
+
+/* ---------------------- */
+/* Menu Items */
+/* ---------------------- */
+.menu-link { position: relative; }
+.menu-item-with-toggle { display: flex; justify-content: space-between; align-items: center; }
+.submenu-toggle { background: none; border: none; cursor: pointer; display: flex; align-items: center; }
+.submenu-toggle .arrow { transition: transform 0.3s ease; stroke: #666; }
+.menu-link.open > .menu-item-with-toggle > .submenu-toggle .arrow,
+.menu-link.open > .submenu-toggle .arrow { transform: rotate(180deg); }
+
+/* ---------------------- */
+/* Dropdowns Hidden by Default */
+/* ---------------------- */
+.level-1-menu, .sub-children-menu { display: none; padding-left: 15px; }
+.menu-link.open > .level-1-menu,
+.menu-link.open > .sub-children-menu { display: block !important; }
+
+/* ---------------------- */
+/* Desktop Mega Menu */
+/* ---------------------- */
+@media (min-width: 1025px) {
+    .level-1-menu {
+  transition-delay: 0.1s;
+}
+
+.sub-children-menu {
+  transition-delay: 0.2s;
+}
+  
+  .sub-children-menu li {
+    margin-right: 10rem !important;
+}
+  .menu-toggle, .menu-close { display: none; }
+  .menu-drawer {
+    position: static; width: auto; height: auto;
+    background: transparent; box-shadow: none; padding: 0; overflow: visible;
+  }
+
+  .main-menu { display: flex; justify-content: center; }
+  .main-menu > li { display: inline-block; padding: 10px 20px; position: relative; }
+
+  /* Level-1 Menu (Centered Grid) */
+  .level-1-menu {
+     background: #f2f2f2 ;
+    position: fixed; top: 175px; left: 0;
+    width: 100vw;
+    background: #fff; border-top: 1px solid #ddd;
+    display: none; z-index: 1000;
+    padding: 10px 10px; box-sizing: border-box;
+  }
+  .menu-link.have-child:hover > .level-1-menu { display: block !important; }
+
+  .level-1-menu ul {
+   
+    display: flex; flex-wrap: wrap;
+    justify-content: center; gap: 5px;
+    margin: 0 auto; padding: 0;
+    max-width: 50%;
+  }
+  .level-1-menu li {
+    flex: 1 1 15%; min-width: 120px;
+    text-align: center;
+  }
+
+  /* Sub-children Menu (Scrollable Column) */
+  .sub-children-menu {
+    position: fixed; top: 245px; left: 0;
+    width: 100vw;
+    background: #f2f2f2; border-top: 1px solid #ddd;
+    display: none; z-index: 1000;
+    padding: 10px 15px; box-sizing: border-box;
+  }
+  .level-1.have-child:hover > .sub-children-menu { display: block !important; }
+
+ .level-1.have-child:hover > .sub-children-menu,
+.level-1.have-child:focus-within > .sub-children-menu,
+.level-1.have-child > .sub-children-menu:hover {
+  opacity: 1;
+  visibility: visible;
+  transform: translateY(0);
+  pointer-events: auto;
+}
+.sub-children-menu ul {
+    display: flex; 
+    {% comment %} grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); /* items in rows/columns */
+    grid-auto-rows: auto; {% endcomment %}
+    flex-direction: column; 
+    flex-wrap: wrap !important ;
+    align-items: flex-start;
+    max-height: 35vh; 
+    {% comment %} overflow-x: auto; {% endcomment %}
+    margin: 0 ; padding: 0;
+    max-width: 100%;
+  }
+  .sub-children-menu li {
+    flex: 0 0 100%; min-width: 180px;
+    text-align: left;
+  }
+
+  /* Hide accordion toggle buttons on desktop */
+  .submenu-toggle { display: none; }
+}
+  /* Only for Shop By Shape submenu icons */
+.menu-link.menu-link--shop-by-shape .submenu-icon {
+    width: 140px !important;   
+    height: 100px;  /* desired height */
+    object-fit: cover;
+    border-radius: 50%;  /* optional: circular icons */
+    margin-bottom: 8px;  /* spacing between icon and text */
+}
+
+/* ---------------------- */
+/* Mobile Specific */
+/* ---------------------- */
+@media (max-width: 1024px) {
+  /* Only for Shop By Shape submenu icons */
+.menu-link.menu-link--shop-by-shape .submenu-icon {
+    width: 100px !important;   
+    object-fit: cover;
+    border-radius: 50%;  /* optional: circular icons */
+    margin-bottom: 8px;  /* spacing between icon and text */
+}
+
+
+a.submenu__item-text.link_text {
+    align-items: flex-start !important;
+    gap: 15px !important;
+}
+  .sub-children-menu {
+    padding: 5px;
+}
+.menu-icon {
+    border-radius: 50%;
+    width: 40px;
+    height: 40px;
+    margin-right: 5px;
+    vertical-align: middle;
+    object-fit: cover;
+    display: flex;
+}
+  ul.main-menu.list-unstyled.m-0 {
+    padding: 0px !important;
+}
+  .main-menu { display: flex; flex-direction: column; }
+  .main-menu > li { border-bottom: 1px solid #eee; padding: 10px 0; }
+}
+
+@media (min-width: 1025px) and (max-width: 1199px) {
+  .sub-children-menu ul {
+    display: grid !important;
+    grid-template-columns: repeat(3, 360px) !important; 
+    grid-auto-rows: auto !important;
+    white-space: wrap !important;
+    max-height: 43vh !important;                       
+  overflow-y: auto !important;                       
+  overflow-x: hidden !important;  
+  padding: 0 !important;
+  margin: 0 !important;
+  justify-content: start !important;
+  align-content: start !important;  
+  gap: 0px !important; 
+  }
+}
+
+@media (min-width: 1200px) and (max-width: 1300px) {
+  .sub-children-menu ul {
+  display: grid !important;
+  grid-template-columns: repeat(4, 310px) !important ; /* Always 4 fixed columns */
+  grid-auto-rows: auto !important;                 
+  white-space: nowrap !important;
+  max-height: 43vh !important;                       
+  overflow-y: auto !important;                       
+  overflow-x: hidden !important;  
+  padding: 0 !important;
+  margin: 0 !important;
+  justify-content: start !important;
+  align-content: start !important;  
+  gap: 0px !important; 
+
+}
+}
+
+@media (min-width: 1300px) and (max-width: 1400px) {
+ .sub-children-menu ul {
+  display: grid !important;
+  grid-template-columns: repeat(4, 325px) !important ; /* Always 4 fixed columns */
+  grid-auto-rows: auto !important;                 
+  white-space: nowrap !important; 
+  max-height: 43vh !important;                       
+  overflow-y: auto !important;                       
+  overflow-x: hidden !important; 
+  padding: 0 !important;
+  margin: 0 !important;
+  justify-content: start !important;
+  align-content: start !important;  
+  gap: 0px !important;
+
+}
+}
+@media (min-width: 1400px) and (max-width: 1900px) {
+.sub-children-menu ul {
+  display: grid !important;
+  grid-template-columns: repeat(4, 380px) !important ; /* Always 4 fixed columns */
+  grid-auto-rows: auto !important;                 
+  white-space: nowrap !important; 
+  max-height: 43vh !important;                       
+  overflow-y: auto !important;                       
+  overflow-x: hidden !important; 
+  padding: 0 !important;
+  margin: 0 !important;
+  justify-content: start !important;
+  align-content: start !important;  
+  gap: 0px !important;
+
+}
+}
+@media (min-width: 1900px){
+.sub-children-menu ul {
+  display: grid !important;
+  grid-template-columns: repeat(5, 360px) ;
+  grid-auto-rows: auto !important;                   
+  gap: 0px !important;
+
+  max-height: 43vh !important;                       
+  overflow-y: auto !important;                       
+  overflow-x: hidden !important;                      
+
+  padding: 0 !important;
+  margin: 0 !important;
+  justify-content: start !important;
+  align-content: start !important;
+ 
+  white-space: nowrap !important; 
+
+}
+}
+
+/* Smooth hover delay for desktop dropdowns */
+@media (min-width: 1025px) {
+
+/* Each li */
+.sub-children-menu li {
+    text-align: left !important;
+}
+
+li.menu-link.menu-link--shop-by-shape.have-child .sub-children-menu a {
+    padding: 0 !important;
+}
+li.menu-link.menu-link--shop-by-shape.have-child .sub-children-menu a span {
+      font-weight:400 ;
+      margin-top: 20px !important;
+} 
+
+li.menu-link.menu-link--shop-by-motif.have-child.sub-children-menu a span {
+  font-weight: 400;
+}
+
+li.menu-link.menu-link--shop-by-shape.have-child .sub-children-menu img.menu-icon {
+    width: auto;
+    height: 40px !important;
+}
+
+.level-1-menu > ul > li.menu-link.level-1:nth-child(1),
+.level-1-menu > ul > li.menu-link.level-1:nth-child(2),
+.level-1-menu > ul > li.menu-link.level-1:nth-child(3) {
+    height: 200px !important;
+}
+
+
+.main-menu > li {
+  display: inline-block;        /* horizontal layout for main menu */
+  padding: 0 1rem 1.5rem;       /* adjust spacing */
+  position: relative;
+}
+
+/* Level 1 submenu links (direct children of main menu) */
+.level-1-menu li a {
+  display: flex !important;     /* flex to align icon + text */
+  align-items: center !important;
+  gap: 8px;                     /* spacing between icon and text */
+  padding: 6px 12px;
+  text-decoration: none;
+  color: #1e335b;
+}
+
+  /* First-level dropdown */
+  .level-1-menu {
+    display: block; 
+    opacity: 0;
+    visibility: hidden;
+    transform: translateY(15px);
+    transition: opacity 0.4s ease, transform 0.4s ease, visibility 0s linear 0.4s;
+    pointer-events: none;
+  }
+  .menu-link.have-child:hover > .level-1-menu {
+    opacity: 1;
+    visibility: visible;
+    transform: translateY(0);
+    transition-delay: 0s; /* remove delay when showing */
+    pointer-events: auto;
+  }
+
+  /* Sub-children dropdown */
+  .sub-children-menu {
+    top: 205px !important;
+    display: block;
+    opacity: 0;
+    visibility: hidden;
+    transform: translateY(15px);
+    transition: opacity 0.4s ease, transform 0.4s ease, visibility 0s linear 0.4s;
+    pointer-events: none;
+  }
+  .level-1.have-child:hover > .sub-children-menu {
+    opacity: 1;
+    visibility: visible;
+    transform: translateY(0);
+    transition-delay: 0s;
+    pointer-events: auto;
+  }
+}
+@media (min-width: 1025px) {
+  .main-menu > li {
+    padding: 0 1rem 1.5rem !important; /* extra bottom padding extends hover area */
+    position: relative;
+  }
+   .level-1.have-child {
+    padding: 0 1rem 1.5rem !important; /* extend hover buffer for sub-menus */
+    position: relative;
+  }
+}
+
+/* Increase submenu toggle button */
+.submenu-toggle {
+  width: 36px;       /* button width */
+  height: 36px;      /* button height */
+}
+
+/* Increase arrow inside toggle */
+.submenu-toggle .arrow {
+  width: 20px !important;   /* new arrow width */
+  height: 20px !important;  /* new arrow height */
+  stroke-width: 2.5;        /* optional thicker line */
+}
+/* Only for Shop By Shape submenu icons */
+.menu-link.menu-link--shop-by-shape .submenu-icon {
+    width: 165px !important;   /* desired width */
+    height: 120px;  /* desired height */
+    object-fit: cover;
+    border-radius: 50%;  /* optional: circular icons */
+    margin-bottom: 8px;  /* spacing between icon and text */
+}
+
+/* Gift Guides - Simple Vertical Dropdown */
+.menu-link.menu-link--gift-guides .level-1-menu {
+    display: none !important;       /* hide by default */
+    position: absolute !important;  /* dropdown below parent */
+    top: 100% !important;
+    left: 0 !important;
+    background: #fff !important;
+    border: 1px solid #ddd !important;
+    padding: 0 !important;
+    min-width: 130px !important;
+    z-index: 9999 !important;
+}
+
+.menu-link.menu-link--gift-guides.open > .level-1-menu {
+    display: block !important;      /* show on hover / toggle */
+}
+
+.menu-link.menu-link--gift-guides .level-1-menu ul {
+    display: flex !important;
+    flex-direction: column;
+    margin: 0 !important;
+    padding: 0 !important;
+    list-style: none !important;
+}
+
+.menu-link.menu-link--gift-guides .level-1-menu li {
+    margin: 0 !important;
+    padding: 0 !important;
+}
+
+.menu-link.menu-link--gift-guides .level-1-menu li a {
+    display: block !important;
+    padding: 0.5rem 1rem !important;
+    color: #1e335b !important;
+    text-decoration: none !important;
+    font-weight: normal !important;
+}
+
+/* Hide the submenu icons */
+.menu-link.menu-link--gift-guides .submenu-icon {
+    display: none !important;
+}
+/* Gift Guides dropdown as normal vertical menu */
+.menu-link.menu-link--gift-guides .level-1-menu {
+    display: none !important;
+    position: absolute !important;
+    top: 50px !important;
+    left: 0 !important;
+    width: auto !important;
+    background: #fff !important;
+    border: 1px solid #ddd !important;
+    padding: 20px 10px !important;
+    box-sizing: border-box !important;
+    z-index: 1000 !important;
+}
+
+.menu-link.menu-link--gift-guides.open > .level-1-menu {
+    display: block !important;
+}
+
+.menu-link.menu-link--gift-guides .level-1-menu ul {
+    list-style: none !important;
+    padding: 0 !important;
+    margin: 0 !important;
+}
+
+.menu-link.menu-link--gift-guides .level-1-menu li a {
+    display: block !important;
+    padding: 0.5rem 1rem !important;
+    color: #1e335b !important;
+    text-decoration: none !important;
+    font-weight: normal !important;
+}
+
+/* Hide icons for Gift Guides */
+.menu-link.menu-link--gift-guides .submenu-icon {
+    display: none !important;
+}
+
+.menu-link.menu-link--gift-guides .level-1-menu li a {
+    min-width: max-content !important;
+    display: block !important;
+    padding: 0.5rem 1rem !important;
+    color: #1e335b !important;
+    text-decoration: none !important;
+    font-weight: normal !important;
+    text-align: left !important;
+}
+</style>

@@ -1,0 +1,339 @@
+{% doc %}
+  @prompt
+    I need section where I will link PDF catalog which will open in a new tab. The section will have Headline, subheadline on the left side. On the right side there will be thumbnail of pdf and after clicking on thumbnail the catalog will open in a new tab, use magnifying glass icon instead of play icon
+{% enddoc %}
+{% assign ai_gen_id = block.id | replace: '_', '' | downcase %}
+
+{% style %}
+  .ai-pdf-catalog-{{ ai_gen_id }} {
+    padding: 60px 0;
+    background-color: {{ block.settings.section_bg_color }};
+  }
+
+  .ai-pdf-catalog-container-{{ ai_gen_id }} {
+    max-width: {{ settings.page_width }}px;
+    margin: 0 auto;
+    padding: 0 20px;
+  }
+
+  .ai-pdf-catalog-content-{{ ai_gen_id }} {
+    display: grid;
+    grid-template-columns: 2fr 1fr;
+    gap: 60px;
+    align-items: center;
+  }
+
+  .ai-pdf-catalog-text-{{ ai_gen_id }} {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+  }
+
+  .ai-pdf-catalog-headline-{{ ai_gen_id }} {
+    font-size: {{ block.settings.headline_size }}px;
+    color: {{ block.settings.text_color }};
+    margin: 0;
+    text-transform: {{ settings.heading_text_transform }};
+    letter-spacing: {{ settings.heading_letter_spacing }};
+    line-height: 1.2;
+  }
+
+  .ai-pdf-catalog-subheadline-{{ ai_gen_id }} {
+    font-size: {{ block.settings.subheadline_size }}px;
+    color: {{ block.settings.text_color }};
+    margin: 0;
+    line-height: 1.4;
+    opacity: 0.8;
+  }
+
+  .ai-pdf-catalog-thumbnail-link-{{ ai_gen_id }} {
+    position: relative;
+    display: block;
+    cursor: pointer;
+    transition: transform 0.3s ease;
+    border-radius: {{ block.settings.thumbnail_border_radius }}px;
+    overflow: hidden;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+    text-decoration: none;
+  }
+
+  .ai-pdf-catalog-thumbnail-link-{{ ai_gen_id }}:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 15px 40px rgba(0, 0, 0, 0.15);
+  }
+
+  .ai-pdf-catalog-thumbnail-{{ ai_gen_id }} {
+    width: 100%;
+    height: auto;
+    display: block;
+  }
+
+  .ai-pdf-catalog-placeholder-{{ ai_gen_id }} {
+    width: 100%;
+    aspect-ratio: 3/4;
+    background-color: #f4f4f4;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    border-radius: {{ block.settings.thumbnail_border_radius }}px;
+  }
+
+  .ai-pdf-catalog-placeholder-{{ ai_gen_id }} svg {
+    width: 100%;
+    height: 100%;
+    max-width: 200px;
+    max-height: 200px;
+  }
+
+  .ai-pdf-catalog-empty-state-{{ ai_gen_id }} {
+    position: absolute;
+    bottom: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    padding: 12px 20px;
+    font-size: 14px;
+    color: #666;
+    text-align: center;
+    pointer-events: none;
+  }
+
+  .ai-pdf-catalog-overlay-{{ ai_gen_id }} {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.7);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+  }
+
+  .ai-pdf-catalog-thumbnail-link-{{ ai_gen_id }}:hover .ai-pdf-catalog-overlay-{{ ai_gen_id }} {
+    opacity: 1;
+  }
+
+  .ai-pdf-catalog-magnify-icon-{{ ai_gen_id }} {
+    width: 60px;
+    height: 60px;
+    background-color: {{ block.settings.magnify_button_color }};
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: {{ block.settings.magnify_button_text_color }};
+    transform: scale(0.8);
+    transition: transform 0.3s ease;
+  }
+
+  .ai-pdf-catalog-thumbnail-link-{{ ai_gen_id }}:hover .ai-pdf-catalog-magnify-icon-{{ ai_gen_id }} {
+    transform: scale(1);
+  }
+
+  .ai-pdf-catalog-no-link-{{ ai_gen_id }} {
+    pointer-events: none;
+    cursor: default;
+  }
+
+  @media screen and (max-width: 768px) {
+    .ai-pdf-catalog-content-{{ ai_gen_id }} {
+      grid-template-columns: 1fr;
+      gap: 40px;
+      text-align: center;
+    }
+
+    .ai-pdf-catalog-{{ ai_gen_id }} {
+      padding: 40px 0;
+    }
+
+    .ai-pdf-catalog-headline-{{ ai_gen_id }} {
+      font-size: {{ block.settings.headline_size | times: 0.8 }}px;
+    }
+
+    .ai-pdf-catalog-subheadline-{{ ai_gen_id }} {
+      font-size: {{ block.settings.subheadline_size | times: 0.9 }}px;
+    }
+  }
+{% endstyle %}
+
+<div
+  class="ai-pdf-catalog-{{ ai_gen_id }}"
+  {{ block.shopify_attributes }}
+>
+  <div class="ai-pdf-catalog-container-{{ ai_gen_id }}">
+    <div class="ai-pdf-catalog-content-{{ ai_gen_id }}">
+      <div class="ai-pdf-catalog-text-{{ ai_gen_id }}">
+        {% if block.settings.headline != blank %}
+          <h2 class="ai-pdf-catalog-headline-{{ ai_gen_id }}">{{ block.settings.headline }}</h2>
+        {% endif %}
+        
+        {% if block.settings.subheadline != blank %}
+          <p class="ai-pdf-catalog-subheadline-{{ ai_gen_id }}">{{ block.settings.subheadline }}</p>
+        {% endif %}
+      </div>
+
+      {% if block.settings.pdf_file != blank %}
+        <a 
+          href="{{ block.settings.pdf_file }}" 
+          class="ai-pdf-catalog-thumbnail-link-{{ ai_gen_id }}"
+          target="_blank"
+          rel="noopener noreferrer"
+          aria-label="Open PDF catalog in new tab"
+        >
+          {% if block.settings.thumbnail_image %}
+            <img
+              src="{{ block.settings.thumbnail_image | image_url: width: 1200, height: 1600, crop: 'center' }}"
+              alt="{{ block.settings.thumbnail_image.alt | default: 'PDF Catalog Thumbnail' | escape }}"
+              class="ai-pdf-catalog-thumbnail-{{ ai_gen_id }}"
+              loading="lazy"
+              width="1200"
+              height="1600"
+            >
+          {% else %}
+            <div class="ai-pdf-catalog-placeholder-{{ ai_gen_id }}">
+              {{ 'image' | placeholder_svg_tag }}
+              <div class="ai-pdf-catalog-empty-state-{{ ai_gen_id }}">
+                Add a thumbnail image for your PDF catalog
+              </div>
+            </div>
+          {% endif %}
+
+          <div class="ai-pdf-catalog-overlay-{{ ai_gen_id }}">
+            <div class="ai-pdf-catalog-magnify-icon-{{ ai_gen_id }}">
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <circle cx="11" cy="11" r="8"></circle>
+                <path d="m21 21-4.35-4.35"></path>
+              </svg>
+            </div>
+          </div>
+        </a>
+      {% else %}
+        <div class="ai-pdf-catalog-thumbnail-link-{{ ai_gen_id }} ai-pdf-catalog-no-link-{{ ai_gen_id }}">
+          {% if block.settings.thumbnail_image %}
+            <img
+              src="{{ block.settings.thumbnail_image | image_url: width: 1200, height: 1600, crop: 'center' }}"
+              alt="{{ block.settings.thumbnail_image.alt | default: 'PDF Catalog Thumbnail' | escape }}"
+              class="ai-pdf-catalog-thumbnail-{{ ai_gen_id }}"
+              loading="lazy"
+              width="1200"
+              height="1600"
+            >
+          {% else %}
+            <div class="ai-pdf-catalog-placeholder-{{ ai_gen_id }}">
+              {{ 'image' | placeholder_svg_tag }}
+              <div class="ai-pdf-catalog-empty-state-{{ ai_gen_id }}">
+                Add a PDF URL and thumbnail image
+              </div>
+            </div>
+          {% endif %}
+        </div>
+      {% endif %}
+    </div>
+  </div>
+</div>
+
+{% schema %}
+{
+  "name": "PDF catalog",
+  "tag": null,
+  "settings": [
+    {
+      "type": "header",
+      "content": "Content"
+    },
+    {
+      "type": "text",
+      "id": "headline",
+      "label": "Headline",
+      "default": "Download Our Catalog"
+    },
+    {
+      "type": "textarea",
+      "id": "subheadline",
+      "label": "Subheadline",
+      "default": "Explore our complete collection of products in our comprehensive catalog. Click the thumbnail to view the PDF."
+    },
+    {
+      "type": "header",
+      "content": "PDF file"
+    },
+    {
+      "type": "url",
+      "id": "pdf_file",
+      "label": "PDF file URL",
+      "info": "PDF will open in a new tab when thumbnail is clicked"
+    },
+    {
+      "type": "image_picker",
+      "id": "thumbnail_image",
+      "label": "Thumbnail image"
+    },
+    {
+      "type": "header",
+      "content": "Style"
+    },
+    {
+      "type": "color",
+      "id": "section_bg_color",
+      "label": "Section background color",
+      "default": "#ffffff"
+    },
+    {
+      "type": "color",
+      "id": "text_color",
+      "label": "Text color",
+      "default": "#000000"
+    },
+    {
+      "type": "range",
+      "id": "headline_size",
+      "min": 24,
+      "max": 72,
+      "step": 2,
+      "unit": "px",
+      "label": "Headline size",
+      "default": 48
+    },
+    {
+      "type": "range",
+      "id": "subheadline_size",
+      "min": 14,
+      "max": 24,
+      "step": 1,
+      "unit": "px",
+      "label": "Subheadline size",
+      "default": 18
+    },
+    {
+      "type": "range",
+      "id": "thumbnail_border_radius",
+      "min": 0,
+      "max": 20,
+      "step": 2,
+      "unit": "px",
+      "label": "Thumbnail border radius",
+      "default": 8
+    },
+    {
+      "type": "color",
+      "id": "magnify_button_color",
+      "label": "Magnify button color",
+      "default": "#ffffff"
+    },
+    {
+      "type": "color",
+      "id": "magnify_button_text_color",
+      "label": "Magnify button icon color",
+      "default": "#000000"
+    }
+  ],
+  "presets": [
+    {
+      "name": "PDF catalog"
+    }
+  ]
+}
+{% endschema %}

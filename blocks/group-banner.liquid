@@ -1,0 +1,155 @@
+{% liquid
+  assign block_st = block.settings
+  assign section_st = section.settings
+%}
+<div class="sticky top-0 transition-all duration-200 ">
+  <div
+    class="relative flex color-{{ block_st.color_scheme }} {% if block_st.show_background_blur %}show-background-blur{% endif %}"
+    {% if block_st.image != blank %}
+      style="--aspect-ratio: {{ block_st.image.aspect_ratio }}";
+    {% else %}
+      style="--aspect-ratio: 16/9";
+    {% endif %}
+  >
+    <div
+      class="banner__media {% if block_st.image == blank %}placeholder{% endif %}"
+      {% if block_st.image != blank %}
+        style="--aspect-ratio: {{ block_st.image.aspect_ratio }}";
+      {% else %}
+        style="--aspect-ratio: 16/9";
+      {% endif %}
+    >
+      {%- if block_st.image != blank -%}
+        {{
+          block_st.image
+          | image_url: width: 1500
+          | image_tag: loading: 'lazy', sizes: '100vw', widths: '165, 360, 535, 750, 1070, 1500'
+        }}
+      {%- else -%}
+        {%- render 'placeholder-render', type: 'lifestyle' -%}
+      {%- endif -%}
+    </div>
+    <div class="bls__content d-flex{% if section_st.section_width == 'expand_full_width' %} container {% else%} w-full {% endif %}{{ block_st.desktop_content_position }} text-{{ section_st.text_alignment_content }}">
+      <div
+        class="banner__box image-with-text__text-item py-30{% if section_st.section_width == 'fix_width' %} px-30{% else %} px-60{% endif %}"
+        style="--max-width: {{ block_st.content_max_width }}%"
+      >
+        {% content_for 'blocks' %}
+      </div>
+    </div>
+  </div>
+</div>
+{% schema %}
+{
+  "name": "t:sections.featured-collection.block.name",
+  "class": "image-with-text__media-item",
+  "settings": [
+    {
+      "type": "color_scheme",
+      "id": "color_scheme",
+      "label": "t:sections.all.colors.label",
+      "default": "color-scheme-1"
+    },
+    {
+      "type": "header",
+      "content": "t:sections.all.image.label"
+    },
+    {
+      "type": "image_picker",
+      "id": "image",
+      "label": "t:sections.all.image.label"
+    },
+    {
+      "type": "select",
+      "id": "desktop_content_position",
+      "default": "bottom-right",
+      "label": "t:sections.all.desktop_content_position.label",
+      "info": "t:sections.all.desktop_content_position.info",
+      "options": [
+        {
+          "value": "top-left",
+          "label": "t:sections.all.desktop_content_position.options__1.label"
+        },
+        {
+          "value": "top-center",
+          "label": "t:sections.all.desktop_content_position.options__2.label"
+        },
+        {
+          "value": "top-right",
+          "label": "t:sections.all.desktop_content_position.options__3.label"
+        },
+        {
+          "value": "middle-left",
+          "label": "t:sections.all.desktop_content_position.options__4.label"
+        },
+        {
+          "value": "middle-center",
+          "label": "t:sections.all.desktop_content_position.options__5.label"
+        },
+        {
+          "value": "middle-right",
+          "label": "t:sections.all.desktop_content_position.options__6.label"
+        },
+        {
+          "value": "bottom-left",
+          "label": "t:sections.all.desktop_content_position.options__7.label"
+        },
+        {
+          "value": "bottom-center",
+          "label": "t:sections.all.desktop_content_position.options__8.label"
+        },
+        {
+          "value": "bottom-right",
+          "label": "t:sections.all.desktop_content_position.options__9.label"
+        }
+      ]
+    },
+    {
+      "type": "checkbox",
+      "id": "show_background_blur",
+      "label": "t:sections.featured-collection.block.settings.show_background_blur.label",
+      "default": true
+    },
+    {
+      "type": "range",
+      "id": "content_max_width",
+      "min": 40,
+      "max": 100,
+      "unit": "%",
+      "default": 100,
+      "label": "t:sections.all.content_setting.content_max_width.label",
+      "info": "t:sections.all.content_setting.content_max_width.info"
+    }
+  ],
+  "blocks": [
+    {
+      "type": "_heading"
+    },
+    {
+      "type": "_subheading"
+    },
+    {
+      "type": "_description"
+    },
+    {
+      "type": "_button"
+    },
+    {
+      "type": "_multi-content"
+    }
+  ],
+  "presets": [
+    {
+      "name": "t:sections.featured-collection.block.name",
+      "blocks": [
+        {
+          "type": "_heading"
+        },
+        {
+          "type": "_multi-content"
+        }
+      ]
+    }
+  ]
+}
+{% endschema %}

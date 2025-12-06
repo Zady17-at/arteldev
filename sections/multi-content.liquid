@@ -1,0 +1,294 @@
+{%- liquid
+  assign section_st = section.settings
+  assign theme_st = settings
+  assign section_width = ''
+  if section_st.section_width == 'fix_width'
+    assign section_width = ' container'
+  elsif section_st.section_width == 'expand_full_width'
+    assign section_width = ' full-width px-20'
+  else
+    assign section_width = ' full-width-gap'
+  endif
+  assign columns_small_desktop = ''
+  if section_st.columns_desktop > 3
+    assign columns_small_desktop = ' small-desktop-4'
+  endif
+
+  assign columns_tablet = ''
+  if section_st.columns_desktop > 2
+    assign columns_tablet = ' tablet-3'
+  endif
+
+  assign columns_mobile = ''
+  if section_st.columns_desktop > 1
+    assign columns_mobile = ' mb-2'
+  endif
+  assign sub_des_size = ''
+  assign heading_size = ''
+  assign header_size = section_st.heading_size
+  if header_size == 'small'
+    assign sub_des_size = ' text-xs'
+    assign heading_size = ' h3'
+  elsif header_size == 'large'
+    assign sub_des_size = ' lg:text-base text-sm'
+    assign heading_size = ' lg:text-5xl!'
+  endif
+  assign enable_radius_bottom = section_st.enable_radius_bottom
+  assign enable_radius_top = section_st.enable_radius_top
+-%}
+{%- capture style -%}
+--section-padding-top: {{ section_st.padding_top }}px; --section-padding-bottom: {{ section_st.padding_bottom }}px;
+{%- endcapture -%}
+
+<div
+  class="bls__section section-padding {% if enable_radius_bottom %}radius-bottom{% endif %} {% if enable_radius_top %}radius-top{% endif %}"
+  style="{{ style | strip | strip_newlines }}"
+>
+  <div class="{{ section_width }}">
+    {%- if section_st.title != blank or section_st.description != blank or section_st.subheading != blank -%}
+      <div class="bls__section-header mb-30 sm:mb-35 text-{{ section_st.text_alignment }}{% if theme_st.animations_reveal_on_scroll %} scroll-trigger animate--slide-in{% endif %}">
+        {%- if section_st.subheading != blank -%}
+          <p
+            class="mb-10! text-base{{ sub_des_size }}"
+          >
+            {{ section_st.subheading | escape }}
+          </p>
+        {%- endif -%}
+        {%- if section_st.title != blank -%}
+          <h2 class="bls_section-heading heading-letter-spacing mb-7 md:mb-15{{ heading_size }}">{{ section_st.title }}</h2>
+        {%- endif -%}
+        {%- if section_st.description != blank -%}
+          <div class="short-des{{ sub_des_size }}">
+            {{ section_st.description }}
+          </div>
+        {%- endif -%}
+      </div>
+    {%- endif -%}
+    <div
+      class="md:grid relative custom-grid md:space-y-0 space-y-(--row-gap) gap-(--col-gap)  gap-{{ section_st.column_gap }}{{ columns_small_desktop }}{{ columns_tablet }}{{ columns_mobile }}"
+      style="--col-number: {{ section_st.columns_desktop }}"
+    >
+      <span class="h-30 bg-white w-full top-0 start-0 absolute z-3 rounded-b-4xl pointer-events-none opacity-0 radius-t"></span>
+      <span class="h-30 bg-white w-full start-0 bottom-0 absolute z-3 rounded-t-4xl pointer-events-none opacity-0 radius-b"></span>
+      {% content_for 'blocks' %}
+    </div>
+  </div>
+</div>
+{% schema %}
+{
+  "name": "t:sections.multi_content.name",
+  "tag": "section",
+  "class": "section section-multi-content",
+  "disabled_on": {
+    "groups": ["header", "footer", "custom.overlay"]
+  },
+  "max_blocks": 4,
+  "settings": [
+    {
+      "type": "select",
+      "id": "section_width",
+      "options": [
+        {
+          "value": "fix_width",
+          "label": "t:sections.all.layout.fix_width"
+        },
+        {
+          "value": "stretch_width",
+          "label": "t:sections.all.layout.stretch_width"
+        },
+        {
+          "value": "expand_full_width",
+          "label": "t:sections.all.layout.expand_full_width"
+        }
+      ],
+      "default": "stretch_width",
+      "label": "t:sections.all.layout.label"
+    },
+    {
+      "type": "header",
+      "content": "t:sections.all.section_setting.label"
+    },
+    {
+      "type": "text",
+      "id": "subheading",
+      "label": "t:sections.all.content_setting.subheading.label"
+    },
+    {
+      "type": "text",
+      "id": "title",
+      "label": "t:sections.all.content_setting.heading.label"
+    },
+    {
+      "type": "richtext",
+      "id": "description",
+      "label": "t:sections.all.content_setting.description.label"
+    },
+    {
+      "type": "select",
+      "id": "heading_size",
+      "options": [
+        {
+          "value": "small",
+          "label": "t:sections.all.heading_size.options__1.label"
+        },
+        {
+          "value": "medium",
+          "label": "t:sections.all.heading_size.options__2.label"
+        },
+        {
+          "value": "large",
+          "label": "t:sections.all.heading_size.options__3.label"
+        }
+      ],
+      "default": "medium",
+      "label": "t:sections.all.heading_size.label"
+    },
+    {
+      "type": "select",
+      "id": "text_alignment",
+      "options": [
+        {
+          "value": "left",
+          "label": "t:sections.all.text_alignment.option_1.label"
+        },
+        {
+          "value": "center",
+          "label": "t:sections.all.text_alignment.option_2.label"
+        },
+        {
+          "value": "right",
+          "label": "t:sections.all.text_alignment.option_3.label"
+        }
+      ],
+      "default": "center",
+      "label": "t:sections.all.text_alignment.label"
+    },
+    {
+      "type": "range",
+      "id": "columns_desktop",
+      "min": 2,
+      "max": 4,
+      "step": 1,
+      "default": 2,
+      "label": "t:sections.all.setting.columns_desktop.label"
+    },
+    {
+      "type": "select",
+      "id": "column_gap",
+      "options": [
+        {
+          "value": "no_gap",
+          "label": "t:sections.all.padding.column_gap.no_gap"
+        },
+        {
+          "value": "small",
+          "label": "t:sections.all.padding.column_gap.small"
+        },
+        {
+          "value": "medium",
+          "label": "t:sections.all.padding.column_gap.medium"
+        },
+        {
+          "value": "large",
+          "label": "t:sections.all.padding.column_gap.large"
+        }
+      ],
+      "default": "medium",
+      "label": "t:sections.all.padding.column_gap.label"
+    },
+    {
+      "type": "header",
+      "content": "t:sections.multi_content.blocks.settings.header"
+    },
+    {
+      "type": "checkbox",
+      "id": "equal_height_adjustment",
+      "default": true,
+      "label": "t:sections.multi_content.blocks.settings.equal_height_adjustment.label"
+    },
+    {
+      "type": "header",
+      "content": "t:sections.all.padding.section_padding_heading"
+    },
+    {
+      "type": "range",
+      "id": "padding_top",
+      "min": 0,
+      "max": 100,
+      "step": 1,
+      "unit": "px",
+      "label": "t:sections.all.padding.padding_top",
+      "default": 40
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom",
+      "min": 0,
+      "max": 100,
+      "step": 1,
+      "unit": "px",
+      "label": "t:sections.all.padding.padding_bottom",
+      "default": 40
+    },
+    {
+      "type": "header",
+      "content": "t:sections.all.radius.label"
+    },
+    {
+      "type": "checkbox",
+      "id": "enable_radius_top",
+      "label": "t:sections.all.radius.enable_radius_top",
+      "default": false
+    },
+    {
+      "type": "checkbox",
+      "id": "enable_radius_bottom",
+      "label": "t:sections.all.radius.enable_radius_bottom",
+      "default": false
+    }
+  ],
+  "blocks": [
+    {
+      "type": "group-image-with-text"
+    },
+    {
+      "type": "group-product-items"
+    }
+  ],
+  "presets": [
+    {
+      "name": "t:sections.multi_content.name",
+      "blocks": [
+        {
+          "type": "group-image-with-text",
+          "blocks": [
+            {
+              "type": "_subheading"
+            },
+            {
+              "type": "_heading"
+            },
+            {
+              "type": "_button"
+            }
+          ]
+        },
+        {
+          "type": "group-product-items",
+          "blocks": [
+            {
+              "type": "product-item-banner"
+            },
+            {
+              "type": "product-item-banner"
+            },
+            {
+              "type": "product-item-banner"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
+{% endschema %}

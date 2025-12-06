@@ -1,0 +1,10 @@
+{% comment %}
+  Swym Wishlist Plus – Core script inject
+  This loads Swym’s global JavaScript for wishlist and collection/product button rendering.
+{% endcomment %}
+<script>
+  window.SwymCallbacks = window.SwymCallbacks || [];
+  window.SwymCallbacks.push(function(swym) {
+    console.log("Swym initialized:", swym);
+  });
+</script>

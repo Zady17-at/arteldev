@@ -1,0 +1,456 @@
+{% liquid
+  assign section_st = section.settings
+  assign block_st = block.settings
+  assign image = block_st.image
+  assign aspect_ratio = section_st.aspect_ratio
+  assign ratio = ''
+  assign image = block_st.image
+  if aspect_ratio != 'adapt'
+    assign ratio = ''
+    case aspect_ratio
+      when 'square'
+        assign ratio = '1/1'
+      when 'portrait'
+        assign ratio = '3/4'
+      when 'landscape'
+        assign ratio = '4/3'
+      else
+        assign ratio = '3/4'
+    endcase
+  else
+    if ratio == blank
+      if image != blank
+        assign ratio = image.aspect_ratio
+      else
+        assign ratio = '3/4'
+      endif
+    endif
+  endif
+  assign show_products = false
+  for i in (1..5)
+    assign product_item = 'product_' | append: i
+    assign product = block_st[product_item]
+    if product != blank
+      assign show_products = true
+    endif
+  endfor
+%}
+{%- capture sizes -%}
+  (min-width: {{ settings.page_width }}px) {{ settings.page_width | minus: 100 }}px, (min-width: 750px)
+  calc(100vw - 10rem), 100vw
+{%- endcapture -%}
+<div class="grid gap-20 lg:grid-cols-10 2xl:gap-60 xl:gap-30">
+  <div class="lg:col-span-6 shopable-social__image-with-product-image ">
+    <div class="relative" style="--aspect-ratio: {{ ratio }}">
+      <div class="shopable-social__image-with-product-image-wrapper rounded-base" style="--aspect-ratio: {{ ratio }}">
+        {% if block_st.image != blank %}
+          {%- assign image_alt = image.alt | escape -%}
+          {{
+            image
+            | image_url: width: image.width
+            | image_tag:
+              loading: 'lazy',
+              sizes: sizes,
+              widths: '375, 750, 1100, 1500, 1780, 2000, 3000, 3840',
+              alt: image_alt
+          }}
+        {% else %}
+          {%- render 'placeholder-render', type: 'blog' -%}
+        {% endif %}
+      </div>
+      {% if show_products %}
+        <ul class="absolute inset-0 shopable-social__image-with-product-dot">
+          {% for i in (1..5) %}
+            {% liquid
+              assign offset_top = 'position_top_' | append: i
+              assign position_top = block_st[offset_top]
+              assign offset_left = 'position_left_' | append: i
+              assign position_left = block_st[offset_left]
+              assign product_item = 'product_' | append: i
+              assign product = block_st[product_item]
+            %}
+            {% if product != blank %}
+              <li
+                class="absolute shopable-social__image-with-product-dot-item pointer dot-{{ block.id }}-{{ product.id }}"
+                style="top: {{ position_top }}%; left: {{ position_left }}%"
+              >
+                <shopable-dot data-product-id="{{ block.id }}-{{ product.id }}" tabindex="0">
+                  <span class="dot-item relative inline-flex items-center justify-center transition duration-300 bg-white rounded-full shadow-lg group size-32 hover:bg-black/90 hover:text-white hover:scale-110">
+                    <span
+                      class="absolute inline-flex w-full h-full rounded-full opacity-50 pointer-events-none animate-ping bg-white/50 z-1"
+                    ></span>
+                    <span class="*:w-18! svg-item absolute inset-0 justify-center inline-flex items-center *:static! *:transition *:duration-300 *:group-hover:rotate-45">
+                      {% render 'icon-plus' | custom_width: 18 -%}
+                    </span>
+                  </span>
+                </shopable-dot>
+              </li>
+            {% endif %}
+          {% endfor %}
+        </ul>
+      {% endif %}
+    </div>
+  </div>
+  <div class="lg:col-span-4 shopable-social__image-with-product-products space-y-15">
+    {% if show_products %}
+      {% for i in (1..5) %}
+        {% liquid
+          assign product_item = 'product_' | append: i
+          assign product = block_st[product_item]
+        %}
+        {% if product != blank %}
+          {%- assign product_form_id = 'product-form-' | append: block.id | append: '-' | append: product.id -%}
+          <div
+            class="product-list-block border border-gray-200 p-12 rounded-base relative product-list__hidden"
+            data-product-id="{{ block.id }}-{{ product.id }}"
+          >
+            <div class="grid items-center gap-12 product-shopable-wrapper grid-cols-[80px_auto]">
+              {%- liquid
+                assign p_media = product.featured_media
+              -%}
+              {%- if p_media -%}
+                {%- liquid
+                  assign ratio = ''
+                  if settings.product_image_ratio != 'adapt_to_image'
+                    case settings.product_image_ratio
+                      when 'square'
+                        assign ratio = '1/1'
+                      else
+                        assign ratio = '3/4'
+                    endcase
+                  else
+                    assign ratio = p_media.aspect_ratio
+                  endif
+                -%}
+                <div
+                  class="product__media animation-swatches rounded-base"
+                  style="--aspect-ratio: 1"
+                >
+                  {%- assign alt_features = p_media.alt | default: product.title | escape -%}
+                  {% render 'responsive-image' | img: p_media | img_alt: alt_features | custom_class: "product__img" %}
+                </div>
+              {%- else -%}
+                {%- liquid
+                  assign ratio = ''
+                  if settings.product_image_ratio != 'adapt_to_image'
+                    case settings.product_image_ratio
+                      when 'square'
+                        assign ratio = '1/1'
+                      else
+                        assign ratio = '3/4'
+                    endcase
+                  else
+                    assign ratio = '1/1'
+                  endif
+                -%}
+                <div
+                  class="product__media"
+                  style="--aspect-ratio: {{ ratio }};"
+                >
+                  {% render 'placeholder-render' %}
+                </div>
+              {%- endif -%}
+              <div class="product-shopable__info">
+                <div class="inline-block text-base border-animation line-clamp-1 lg:line-clamp-none heading-style">
+                  {{- product.title -}}
+                </div>
+                <div class="mt-5 product__price heading-color">
+                  {%- render 'price' | scope: 'detail' | product: product -%}
+                </div>
+              </div>
+            </div>
+            <shopable-show-add-cart class="quick-add-fake absolute right-12 bottom-12" data-product-id="{{ block.id }}-{{ product.id }}" tabindex="0">
+              <span class="inline-flex items-center justify-center transition duration-300 border border-transparent rounded-sm cursor-pointer text-white/80 cart-icon size-32 bg-black/90 hover:bg-white hover:text-black/90 hover:border-black/90">
+                {% render 'icon-cart', custom_width: 20 %}
+              </span>
+            </shopable-show-add-cart>
+          </div>
+          <div class="product__item-js product-shopable-item__detail border rounded-lg border-gray-200 p-13 get-{{ block.id }}-{{ product.id }}">
+            <back-product tabindex="0" data-product-id="{{ block.id }}-{{ product.id }}" class=" flex items-center gap-3 mb-20 pb-10 border-b border-gray-200 cursor-pointer text-black/90 uppercase text-xs">
+              {% render 'icon-prev' | custom_width: 15 %}
+              <span>{{ 'accessibility.back' | t }}</span>
+            </back-product>
+            <div class="grid items-center gap-12 product-shopable-wrapper grid-cols-[80px_auto] mb-20">
+              {%- liquid
+                assign p_media = product.featured_media
+              -%}
+              {%- if p_media -%}
+                {%- liquid
+                  assign ratio = ''
+                  if settings.product_image_ratio != 'adapt_to_image'
+                    case settings.product_image_ratio
+                      when 'square'
+                        assign ratio = '1/1'
+                      else
+                        assign ratio = '3/4'
+                    endcase
+                  else
+                    assign ratio = p_media.aspect_ratio
+                  endif
+                -%}
+                <div
+                  class="product__media animation-swatches rounded-base"
+                  style="--aspect-ratio: 1"
+                >
+                  {%- assign alt_features = p_media.alt | default: product.title | escape -%}
+                  {% render 'responsive-image' | img: p_media | img_alt: alt_features | custom_class: "product__img" %}
+                </div>
+              {%- else -%}
+                {%- liquid
+                  assign ratio = ''
+                  if settings.product_image_ratio != 'adapt_to_image'
+                    case settings.product_image_ratio
+                      when 'square'
+                        assign ratio = '1/1'
+                      else
+                        assign ratio = '3/4'
+                    endcase
+                  else
+                    assign ratio = '1/1'
+                  endif
+                -%}
+                <div
+                  class="product__media"
+                  style="--aspect-ratio: {{ ratio }};"
+                >
+                  {% render 'placeholder-render' %}
+                </div>
+              {%- endif -%}
+              <div class="product-shopable__info">
+                <div class="inline-block text-base border-animation line-clamp-1 lg:line-clamp-none heading-style">
+                  {{- product.title -}}
+                </div>
+                <div class="mt-5 product__price heading-color">
+                  {%- render 'price' | scope: 'detail' | product: product -%}
+                </div>
+              </div>
+            </div>
+            {%- if product.metafields.custom.external_affiliate == blank -%}
+              <div class="mb-15 feature-product-block" {{ block.shopify_attributes }}>
+                {%- render 'color-swatches' | product: product | type: "detail" | product_form_id: product_form_id | custom: true | block_id: block.id -%}
+              </div>
+            {%- endif -%}
+            {%- render 'buy-buttons',
+              block: block,
+              product: product,
+              product_form_id: product_form_id,
+              section_id: block.id,
+              formClass: 'shopable-product-form',
+              custom: true
+            -%}
+            <div class="text-center">
+              <a
+                {% if product == blank %}
+                  role="link" aria-disabled="true"
+                {% else %}
+                  href="{{ product.url }}"
+                {% endif %}
+                class="mt-20 link animate-arrow btn-link heading-color mt-md-30"
+              >
+                {{ 'products.product.view_full_details' | t }}
+              </a>
+           </div>
+            {%- unless product.has_only_default_variant -%}
+              <script type="application/json" class="productVariantsQty">
+                [
+                {%- for variant in product.variants -%}
+                  {%- assign op = variant.option1 | replace: '"', '\"' -%}
+                  {%- liquid
+                      assign id = '"id":' | append: variant.id
+                      assign option = '"option":"' | append: op | append: '"'
+                      assign quantity = '"qty":' | append: variant.inventory_quantity
+                      assign available = '"available":' | append: variant.available
+                      assign mamagement = '"mamagement":"' | append: variant.inventory_management | append: '"'
+                  -%}
+                  { {{ id }},{{ option }},{{ quantity }},{{ available }},{{ mamagement }}}
+                  {%- unless forloop.last -%},{%- endunless forloop.last -%}
+                {%- endfor -%}
+                ]
+              </script>
+            {%- endunless -%}
+          </div>
+        {% endif %}
+      {% endfor %}
+    {% else %}
+      <div
+        class="product-list-block no-border"
+      >
+        {% render 'card-product',
+          section_id: section.id,
+          disable_quickview: true,
+          show_quick_add: true,
+          disable_badge: true,
+          disable_rate: true,
+          disable_swatch: true,
+          enable_view_product: false,
+          disable_vendor: false,
+          type: 'list'
+        %}
+      </div>
+    {% endif %}
+  </div>
+</div>
+
+{% schema %}
+{
+  "name": "t:sections.shopable-social.block.social_image_with_product.name",
+  "class": "shopable-social__image-with-product col-span-8",
+  "settings": [
+    {
+      "type": "image_picker",
+      "id": "image",
+      "label": "t:sections.shopable-social.block.social_image_with_product.settings.social_image.label"
+    },
+    {
+      "type": "header",
+      "content": "t:sections.shopable-social.block.social_image_with_product.settings.product.count.options__1"
+    },
+    {
+      "type": "product",
+      "id": "product_1",
+      "label": "t:sections.shopable-social.block.social_image_with_product.settings.product.select_product.label"
+    },
+    {
+      "type": "range",
+      "id": "position_top_1",
+      "label": "t:sections.shopable-social.block.social_image_with_product.settings.product.vertical_position.label",
+      "min": 0,
+      "max": 100,
+      "unit": "%",
+      "step": 1,
+      "default": 50
+    },
+    {
+      "type": "range",
+      "id": "position_left_1",
+      "label": "t:sections.shopable-social.block.social_image_with_product.settings.product.horizontal_position.label",
+      "min": 0,
+      "max": 100,
+      "unit": "%",
+      "step": 1,
+      "default": 50
+    },
+    {
+      "type": "header",
+      "content": "t:sections.shopable-social.block.social_image_with_product.settings.product.count.options__2"
+    },
+    {
+      "type": "product",
+      "id": "product_2",
+      "label": "t:sections.shopable-social.block.social_image_with_product.settings.product.select_product.label"
+    },
+    {
+      "type": "range",
+      "id": "position_top_2",
+      "label": "t:sections.shopable-social.block.social_image_with_product.settings.product.vertical_position.label",
+      "min": 0,
+      "max": 100,
+      "unit": "%",
+      "step": 1,
+      "default": 50
+    },
+    {
+      "type": "range",
+      "id": "position_left_2",
+      "label": "t:sections.shopable-social.block.social_image_with_product.settings.product.horizontal_position.label",
+      "min": 0,
+      "max": 100,
+      "unit": "%",
+      "step": 1,
+      "default": 50
+    },
+    {
+      "type": "header",
+      "content": "t:sections.shopable-social.block.social_image_with_product.settings.product.count.options__3"
+    },
+    {
+      "type": "product",
+      "id": "product_3",
+      "label": "t:sections.shopable-social.block.social_image_with_product.settings.product.select_product.label"
+    },
+    {
+      "type": "range",
+      "id": "position_top_3",
+      "label": "t:sections.shopable-social.block.social_image_with_product.settings.product.vertical_position.label",
+      "min": 0,
+      "max": 100,
+      "unit": "%",
+      "step": 1,
+      "default": 50
+    },
+    {
+      "type": "range",
+      "id": "position_left_3",
+      "label": "t:sections.shopable-social.block.social_image_with_product.settings.product.horizontal_position.label",
+      "min": 0,
+      "max": 100,
+      "unit": "%",
+      "step": 1,
+      "default": 50
+    },
+    {
+      "type": "header",
+      "content": "t:sections.shopable-social.block.social_image_with_product.settings.product.count.options__4"
+    },
+    {
+      "type": "product",
+      "id": "product_4",
+      "label": "t:sections.shopable-social.block.social_image_with_product.settings.product.select_product.label"
+    },
+    {
+      "type": "range",
+      "id": "position_top_4",
+      "label": "t:sections.shopable-social.block.social_image_with_product.settings.product.vertical_position.label",
+      "min": 0,
+      "max": 100,
+      "unit": "%",
+      "step": 1,
+      "default": 50
+    },
+    {
+      "type": "range",
+      "id": "position_left_4",
+      "label": "t:sections.shopable-social.block.social_image_with_product.settings.product.horizontal_position.label",
+      "min": 0,
+      "max": 100,
+      "unit": "%",
+      "step": 1,
+      "default": 50
+    },
+    {
+      "type": "header",
+      "content": "t:sections.shopable-social.block.social_image_with_product.settings.product.count.options__5"
+    },
+    {
+      "type": "product",
+      "id": "product_5",
+      "label": "t:sections.shopable-social.block.social_image_with_product.settings.product.select_product.label"
+    },
+    {
+      "type": "range",
+      "id": "position_top_5",
+      "label": "t:sections.shopable-social.block.social_image_with_product.settings.product.vertical_position.label",
+      "min": 0,
+      "max": 100,
+      "unit": "%",
+      "step": 1,
+      "default": 50
+    },
+    {
+      "type": "range",
+      "id": "position_left_5",
+      "label": "t:sections.shopable-social.block.social_image_with_product.settings.product.horizontal_position.label",
+      "min": 0,
+      "max": 100,
+      "unit": "%",
+      "step": 1,
+      "default": 50
+    }
+  ],
+  "presets": [
+    {
+      "name": "t:sections.shopable-social.block.social_image_with_product.name"
+    }
+  ]
+}
+{% endschema %}

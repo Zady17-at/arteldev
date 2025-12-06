@@ -1,0 +1,726 @@
+{% doc %}
+  @prompt
+    make a section with  3 columns to add text add divider in each andunder that designation 
+    the deivder should be equal for all colums with all the style and customization options, the divider should be full lenght for each coulumn, divider distance option should be adjustable and color option, at the top center of this section add an image and a heading, image should have any border or shadow , just siple whole image that i am addin g, need full image  hsve to add a image witdh 700px, give customization option for adjusitng image width
+
+{% enddoc %}
+{% assign ai_gen_id = block.id | replace: '_', '' | downcase %}
+
+{% style %}
+  .ai-three-column-text-{{ ai_gen_id }} {
+    padding: {{ block.settings.section_padding_top }}px 0 {{ block.settings.section_padding_bottom }}px;
+    background-color: {{ block.settings.background_color }};
+  }
+
+  .ai-three-column-text__container-{{ ai_gen_id }} {
+    max-width: {{ block.settings.container_width }}px;
+    margin: 0 auto;
+    padding: 0 20px;
+  }
+
+  .ai-three-column-text__header-{{ ai_gen_id }} {
+    text-align: center;
+    margin-bottom: {{ block.settings.header_bottom_margin }}px;
+  }
+
+  .ai-three-column-text__image-wrapper-{{ ai_gen_id }} {
+    display: inline-block;
+    margin-bottom: {{ block.settings.image_bottom_margin }}px;
+    width: 100%;
+    max-width: {{ block.settings.image_width }}px;
+  }
+
+  .ai-three-column-text__image-{{ ai_gen_id }} {
+    width: 100%;
+    height: auto;
+    display: block;
+    max-width: {{ block.settings.image_width }}px;
+  }
+
+  .ai-three-column-text__image-placeholder-{{ ai_gen_id }} {
+    width: 100%;
+    height: {{ block.settings.image_height }}px;
+    max-width: {{ block.settings.image_width }}px;
+    background-color: #f4f4f4;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    margin: 0 auto;
+  }
+
+  .ai-three-column-text__image-placeholder-{{ ai_gen_id }} svg {
+    width: 60%;
+    height: 60%;
+    opacity: 0.5;
+  }
+
+  .ai-three-column-text__heading-{{ ai_gen_id }} {
+    color: {{ block.settings.heading_color }};
+    font-size: {{ block.settings.heading_size }}px;
+    font-weight: {{ block.settings.heading_weight }};
+    line-height: {{ block.settings.heading_line_height }};
+    margin: 0;
+    text-transform: {{ block.settings.heading_text_transform }};
+    letter-spacing: {{ block.settings.heading_letter_spacing }}px;
+  }
+
+  .ai-three-column-text__grid-{{ ai_gen_id }} {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: {{ block.settings.column_gap }}px;
+    align-items: flex-start;
+  }
+
+  .ai-three-column-text__column-{{ ai_gen_id }} {
+    text-align: {{ block.settings.text_alignment }};
+    padding: {{ block.settings.column_padding }}px;
+    background-color: {{ block.settings.column_background_color }};
+    border-radius: {{ block.settings.column_border_radius }}px;
+  }
+
+  .ai-three-column-text__text-{{ ai_gen_id }} {
+    color: {{ block.settings.text_color }};
+    font-size: {{ block.settings.text_size }}px;
+    line-height: {{ block.settings.text_line_height }};
+    margin: 0 0 {{ block.settings.text_bottom_margin }}px;
+  }
+
+  .ai-three-column-text__divider-{{ ai_gen_id }} {
+    width: 100%;
+    height: {{ block.settings.divider_thickness }}px;
+    background-color: {{ block.settings.divider_color }};
+    margin: {{ block.settings.divider_distance_top }}px 0 {{ block.settings.divider_distance_bottom }}px;
+    border-radius: {{ block.settings.divider_border_radius }}px;
+    {% if block.settings.divider_style == 'gradient' %}
+      background: linear-gradient(90deg, {{ block.settings.divider_color }}, {{ block.settings.divider_color_end }});
+    {% elsif block.settings.divider_style == 'dashed' %}
+      background: none;
+      border-top: {{ block.settings.divider_thickness }}px dashed {{ block.settings.divider_color }};
+      height: 0;
+    {% elsif block.settings.divider_style == 'dotted' %}
+      background: none;
+      border-top: {{ block.settings.divider_thickness }}px dotted {{ block.settings.divider_color }};
+      height: 0;
+    {% endif %}
+  }
+
+  .ai-three-column-text__designation-{{ ai_gen_id }} {
+    color: {{ block.settings.designation_color }};
+    font-size: {{ block.settings.designation_size }}px;
+    font-weight: {{ block.settings.designation_weight }};
+    line-height: {{ block.settings.designation_line_height }};
+    margin: 0;
+    text-transform: {{ block.settings.designation_text_transform }};
+    letter-spacing: {{ block.settings.designation_letter_spacing }}px;
+  }
+
+  @media screen and (max-width: 990px) {
+    .ai-three-column-text__grid-{{ ai_gen_id }} {
+      grid-template-columns: repeat({{ block.settings.columns_tablet }}, 1fr);
+    }
+
+    .ai-three-column-text__image-wrapper-{{ ai_gen_id }} {
+      max-width: {{ block.settings.image_width | times: 0.85 }}px;
+    }
+
+    .ai-three-column-text__image-{{ ai_gen_id }} {
+      max-width: {{ block.settings.image_width | times: 0.85 }}px;
+    }
+
+    .ai-three-column-text__image-placeholder-{{ ai_gen_id }} {
+      max-width: {{ block.settings.image_width | times: 0.85 }}px;
+      height: {{ block.settings.image_height | times: 0.85 }}px;
+    }
+
+    .ai-three-column-text__heading-{{ ai_gen_id }} {
+      font-size: {{ block.settings.heading_size | times: 0.9 }}px;
+    }
+  }
+
+  @media screen and (max-width: 749px) {
+    .ai-three-column-text__grid-{{ ai_gen_id }} {
+      grid-template-columns: repeat({{ block.settings.columns_mobile }}, 1fr);
+      gap: {{ block.settings.column_gap | times: 0.7 }}px;
+    }
+
+    .ai-three-column-text__column-{{ ai_gen_id }} {
+      padding: {{ block.settings.column_padding | times: 0.8 }}px;
+    }
+
+    .ai-three-column-text__text-{{ ai_gen_id }} {
+      font-size: {{ block.settings.text_size | times: 0.9 }}px;
+    }
+
+    .ai-three-column-text__designation-{{ ai_gen_id }} {
+      font-size: {{ block.settings.designation_size | times: 0.9 }}px;
+    }
+
+    .ai-three-column-text__divider-{{ ai_gen_id }} {
+      margin: {{ block.settings.divider_distance_top | times: 0.8 }}px 0 {{ block.settings.divider_distance_bottom | times: 0.8 }}px;
+    }
+
+    .ai-three-column-text__image-wrapper-{{ ai_gen_id }} {
+      max-width: {{ block.settings.image_width | times: 0.7 }}px;
+    }
+
+    .ai-three-column-text__image-{{ ai_gen_id }} {
+      max-width: {{ block.settings.image_width | times: 0.7 }}px;
+    }
+
+    .ai-three-column-text__image-placeholder-{{ ai_gen_id }} {
+      max-width: {{ block.settings.image_width | times: 0.7 }}px;
+      height: {{ block.settings.image_height | times: 0.7 }}px;
+    }
+
+    .ai-three-column-text__heading-{{ ai_gen_id }} {
+      font-size: {{ block.settings.heading_size | times: 0.8 }}px;
+    }
+
+    .ai-three-column-text__header-{{ ai_gen_id }} {
+      margin-bottom: {{ block.settings.header_bottom_margin | times: 0.8 }}px;
+    }
+  }
+{% endstyle %}
+
+<div class="ai-three-column-text-{{ ai_gen_id }}" {{ block.shopify_attributes }}>
+  <div class="ai-three-column-text__container-{{ ai_gen_id }}">
+    <div class="ai-three-column-text__header-{{ ai_gen_id }}">
+      {% if block.settings.header_image %}
+        <div class="ai-three-column-text__image-wrapper-{{ ai_gen_id }}">
+          <img
+            src="{{ block.settings.header_image | image_url: width: block.settings.image_width }}"
+            alt="{{ block.settings.header_image.alt | escape }}"
+            class="ai-three-column-text__image-{{ ai_gen_id }}"
+            loading="lazy"
+            width="{{ block.settings.image_width }}"
+            height="{{ block.settings.header_image.height }}"
+          >
+        </div>
+      {% else %}
+        <div class="ai-three-column-text__image-wrapper-{{ ai_gen_id }}">
+          <div class="ai-three-column-text__image-placeholder-{{ ai_gen_id }}">
+            {{ 'image' | placeholder_svg_tag }}
+          </div>
+        </div>
+      {% endif %}
+
+      {% if block.settings.heading != blank %}
+        <h2 class="ai-three-column-text__heading-{{ ai_gen_id }}">
+          {{ block.settings.heading }}
+        </h2>
+      {% else %}
+        <h2 class="ai-three-column-text__heading-{{ ai_gen_id }}" style="color: #999; font-style: italic;">
+          Add your heading here
+        </h2>
+      {% endif %}
+    </div>
+
+    <div class="ai-three-column-text__grid-{{ ai_gen_id }}">
+      {% for i in (1..3) %}
+        {% liquid
+          assign text_key = 'column_' | append: i | append: '_text'
+          assign designation_key = 'column_' | append: i | append: '_designation'
+          assign column_text = block.settings[text_key]
+          assign column_designation = block.settings[designation_key]
+        %}
+        <div class="ai-three-column-text__column-{{ ai_gen_id }}">
+          {% if column_text != blank %}
+            <div class="ai-three-column-text__text-{{ ai_gen_id }}">
+              {{ column_text }}
+            </div>
+          {% else %}
+            <div class="ai-three-column-text__text-{{ ai_gen_id }}" style="color: #999; font-style: italic;">
+              Add your text content here
+            </div>
+          {% endif %}
+          
+          <div class="ai-three-column-text__divider-{{ ai_gen_id }}"></div>
+          
+          {% if column_designation != blank %}
+            <div class="ai-three-column-text__designation-{{ ai_gen_id }}">
+              {{ column_designation }}
+            </div>
+          {% else %}
+            <div class="ai-three-column-text__designation-{{ ai_gen_id }}" style="color: #999; font-style: italic;">
+              Add designation
+            </div>
+          {% endif %}
+        </div>
+      {% endfor %}
+    </div>
+  </div>
+</div>
+
+{% schema %}
+{
+  "name": "Three column text",
+  "settings": [
+    {
+      "type": "header",
+      "content": "Header section"
+    },
+    {
+      "type": "image_picker",
+      "id": "header_image",
+      "label": "Header image"
+    },
+    {
+      "type": "text",
+      "id": "heading",
+      "label": "Heading",
+      "default": "Our Amazing Team"
+    },
+    {
+      "type": "header",
+      "content": "Image settings"
+    },
+    {
+      "type": "range",
+      "id": "image_width",
+      "min": 200,
+      "max": 1000,
+      "step": 50,
+      "unit": "px",
+      "label": "Image width",
+      "default": 700
+    },
+    {
+      "type": "range",
+      "id": "image_height",
+      "min": 200,
+      "max": 600,
+      "step": 25,
+      "unit": "px",
+      "label": "Placeholder height",
+      "info": "Only applies when no image is selected",
+      "default": 400
+    },
+    {
+      "type": "range",
+      "id": "image_bottom_margin",
+      "min": 10,
+      "max": 50,
+      "step": 2,
+      "unit": "px",
+      "label": "Image bottom margin",
+      "default": 20
+    },
+    {
+      "type": "range",
+      "id": "header_bottom_margin",
+      "min": 20,
+      "max": 80,
+      "step": 5,
+      "unit": "px",
+      "label": "Header bottom margin",
+      "default": 50
+    },
+    {
+      "type": "header",
+      "content": "Heading style"
+    },
+    {
+      "type": "color",
+      "id": "heading_color",
+      "label": "Heading color",
+      "default": "#000000"
+    },
+    {
+      "type": "range",
+      "id": "heading_size",
+      "min": 18,
+      "max": 48,
+      "step": 2,
+      "unit": "px",
+      "label": "Heading size",
+      "default": 32
+    },
+    {
+      "type": "select",
+      "id": "heading_weight",
+      "label": "Heading weight",
+      "options": [
+        {"value": "300", "label": "Light"},
+        {"value": "400", "label": "Normal"},
+        {"value": "500", "label": "Medium"},
+        {"value": "600", "label": "Semi bold"},
+        {"value": "700", "label": "Bold"}
+      ],
+      "default": "600"
+    },
+    {
+      "type": "range",
+      "id": "heading_line_height",
+      "min": 1,
+      "max": 2,
+      "step": 0.1,
+      "label": "Heading line height",
+      "default": 1.2
+    },
+    {
+      "type": "select",
+      "id": "heading_text_transform",
+      "label": "Heading text transform",
+      "options": [
+        {"value": "none", "label": "None"},
+        {"value": "uppercase", "label": "Uppercase"},
+        {"value": "lowercase", "label": "Lowercase"},
+        {"value": "capitalize", "label": "Capitalize"}
+      ],
+      "default": "none"
+    },
+    {
+      "type": "range",
+      "id": "heading_letter_spacing",
+      "min": 0,
+      "max": 3,
+      "step": 0.5,
+      "unit": "px",
+      "label": "Heading letter spacing",
+      "default": 0
+    },
+    {
+      "type": "header",
+      "content": "Layout"
+    },
+    {
+      "type": "range",
+      "id": "container_width",
+      "min": 800,
+      "max": 1600,
+      "step": 50,
+      "unit": "px",
+      "label": "Container width",
+      "default": 1200
+    },
+    {
+      "type": "range",
+      "id": "column_gap",
+      "min": 10,
+      "max": 80,
+      "step": 5,
+      "unit": "px",
+      "label": "Column gap",
+      "default": 30
+    },
+    {
+      "type": "range",
+      "id": "column_padding",
+      "min": 0,
+      "max": 60,
+      "step": 5,
+      "unit": "px",
+      "label": "Column padding",
+      "default": 20
+    },
+    {
+      "type": "select",
+      "id": "text_alignment",
+      "label": "Text alignment",
+      "options": [
+        {"value": "left", "label": "Left"},
+        {"value": "center", "label": "Center"},
+        {"value": "right", "label": "Right"}
+      ],
+      "default": "center"
+    },
+    {
+      "type": "select",
+      "id": "columns_tablet",
+      "label": "Columns on tablet",
+      "options": [
+        {"value": "1", "label": "1"},
+        {"value": "2", "label": "2"},
+        {"value": "3", "label": "3"}
+      ],
+      "default": "2"
+    },
+    {
+      "type": "select",
+      "id": "columns_mobile",
+      "label": "Columns on mobile",
+      "options": [
+        {"value": "1", "label": "1"},
+        {"value": "2", "label": "2"}
+      ],
+      "default": "1"
+    },
+    {
+      "type": "header",
+      "content": "Section spacing"
+    },
+    {
+      "type": "range",
+      "id": "section_padding_top",
+      "min": 0,
+      "max": 100,
+      "step": 5,
+      "unit": "px",
+      "label": "Top padding",
+      "default": 50
+    },
+    {
+      "type": "range",
+      "id": "section_padding_bottom",
+      "min": 0,
+      "max": 100,
+      "step": 5,
+      "unit": "px",
+      "label": "Bottom padding",
+      "default": 50
+    },
+    {
+      "type": "header",
+      "content": "Colors"
+    },
+    {
+      "type": "color",
+      "id": "background_color",
+      "label": "Background color",
+      "default": "#ffffff"
+    },
+    {
+      "type": "color",
+      "id": "column_background_color",
+      "label": "Column background color",
+      "default": "#ffffff"
+    },
+    {
+      "type": "color",
+      "id": "text_color",
+      "label": "Text color",
+      "default": "#333333"
+    },
+    {
+      "type": "color",
+      "id": "designation_color",
+      "label": "Designation color",
+      "default": "#666666"
+    },
+    {
+      "type": "range",
+      "id": "column_border_radius",
+      "min": 0,
+      "max": 30,
+      "step": 2,
+      "unit": "px",
+      "label": "Column border radius",
+      "default": 0
+    },
+    {
+      "type": "header",
+      "content": "Text style"
+    },
+    {
+      "type": "range",
+      "id": "text_size",
+      "min": 12,
+      "max": 24,
+      "step": 1,
+      "unit": "px",
+      "label": "Text size",
+      "default": 16
+    },
+    {
+      "type": "range",
+      "id": "text_line_height",
+      "min": 1,
+      "max": 2,
+      "step": 0.1,
+      "label": "Text line height",
+      "default": 1.5
+    },
+    {
+      "type": "range",
+      "id": "text_bottom_margin",
+      "min": 10,
+      "max": 40,
+      "step": 2,
+      "unit": "px",
+      "label": "Text bottom margin",
+      "default": 20
+    },
+    {
+      "type": "header",
+      "content": "Divider style"
+    },
+    {
+      "type": "select",
+      "id": "divider_style",
+      "label": "Divider style",
+      "options": [
+        {"value": "solid", "label": "Solid"},
+        {"value": "dashed", "label": "Dashed"},
+        {"value": "dotted", "label": "Dotted"},
+        {"value": "gradient", "label": "Gradient"}
+      ],
+      "default": "solid"
+    },
+    {
+      "type": "color",
+      "id": "divider_color",
+      "label": "Divider color",
+      "default": "#e0e0e0"
+    },
+    {
+      "type": "color",
+      "id": "divider_color_end",
+      "label": "Divider end color",
+      "info": "Only used for gradient style",
+      "default": "#cccccc"
+    },
+    {
+      "type": "range",
+      "id": "divider_thickness",
+      "min": 1,
+      "max": 8,
+      "step": 1,
+      "unit": "px",
+      "label": "Divider thickness",
+      "default": 2
+    },
+    {
+      "type": "range",
+      "id": "divider_distance_top",
+      "min": 0,
+      "max": 50,
+      "step": 2,
+      "unit": "px",
+      "label": "Distance above divider",
+      "default": 0
+    },
+    {
+      "type": "range",
+      "id": "divider_distance_bottom",
+      "min": 0,
+      "max": 50,
+      "step": 2,
+      "unit": "px",
+      "label": "Distance below divider",
+      "default": 20
+    },
+    {
+      "type": "range",
+      "id": "divider_border_radius",
+      "min": 0,
+      "max": 10,
+      "step": 1,
+      "unit": "px",
+      "label": "Divider border radius",
+      "default": 0
+    },
+    {
+      "type": "header",
+      "content": "Designation style"
+    },
+    {
+      "type": "range",
+      "id": "designation_size",
+      "min": 10,
+      "max": 20,
+      "step": 1,
+      "unit": "px",
+      "label": "Designation size",
+      "default": 14
+    },
+    {
+      "type": "select",
+      "id": "designation_weight",
+      "label": "Designation weight",
+      "options": [
+        {"value": "300", "label": "Light"},
+        {"value": "400", "label": "Normal"},
+        {"value": "500", "label": "Medium"},
+        {"value": "600", "label": "Semi bold"},
+        {"value": "700", "label": "Bold"}
+      ],
+      "default": "500"
+    },
+    {
+      "type": "range",
+      "id": "designation_line_height",
+      "min": 1,
+      "max": 2,
+      "step": 0.1,
+      "label": "Designation line height",
+      "default": 1.4
+    },
+    {
+      "type": "select",
+      "id": "designation_text_transform",
+      "label": "Designation text transform",
+      "options": [
+        {"value": "none", "label": "None"},
+        {"value": "uppercase", "label": "Uppercase"},
+        {"value": "lowercase", "label": "Lowercase"},
+        {"value": "capitalize", "label": "Capitalize"}
+      ],
+      "default": "uppercase"
+    },
+    {
+      "type": "range",
+      "id": "designation_letter_spacing",
+      "min": 0,
+      "max": 3,
+      "step": 0.5,
+      "unit": "px",
+      "label": "Designation letter spacing",
+      "default": 1
+    },
+    {
+      "type": "header",
+      "content": "Column 1"
+    },
+    {
+      "type": "richtext",
+      "id": "column_1_text",
+      "label": "Text",
+      "default": "<p>Add your compelling text content here that describes your service, product, or message.</p>"
+    },
+    {
+      "type": "text",
+      "id": "column_1_designation",
+      "label": "Designation",
+      "default": "Service Manager"
+    },
+    {
+      "type": "header",
+      "content": "Column 2"
+    },
+    {
+      "type": "richtext",
+      "id": "column_2_text",
+      "label": "Text",
+      "default": "<p>Add your compelling text content here that describes your service, product, or message.</p>"
+    },
+    {
+      "type": "text",
+      "id": "column_2_designation",
+      "label": "Designation",
+      "default": "Creative Director"
+    },
+    {
+      "type": "header",
+      "content": "Column 3"
+    },
+    {
+      "type": "richtext",
+      "id": "column_3_text",
+      "label": "Text",
+      "default": "<p>Add your compelling text content here that describes your service, product, or message.</p>"
+    },
+    {
+      "type": "text",
+      "id": "column_3_designation",
+      "label": "Designation",
+      "default": "Lead Developer"
+    }
+  ],
+  "presets": [
+    {
+      "name": "Three column text"
+    }
+  ]
+}
+{% endschema %}

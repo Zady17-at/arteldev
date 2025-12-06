@@ -1,0 +1,156 @@
+{% liquid
+  assign block_st = block.settings
+  assign section_st = section.settings
+  assign aspect_ratio = section_st.aspect_ratio
+  assign ratio = ''
+  assign image = block_st.image
+  assign equal_height_adjustment = section_st.equal_height_adjustment
+  if image != blank
+    assign ratio = image.aspect_ratio
+  else
+    assign ratio = '5/2'
+  endif
+%}
+{%- capture sizes -%}
+  (min-width: {{ settings.page_width }}px) {{ settings.page_width | minus: 100 }}px, (min-width: 750px)
+  calc(100vw - 10rem), 100vw
+{%- endcapture -%}
+<div
+  class="group-image-with-text  flex {% if equal_height_adjustment %}h-full{% endif %} p-15 py-30 2xl:p-64 xl:p-50 lg:p-30 overflow-hidden relative color-{{ block_st.color_scheme }} gradient text-{{ block_st.text_alignment }}"
+  style="--aspect-ratio: 1/1"
+>
+  {%- if block_st.image != blank -%}
+    <div
+      class="banner__media{% if block_st.image == blank %} placeholder absolute inset-0{% endif %}{% if aspect_ratio != 'adapt' %} absolute inset-0{% endif %}"
+    >
+      {{
+        block_st.image
+        | image_url: width: 3840
+        | image_tag:
+          loading: 'lazy',
+          width: block_st.image.width,
+          sizes: sizes,
+          widths: '375, 550, 750, 1100, 1500, 1780, 2000, 3000, 3840'
+      }}
+    </div>
+  {%- else -%}
+    <div
+      class="banner__media{% if block_st.image == blank %} placeholder absolute inset-0{% endif %}"
+    >
+      {%- render 'placeholder-render', type: 'lifestyle' -%}
+    </div>
+  {%- endif -%}
+  <div class="absolute top-0 bottom-0 justify-between w-full min-h-500 md:min-h-auto h-full bls__content d-flex flex-column">
+    {% if block_st.top_heading != blank %}
+      <p
+        class="mb-10! sm:text-base text-sm opacity-70"
+      >
+        {{ block_st.top_heading | escape }}
+      </p>
+    {% endif %}
+    <div
+      class="banner__box image-with-text__text-item py-30 d-flex flex-column align-{{ block_st.text_alignment }}"
+    >
+      {% content_for 'blocks' %}
+    </div>
+    {% if block_st.end_times != blank %}
+      <div class="countdown-timer">
+        <countdown-timer
+          class="inline-flex flex-wrap no-js-hidden countdown-timer__multi-content heading-color"
+          data-deadline="{{ block_st.end_times }}"
+          data-days="{{ 'sections.header.announcement.times_bn.days' | t }}"
+          data-hours="{{ 'sections.header.announcement.times_bn.hours' | t }}"
+          data-mins="{{ 'sections.header.announcement.times_bn.mins' | t }}"
+          data-secs="{{ 'sections.header.announcement.times_bn.secs' | t }}"
+          data-message="{{ block_st.message }}"
+          {{ block.shopify_attributes }}
+        >
+        </countdown-timer>
+      </div>
+    {% endif %}
+  </div>
+</div>
+{% schema %}
+{
+  "name": "t:sections.multi_content.blocks.image_with_text.name",
+  "settings": [
+    {
+      "type": "color_scheme",
+      "id": "color_scheme",
+      "label": "t:sections.all.colors.label",
+      "default": "default-color-scheme"
+    },
+    {
+      "type": "text",
+      "id": "top_heading",
+      "label": "t:sections.multi_content.blocks.settings.top_heading.label",
+      "default": "Top Heading"
+    },
+    {
+      "type": "select",
+      "id": "text_alignment",
+      "options": [
+        {
+          "value": "left",
+          "label": "t:sections.all.text_alignment.option_1.label"
+        },
+        {
+          "value": "center",
+          "label": "t:sections.all.text_alignment.option_2.label"
+        },
+        {
+          "value": "right",
+          "label": "t:sections.all.text_alignment.option_3.label"
+        }
+      ],
+      "default": "center",
+      "label": "t:sections.all.text_alignment.label"
+    },
+    {
+      "type": "header",
+      "content": "t:sections.all.image.label"
+    },
+    {
+      "type": "image_picker",
+      "id": "image",
+      "label": "t:sections.all.image.label"
+    },
+    {
+      "type": "header",
+      "content": "t:sections.countdown.name"
+    },
+    {
+      "type": "text",
+      "id": "end_times",
+      "label": "t:sections.countdown.blocks.timer.settings.end_time.label",
+      "info": "t:sections.countdown.blocks.timer.settings.end_time.info",
+      "default": "01-20-2026"
+    },
+    {
+      "type": "text",
+      "id": "message",
+      "label": "t:sections.countdown.blocks.timer.settings.message.label",
+      "info": "t:sections.countdown.blocks.timer.settings.message.info"
+    }
+  ],
+  "blocks": [
+    {
+      "type": "_subheading"
+    },
+    {
+      "type": "_heading"
+    },
+    {
+      "type": "_description"
+    },
+    {
+      "type": "_button"
+    }
+  ],
+  "presets": [
+    {
+      "name": "t:sections.multi_content.blocks.image_with_text.name"
+    }
+  ]
+}
+{% endschema %}

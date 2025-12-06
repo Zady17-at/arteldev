@@ -1,0 +1,178 @@
+
+  <script>
+document.addEventListener('DOMContentLoaded', () => {
+  const colorMap = {
+    "Clear": "#FFFFFF",
+    "Amber": "#FFBF00",
+    "Aqua": "#00FFFF",
+    "Azure": "#007FFF",
+    "Black": "#000000",
+    "Blush": "#DE5D83",
+    "Blue": "#0000FF",
+    "Burnt Orange": "#CC5500",
+    "British Racer Green": "#004225",
+    "Cherry": "#DE3163",
+    "Emerald": "#50C878",
+    "Fuchsia": "#FF00FF",
+    "Grey": "#808080",
+    "Ink": "#0A1172",
+    "Khaki Green": "#8A9A5B",
+    "Lilac": "#C8A2C8",
+    "Mahogany": "#C04000",
+    "Moss": "#8A9A5B",
+    "Olive": "#808000",
+    "Orange": "#FFA500",
+    "Peacock": "#33A1C9",
+    "Peridot": "#E6E200",
+    "Purple": "#800080",
+    "Red": "#FF0000",
+    "Rose": "#FF007F",
+    "Rust": "#B7410E",
+    "Salmon": "#FA8072",
+    "Sage": "#BCB88A",
+    "Slate": "#708090",
+    "Smoke": "#738276",
+    "Teal": "#008080",
+    "Taupe": "#483C32",
+    "Walnut": "#773F1A"
+  };
+
+  // Select all color inputs
+  const inputs = document.querySelectorAll('fieldset.js input[name="color"]');
+
+  inputs.forEach(input => {
+    const label = input.nextElementSibling; // label associated with input
+    if (!label) return;
+
+    const span = label.querySelector('.value');
+    if (!span) return;
+
+    // Remove bg-white and set correct color
+    span.classList.remove('bg-white');
+    const colorHex = colorMap[input.value];
+    if (colorHex) {
+      span.style.setProperty('background-color', colorHex, 'important');
+    }
+  });
+});
+</script>
+
+{%- liquid
+  assign variants_available_arr = product.variants | map: 'available'
+  assign variants_option1_arr = product.variants | map: 'option1'
+  assign variants_option2_arr = product.variants | map: 'option2'
+  assign variants_option3_arr = product.variants | map: 'option3'
+  assign product_form_id = 'product-form-' | append: section.id
+  assign product_form_id_custom = 'product-form-' | append: block_id | append: '-' | append: product.id
+  assign isColorOption = false
+  for cl in option_name
+    if option.name == cl
+      assign isColorOption = true
+    endif
+  endfor
+-%}
+{%- for value in option.values -%}
+  {%- liquid
+    assign option_disabled = true
+    for option1_name in variants_option1_arr
+      case option.position
+        when 1
+          if variants_option1_arr[forloop.index0] == value and variants_available_arr[forloop.index0]
+            assign option_disabled = false
+          endif
+        when 2
+          if option1_name == product.selected_or_first_available_variant.option1 and variants_option2_arr[forloop.index0] == value and variants_available_arr[forloop.index0]
+            assign option_disabled = false
+          endif
+        when 3
+          if option1_name == product.selected_or_first_available_variant.option1 and variants_option2_arr[forloop.index0] == product.selected_or_first_available_variant.option2 and variants_option3_arr[forloop.index0] == value and variants_available_arr[forloop.index0]
+            assign option_disabled = false
+          endif
+      endcase
+    endfor
+  -%}
+
+  {%- if is_dropdown -%}
+    <option
+      value="{{ value | escape }}"
+      {% if option.selected_value == value %}
+        selected="selected"
+      {% endif %}
+      class="{% if option_disabled -%}disabled{%- endif %}"
+    >
+      {{- value -}}
+    </option>
+  {%- else -%}
+    <input
+      type="radio"
+      {% if custom %}
+        id="{{ block_id }}-{{ product.id }}-{{ option.position }}-{{ forloop.index0 }}"
+      {% else %}
+        id="{{ section.id }}-{{ option.position }}-{{ forloop.index0 }}"
+      {% endif %}
+      name="{{ option.name }}"
+      value="{{ value | escape }}"
+      form="{% if custom %}{{ product_form_id_custom }}{% else %}{{ product_form_id }}{% endif %}"
+      {% if option.selected_value == value %}
+        checked
+      {% endif %}
+      class="{% if option_disabled -%}disabled{%- endif %}"
+    >
+    {%- if isColorOption != true -%}
+      <label
+        class="tooltip pointer"
+        {% if custom %}
+          for="{{ block_id }}-{{ product.id }}-{{ option.position }}-{{ forloop.index0 }}"
+        {% else %}
+          for="{{ section.id }}-{{ option.position }}-{{ forloop.index0 }}"
+        {% endif %}
+      >
+        <span class="value z-1 relative">{{ value -}}</span>
+        <span class="tooltip-content fs-small tooltip-top"></span>
+      </label>
+    {%- else -%}
+      {%- liquid
+        assign op = 'option' | append: option.position
+        assign variant = product.variants | where: op, value
+        assign img = ''
+        for i in variant
+          if i.featured_image.src
+            assign img = i.featured_image.src
+            break
+          endif
+        endfor
+        if settings.color_swatch_custom != blank and settings.enable_color_swatches
+          assign stringValue = settings.color_swatch_custom
+          assign pairs = stringValue | split: ','
+          assign colorCode = ''
+          for pair in pairs
+            assign keyAndValue = pair | split: ':'
+            assign key = keyAndValue[0] | strip
+            assign v = keyAndValue[1] | strip
+            if key == value
+              assign colorCode = v
+            endif
+          endfor
+        endif
+      -%}
+      <label
+        class="product__color-swatch tooltip pointer mr-10 mt-10 swatch-items-js fs-0"
+        {% if custom %}
+          for="{{ block_id }}-{{ product.id }}-{{ option.position }}-{{ forloop.index0 }}"
+        {% else %}
+          for="{{ section.id }}-{{ option.position }}-{{ forloop.index0 }}"
+        {% endif %}
+        {% if settings.enable_color_swatches %}
+          data-color="{{ value | downcase }}"
+          data-hex="{{ colorCode }}"
+        {% endif %}
+        {% if img != blank %}
+          data-image="{{ img | image_url }}"
+        {% endif %}
+      >
+        {{ value }}
+        <span class="tooltip-content fs-small tooltip-top"></span>
+      </label>
+    {%- endif -%}
+  {%- endif -%}
+{%- endfor -%}

@@ -1,0 +1,351 @@
+<script src="{{ 'section-store-location.js' | asset_url }}" defer="defer"></script>
+{%- liquid
+  assign section_st = section.settings
+  assign theme_st = settings
+  assign section_width = ''
+  if section_st.section_width == 'fix_width'
+    assign section_width = ' container'
+  elsif section_st.section_width == 'expand_full_width'
+    assign section_width = ' full-width px-20'
+  else
+    assign section_width = ' full-width-gap'
+  endif
+  assign sub_des_size = ''
+  assign heading_size = ''
+  assign header_size = section_st.heading_size
+  if header_size == 'small'
+    assign sub_des_size = ' text-xs'
+    assign heading_size = ' h3'
+  elsif header_size == 'large'
+    assign sub_des_size = ' lg:text-base text-sm'
+    assign heading_size = ' lg:text-5xl!'
+  endif
+  assign enable_radius_bottom = section_st.enable_radius_bottom
+  assign enable_radius_top = section_st.enable_radius_top
+-%}
+{%- capture style -%}
+--section-padding-top: {{ section_st.padding_top }}px; --section-padding-bottom: {{ section_st.padding_bottom }}px;
+{%- endcapture -%}
+{%- capture sizes -%}
+  (min-width: {{ settings.page_width }}px) {{ settings.page_width | minus: 100 }}px, (min-width: 750px)
+  calc(100vw - 10rem), 100vw
+{%- endcapture -%}
+{% style %}
+  .placeholder-svg{
+    background-color: #ebebeb;
+  }
+{% endstyle %}
+<div
+  class="color-{{ section_st.color_scheme }} gradient bls__section section-padding {% if enable_radius_bottom %}radius-bottom{% endif %} {% if enable_radius_top %}radius-top{% endif %}"
+  style="{{ style | strip | strip_newlines }}"
+>
+  <div class="{{ section_width }}">
+    {%- if section_st.title != blank or section_st.description != blank or section_st.subheading != blank -%}
+      <div class="bls__section-header mb-30 sm:mb-35 text-{{ section_st.text_alignment }}{% if theme_st.animations_reveal_on_scroll %} scroll-trigger animate--slide-in{% endif %}">
+        {%- if section_st.subheading != blank -%}
+          <p
+            class="mb-10! {{ sub_des_size }}"
+          >
+            {{ section_st.subheading | escape }}
+          </p>
+        {%- endif -%}
+        {%- if section_st.title != blank -%}
+          <h2 class="bls_section-heading heading-letter-spacing mb-7 md:mb-15{{ heading_size }}">
+            {{ section_st.title }}
+          </h2>
+        {%- endif -%}
+        {%- if section_st.description != blank -%}
+          <div class="short-des{{ sub_des_size }}">
+            {{ section_st.description }}
+          </div>
+        {%- endif -%}
+      </div>
+    {%- endif -%}
+    {% if section.blocks.size > 0 %}
+      <div class="text-{{ section_st.text_alignment }}">
+        <div class="inline-flex flex-wrap items-center justify-center px-20 space-x-10 border-b lg:space-x-20 pb-30 mb-30 lg:px-40 store-header border-b-(--border-color)">
+          {% for block in section.blocks %}
+            {% liquid
+              assign block_st = block.settings
+              assign image = block_st.image
+              assign store_name = block_st.store_name
+              assign active_first = ''
+              if forloop.first
+                assign active_first = ' active'
+              endif
+            %}
+            <store-location-hover
+              class="store-item heading-style transition-colors duration-300 xl:text-6xl xl:leading-none lg:text-5xl md:text-4xl text-[3.2rem] tracking-tight leading-[1.125] not-[.active]:text-heading-color/20! cursor-pointer {{ active_first }} relative"
+              data-store-id="{{ block.id }}"
+            >
+              <span class="store-name" tabindex="0">
+                {{ store_name }}
+              </span>
+              <div class="store-image rounded-base w-90  max-w-500 absolute overflow-hidden">
+                {% if image != blank %}
+                  {%- assign image_alt = image.alt | escape -%}
+                  {{
+                    image
+                    | image_url: width: image.width, height: image.height
+                    | image_tag:
+                      loading: 'lazy',
+                      sizes: sizes,
+                      widths: '375, 750, 1100, 1500, 1780, 2000, 3000, 3840',
+                      alt: image_alt,
+                      class: 'rounded-base object-cover object-center'
+                  }}
+                {% else %}
+                  {{ 'lifestyle-1' | placeholder_svg_tag: 'placeholder-svg' }}
+                {% endif %}
+              </div>
+            </store-location-hover>
+            {% unless forloop.last %}
+              <span class="leading-none store-separator "
+                ><span class="inline-flex w-1.5 translate-y-4 line bg-heading-color/20 xl:h-45 h-25 rotate-12"></span
+              ></span>
+            {% endunless %}
+          {% endfor %}
+        </div>
+
+        <div class="store-information">
+          {% for block in section.blocks %}
+            {% liquid
+              assign block_st = block.settings
+              assign store_address = block_st.store_address
+              assign store_phone = block_st.store_phone
+              assign store_email = block_st.store_email
+              assign store_hours = block_st.store_hours
+              assign store_map_link = block_st.store_map_link
+              assign active_first = ''
+              if forloop.first
+                assign active_first = ' active'
+              endif
+            %}
+            <div
+              class="store-content__item text-base transition duration-300  not-[.active]:opacity-0 not-[.active]:hidden {{ active_first }}"
+              id="{{ block.id }}"
+              data-store-id="{{ block.id }}"
+            >
+              {% if store_address != blank %}
+                <p class="store-address m-0! mb-5!">
+                  {{ store_address }}
+                </p>
+              {% endif %}
+              {% if store_email != blank or store_phone != blank %}
+                <div class="store-contact">
+                  {% if store_phone != blank %}
+                    <p class="store-phone m-0! mb-5!">
+                      <a href="tel:{{ store_phone }}" class="border-animation">{{ store_phone }}</a>
+                    </p>
+                  {% endif %}
+                  {% if store_email != blank %}
+                    <p class="store-email m-0! mb-5!">
+                      <a href="mailto:{{ store_email }}" class="border-animation">{{ store_email }}</a>
+                    </p>
+                  {% endif %}
+                </div>
+              {% endif %}
+              {% if store_hours != blank %}
+                <p class="store-hours m-0! mb-5!">
+                  {{ store_hours }}
+                </p>
+              {% endif %}
+              {% if store_map_link != blank %}
+                <a href="{{ store_map_link }}" target="_blank" class="store-map-link btn btn-outline lg:mt-80 mt-60">
+                  {{- 'our_store.direction_on_map' | t -}}
+                </a>
+              {% endif %}
+            </div>
+          {% endfor %}
+        </div>
+      </div>
+    {% endif %}
+  </div>
+</div>
+{% schema %}
+{
+  "name": "t:sections.store_location.name",
+  "tag": "section",
+  "class": "section section-store-location",
+  "settings": [
+    {
+      "type": "select",
+      "id": "section_width",
+      "options": [
+        {
+          "value": "fix_width",
+          "label": "t:sections.all.layout.fix_width"
+        },
+        {
+          "value": "stretch_width",
+          "label": "t:sections.all.layout.stretch_width"
+        },
+        {
+          "value": "expand_full_width",
+          "label": "t:sections.all.layout.expand_full_width"
+        }
+      ],
+      "default": "stretch_width",
+      "label": "t:sections.all.layout.label"
+    },
+    {
+      "type": "color_scheme",
+      "id": "color_scheme",
+      "label": "t:sections.all.colors.label",
+      "default": "default-color-scheme"
+    },
+    {
+      "type": "header",
+      "content": "t:sections.all.section_setting.label"
+    },
+    {
+      "type": "text",
+      "id": "subheading",
+      "label": "t:sections.all.content_setting.subheading.label",
+      "default": "t:sections.all.content_setting.subheading.label"
+    },
+    {
+      "type": "text",
+      "id": "title",
+      "label": "t:sections.all.content_setting.heading.label"
+    },
+    {
+      "type": "richtext",
+      "id": "description",
+      "label": "t:sections.all.content_setting.description.label"
+    },
+    {
+      "type": "select",
+      "id": "heading_size",
+      "options": [
+        {
+          "value": "small",
+          "label": "t:sections.all.heading_size.options__1.label"
+        },
+        {
+          "value": "medium",
+          "label": "t:sections.all.heading_size.options__2.label"
+        },
+        {
+          "value": "large",
+          "label": "t:sections.all.heading_size.options__3.label"
+        }
+      ],
+      "default": "medium",
+      "label": "t:sections.all.heading_size.label"
+    },
+    {
+      "type": "select",
+      "id": "text_alignment",
+      "options": [
+        {
+          "value": "left",
+          "label": "t:sections.all.text_alignment.option_1.label"
+        },
+        {
+          "value": "center",
+          "label": "t:sections.all.text_alignment.option_2.label"
+        },
+        {
+          "value": "right",
+          "label": "t:sections.all.text_alignment.option_3.label"
+        }
+      ],
+      "default": "center",
+      "label": "t:sections.all.text_alignment.label"
+    },
+    {
+      "type": "header",
+      "content": "t:sections.all.padding.section_padding_heading"
+    },
+    {
+      "type": "range",
+      "id": "padding_top",
+      "min": 0,
+      "max": 100,
+      "step": 1,
+      "unit": "px",
+      "label": "t:sections.all.padding.padding_top",
+      "default": 40
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom",
+      "min": 0,
+      "max": 100,
+      "step": 1,
+      "unit": "px",
+      "label": "t:sections.all.padding.padding_bottom",
+      "default": 40
+    }
+  ],
+  "disabled_on": {
+    "groups": ["header", "footer", "custom.overlay"]
+  },
+  "blocks": [
+    {
+      "type": "store",
+      "name": "t:sections.store_location.blocks.name",
+      "settings": [
+        {
+          "type": "image_picker",
+          "id": "image",
+          "label": "t:sections.store_location.blocks.settings.store_image.label"
+        },
+        {
+          "type": "text",
+          "id": "store_name",
+          "label": "t:sections.store_location.blocks.settings.store_name.label",
+          "default": "t:sections.store_location.blocks.settings.store_name.default"
+        },
+        {
+          "type": "text",
+          "id": "store_address",
+          "label": "t:sections.store_location.blocks.settings.store_address.label",
+          "default": "t:sections.store_location.blocks.settings.store_address.default"
+        },
+        {
+          "type": "text",
+          "id": "store_phone",
+          "label": "t:sections.store_location.blocks.settings.store_phone.label",
+          "default": "t:sections.store_location.blocks.settings.store_phone.default"
+        },
+        {
+          "type": "text",
+          "id": "store_email",
+          "label": "t:sections.store_location.blocks.settings.store_email.label",
+          "default": "t:sections.store_location.blocks.settings.store_email.default"
+        },
+        {
+          "type": "text",
+          "id": "store_hours",
+          "label": "t:sections.store_location.blocks.settings.store_hours.label",
+          "default": "t:sections.store_location.blocks.settings.store_hours.default"
+        },
+        {
+          "type": "url",
+          "id": "store_map_link",
+          "label": "t:sections.store_location.blocks.settings.store_link.label",
+          "info": "t:sections.store_location.blocks.settings.store_link.info"
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "t:sections.store_location.name",
+      "blocks": [
+        {
+          "type": "store"
+        },
+        {
+          "type": "store"
+        },
+        {
+          "type": "store"
+        }
+      ]
+    }
+  ]
+}
+{% endschema %}

@@ -1,0 +1,81 @@
+
+{% if block.settings.social_avatar != blank or block.settings.social_account != blank %}
+  <div class="flex items-center mb-16 shopable-social__post-header gap-15">
+    {% if block.settings.social_avatar != blank %}
+      <div class="shopable-social__avatar size-52 aspect-square *:aspect-square *:size-48!  *:object-cover *:object-center p-2 relative overflow-hidden  rounded-full *:rounded-full bg-gradient-to-tr from-[#ffc600] from-20% via-[#ff0040] to-[#e600cc] to-80%">
+        {%- assign image_alt = block.settings.social_avatar.alt | escape -%}
+        {{
+          block.settings.social_avatar
+          | image_url: width: 52
+          | image_tag: loading: 'lazy', widths: '375, 750, 1100, 1500, 1780, 2000, 3000, 3840', alt: image_alt
+        }}
+      </div>
+    {% else %}
+      <div class="shopable-social__avatar size-52 aspect-square p-2 overflow-hidden rounded-full bg-gradient-to-tr from-[#ffc600] from-20% via-[#ff0040] to-[#e600cc] to-80%">
+        {% render 'placeholder-render' | type: 'blog' | class: 'w-48 h-48 inline-flex bg-white rounded-full aspect-square' %}
+      </div>
+    {% endif %}
+    {% if block.settings.social_account != blank %}
+      <span class="text-sm font-semibold shopable-social__account-name text-heading-color">{{ block.settings.social_account }}</span>
+    {% endif %}
+  </div>
+{% endif %}
+{% if block.settings.content != blank %}
+  <div class="mb-20 shopable-social__post-content ">
+    {{ block.settings.content }}
+  </div>
+{% endif %}
+{% if block.settings.post_url != blank %}
+  <a
+    href="{{ block.settings.post_url }}"
+    class="shopable-social__post-link inline-flex gap-5 items-center p-11 px-15 border border-gray-200 rounded-lg uppercase transition duration-300 hover:bg-black/90 hover:text-white! text-xs hover:border-black/90"
+    target="_blank"
+    aria-label="{{ 'accessibility.view_on_social' | t }}"
+  >
+    {% render 'icon-instagram' | custom_width: 24 %}
+    {{ 'accessibility.view_on_social' | t }}
+  </a>
+{% endif %}
+{% schema %}
+{
+  "name": "t:sections.shopable-social.block.social_post.name",
+  "class": "shopable-social__post lg:col-span-3",
+  "settings": [
+    {
+      "type": "header",
+      "content": "t:sections.shopable-social.block.social_post.settings.social_account.name"
+    },
+    {
+      "type": "text",
+      "id": "social_account",
+      "label": "t:sections.shopable-social.block.social_post.settings.social_account.account_name",
+      "default": "Account Name"
+    },
+    {
+      "type": "image_picker",
+      "id": "social_avatar",
+      "label": "t:sections.shopable-social.block.social_post.settings.social_account.avatar"
+    },
+    {
+      "type": "header",
+      "content": "t:sections.shopable-social.block.social_post.content.name"
+    },
+    {
+      "type": "richtext",
+      "id": "content",
+      "label": "t:sections.shopable-social.block.social_post.content.social_post_content",
+      "default": "<p>Post content goes here</p>"
+    },
+    {
+      "type": "url",
+      "id": "post_url",
+      "label": "t:sections.shopable-social.block.social_post.content.social_post_link"
+    }
+  ],
+  "presets": [
+    {
+      "name": "t:sections.shopable-social.block.social_post.name"
+    }
+  ]
+}
+{% endschema %}

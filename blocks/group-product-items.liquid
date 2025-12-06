@@ -1,0 +1,153 @@
+{% liquid
+  assign block_st = block.settings
+  assign section_st = section.settings
+  assign aspect_ratio = section_st.aspect_ratio
+  assign equal_height_adjustment = section_st.equal_height_adjustment
+  assign ratio = ''
+  assign image = block_st.image
+  if image != blank
+    assign ratio = image.aspect_ratio
+  else
+    assign ratio = '5/2'
+  endif
+%}
+{%- capture sizes -%}
+  (min-width: {{ settings.page_width }}px) {{ settings.page_width | minus: 100 }}px, (min-width: 750px)
+  calc(100vw - 10rem), 100vw
+{%- endcapture -%}
+<div
+  class="group-image-with-text {% if equal_height_adjustment %}h-full{% endif %} flex p-15 py-30 2xl:p-64 xl:p-50 lg:p-30 overflow-hidden  relative color-{{ block_st.color_scheme }} gradient text-{{ block_st.text_alignment }}"
+  style="--aspect-ratio: 1/1"
+>
+  {%- if block_st.image != blank -%}
+    <div
+      class="banner__media{% if block_st.image == blank %} placeholder absolute inset-0{% endif %}{% if aspect_ratio != 'adapt' %} absolute inset-0{% endif %}"
+    >
+      {{
+        block_st.image
+        | image_url: width: 3840
+        | image_tag:
+          loading: 'lazy',
+          width: block_st.image.width,
+          sizes: sizes,
+          widths: '375, 550, 750, 1100, 1500, 1780, 2000, 3000, 3840'
+      }}
+    </div>
+  {%- else -%}
+    <div
+      class="banner__media{% if block_st.image == blank %} placeholder absolute inset-0{% endif %}"
+    >
+      {%- render 'placeholder-render', type: 'lifestyle' -%}
+    </div>
+  {%- endif -%}
+  <div class="absolute top-0 bottom-0 w-full h-full bls__content d-flex flex-column">
+    {% if block_st.top_heading != blank %}
+      <p
+        class="mb-30! lg:mb-70! sm:text-base opacity-70 text-sm"
+      >
+        {{ block_st.top_heading | escape }}
+      </p>
+    {% endif %}
+    <div
+      class="block-product__items max-w-[430px] w-full"
+    >
+      <slide-section
+        data-items="1"
+        data-controls="{{ block_st.show_navigation }}"
+        data-nav="{{ block_st.show_pagination }}"
+        data-loop="false"
+        data-autoplay="false"
+        data-mouse-drag="true"
+        data-autoplay-timeout="5000"
+        data-controls-position="top"
+        data-nav-center-postion="product-item-banner"
+        data-nav-as-thumbnails="false"
+        data-autoplay-button-output="false"
+        data-axis="horizontal"
+        data-mode="carousel"
+        data-fix-height="false"
+        data-product-type="true"
+        data-slide-product="true"
+        class="round-on-top"
+      >
+        <div class="slide-container no-js-scroll">
+          {% content_for 'blocks' %}
+        </div>
+      </slide-section>
+    </div>
+  </div>
+</div>
+{% schema %}
+{
+  "name": "t:sections.multi_content.blocks.product_items_with_banner.name",
+  "settings": [
+    {
+      "type": "color_scheme",
+      "id": "color_scheme",
+      "label": "t:sections.all.colors.label",
+      "default": "default-color-scheme"
+    },
+    {
+      "type": "text",
+      "id": "top_heading",
+      "label": "t:sections.multi_content.blocks.settings.top_heading.label",
+      "default": "Top Heading"
+    },
+    {
+      "type": "select",
+      "id": "text_alignment",
+      "options": [
+        {
+          "value": "left",
+          "label": "t:sections.all.text_alignment.option_1.label"
+        },
+        {
+          "value": "center",
+          "label": "t:sections.all.text_alignment.option_2.label"
+        },
+        {
+          "value": "right",
+          "label": "t:sections.all.text_alignment.option_3.label"
+        }
+      ],
+      "default": "center",
+      "label": "t:sections.all.text_alignment.label"
+    },
+    {
+      "type": "header",
+      "content": "t:sections.all.image.label"
+    },
+    {
+      "type": "image_picker",
+      "id": "image",
+      "label": "t:sections.all.image.label"
+    },
+    {
+      "type": "header",
+      "content": "t:sections.all.carousel.header"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_navigation",
+      "default": false,
+      "label": "t:sections.all.carousel.show_navigation.label"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_pagination",
+      "default": true,
+      "label": "t:sections.all.carousel.show_pagination.label"
+    }
+  ],
+  "blocks": [
+    {
+      "type": "product-item-banner"
+    }
+  ],
+  "presets": [
+    {
+      "name": "t:sections.multi_content.blocks.product_items_with_banner.name"
+    }
+  ]
+}
+{% endschema %}

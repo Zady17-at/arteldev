@@ -1,0 +1,256 @@
+{% liquid
+  assign sec_settings = section.settings
+  assign sec_blocks = section.blocks
+
+  assign section_width = ''
+  if sec_settings.section_width == 'fix_width'
+    assign section_width = ' container'
+  elsif sec_settings.section_width == 'expand_full_width'
+    assign section_width = ' full-width px-20'
+  else
+    assign section_width = ' full-width-gap'
+  endif
+  assign sub_des_size = ''
+  assign heading_size = ''
+  assign header_size = sec_settings.heading_size
+  if header_size == 'small'
+    assign sub_des_size = ' text-xs'
+    assign heading_size = ' h3'
+  elsif header_size == 'large'
+    assign sub_des_size = ' lg:text-base text-sm'
+    assign heading_size = ' lg:text-5xl!'
+  endif
+  assign enable_radius_bottom = sec_settings.enable_radius_bottom
+  assign enable_radius_top = sec_settings.enable_radius_top
+%}
+{%- capture style -%}
+--section-padding-top: {{ section.settings.padding_top }}px; --section-padding-bottom: {{ section.settings.padding_bottom }}px;
+  {%- endcapture -%}
+<div
+  class="color-{{ section.settings.color_scheme }} gradient bls__section bls_faq-section section-padding {% if enable_radius_bottom %}radius-bottom{% endif %} {% if enable_radius_top %}radius-top{% endif %}"
+  style="{{ style | strip | strip_newlines }}"
+>
+  <div class="section-inner{{ section_width }}">
+    {%- if section.settings.title != blank or section.settings.description != blank or sec_settings.subheading != blank -%}
+      <div class="bls__section-header mb-40 mb-sm-35 text-{{ section.settings.text_alignment }}{% if settings.animations_reveal_on_scroll %} scroll-trigger animate--slide-in{% endif %}">
+        {%- if sec_settings.subheading != blank -%}
+          <p
+            class="mt-0 heading-color heading-font mb-10! {{ sub_des_size }}"
+          >
+            {{ sec_settings.subheading | escape }}
+          </p>
+        {%- endif -%}
+        {%- if section.settings.title != blank -%}
+          <h2 class="bls_section-heading heading-letter-spacing mt-0 mb-7 mb-md-15{{ heading_size }}">{{ section.settings.title }}</h2>
+        {%- endif -%}
+        {%- if section.settings.description != blank -%}
+          <div class="short-des {{ sub_des_size }}">
+            {{ section.settings.description }}
+          </div>
+        {%- endif -%}
+      </div>
+    {%- endif -%}
+    <faq-item>
+      {%- for block in sec_blocks -%}
+        <noscript>
+          <details
+            class="{% if settings.animations_reveal_on_scroll %}scroll-trigger animate--slide-in{% endif %}"
+            {%- if settings.animations_reveal_on_scroll -%}
+              style="--animation-order: {{ forloop.index }};"
+            {%- endif -%}
+          >
+            <summary>
+              <div class="relative py-20 my-0 text-base font-semibold bls_faq-section-title text-heading-color heading-font lg:text-xl border-bottom pointer lg:py-25 d-flex align-center space-between">
+                {{- block.settings.faq_title }}
+                <span class="open-children-toggle touch-target transition shrink-0 rounded-full bg-[#F4F4F4]">
+                  {% render 'icon-arrow-down', custom_width: 17 %}
+                </span>
+              </div>
+            </summary>
+            <div class="overflow-hidden bls_faq-section-content">
+              <div class="pb-30 text-base faq_content-inner">{{ block.settings.faq_content }}</div>
+            </div>
+          </details>
+        </noscript>
+        <div
+          {{ block.shopify_attributes }}
+          class="no-js-hidden bls_faq-section-items border-bottom bls-toggle relative{% if settings.animations_reveal_on_scroll %} scroll-trigger animate--slide-in{% endif %}"
+          {%- if settings.animations_reveal_on_scroll -%}
+            style="--animation-order: {{ forloop.index }};"
+          {%- endif -%}
+        >
+          <div
+            class="relative py-20 my-0 text-base font-semibold bls_faq-section-title text-heading-color heading-font lg:text-xl  pointer lg:py-25 d-flex align-center space-between"
+            tabindex="0"
+          >
+            {{- block.settings.faq_title }}
+            <span class="open-children-toggle touch-target transition shrink-0 rounded-full bg-[#F4F4F4]">
+              {% render 'icon-arrow-down', custom_width: 17 %}
+            </span>
+          </div>
+          <div class="overflow-hidden bls_faq-section-content" style="display: none;">
+            <div class="pb-30 text-base faq_content-inner">{{ block.settings.faq_content }}</div>
+          </div>
+        </div>
+      {%- endfor -%}
+    </faq-item>
+  </div>
+</div>
+{% schema %}
+{
+  "name": "t:sections.faq.name",
+  "tag": "section",
+  "class": "section",
+  "disabled_on": {
+    "groups": ["header", "footer", "custom.overlay"]
+  },
+  "settings": [
+    {
+      "type": "select",
+      "id": "section_width",
+      "options": [
+        {
+          "value": "fix_width",
+          "label": "t:sections.all.layout.fix_width"
+        },
+        {
+          "value": "stretch_width",
+          "label": "t:sections.all.layout.stretch_width"
+        },
+        {
+          "value": "expand_full_width",
+          "label": "t:sections.all.layout.expand_full_width"
+        }
+      ],
+      "default": "stretch_width",
+      "label": "t:sections.all.layout.label"
+    },
+    {
+      "type": "color_scheme",
+      "id": "color_scheme",
+      "label": "t:sections.all.colors.label",
+      "default": "default-color-scheme"
+    },
+    {
+      "type": "header",
+      "content": "t:sections.faq.settings.header.heading"
+    },
+    {
+      "type": "text",
+      "id": "subheading",
+      "label": "t:sections.all.content_setting.subheading.label"
+    },
+    {
+      "type": "text",
+      "id": "title",
+      "default": "Frequently Asked Questions",
+      "label": "t:sections.all.content_setting.heading.label"
+    },
+    {
+      "type": "richtext",
+      "id": "description",
+      "label": "t:sections.all.content_setting.description.label"
+    },
+    {
+      "type": "select",
+      "id": "heading_size",
+      "options": [
+        {
+          "value": "small",
+          "label": "t:sections.all.heading_size.options__1.label"
+        },
+        {
+          "value": "medium",
+          "label": "t:sections.all.heading_size.options__2.label"
+        },
+        {
+          "value": "large",
+          "label": "t:sections.all.heading_size.options__3.label"
+        }
+      ],
+      "default": "medium",
+      "label": "t:sections.all.heading_size.label"
+    },
+    {
+      "type": "select",
+      "id": "text_alignment",
+      "options": [
+        {
+          "value": "left",
+          "label": "t:sections.all.text_alignment.option_1.label"
+        },
+        {
+          "value": "center",
+          "label": "t:sections.all.text_alignment.option_2.label"
+        },
+        {
+          "value": "right",
+          "label": "t:sections.all.text_alignment.option_3.label"
+        }
+      ],
+      "default": "left",
+      "label": "t:sections.all.text_alignment.label"
+    },
+    {
+      "type": "header",
+      "content": "t:sections.all.padding.section_padding_heading"
+    },
+    {
+      "type": "range",
+      "id": "padding_top",
+      "min": 0,
+      "max": 100,
+      "step": 1,
+      "unit": "px",
+      "label": "t:sections.all.padding.padding_top",
+      "default": 40
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom",
+      "min": 0,
+      "max": 100,
+      "step": 1,
+      "unit": "px",
+      "label": "t:sections.all.padding.padding_bottom",
+      "default": 40
+    }
+  ],
+  "blocks": [
+    {
+      "type": "faq-items",
+      "name": "t:sections.faq.settings.block.add_faq",
+      "settings": [
+        {
+          "type": "text",
+          "id": "faq_title",
+          "default": "Frequently Asked Questions?",
+          "label": "t:sections.faq.settings.block.title_question"
+        },
+        {
+          "type": "richtext",
+          "id": "faq_content",
+          "default": "<p>Write the answer.</p>",
+          "label": "t:sections.faq.settings.block.content_quenstion"
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "t:sections.faq.presets.name",
+      "blocks": [
+        {
+          "type": "faq-items"
+        },
+        {
+          "type": "faq-items"
+        },
+        {
+          "type": "faq-items"
+        }
+      ]
+    }
+  ]
+}
+{% endschema %}

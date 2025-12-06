@@ -1,0 +1,69 @@
+{% liquid
+  assign section_st = section.settings
+  assign block_st = block.settings
+  assign image = block_st.image
+  assign background = section_st.block_background_color
+%}
+{%- capture sizes -%}
+  (min-width: {{ settings.page_width }}px) {{ settings.page_width | minus: 100 }}px, (min-width: 750px)
+  calc(100vw - 10rem), 100vw
+{%- endcapture -%}
+<item-preview
+  class="text-center cursor-pointer shopable-social__preview d-flex flex-column"
+  style="--background-block: {{ background }}"
+  tabindex="0"
+>
+  <div
+    class="relative p-3 bg-white rounded-full shopable-social__preview-image md:p-5 circle-gradient aspect-square group"
+  >
+    <span class="absolute! inset-0 bg-white w-full h-full rounded-full pointer-events-none"></span>
+    <span
+      class="absolute! -inset-6 rounded-full transition duration-400 md:-z-1 z-1 circle-gradient group-hover:rotate-45"
+    ></span>
+    {% if block_st.image != blank %}
+      {% assign alt = 'image.alt' | t %}
+      {%- assign image_alt = image.alt | default: alt -%}
+      {{
+        image
+        | image_url: width: image.width
+        | image_tag:
+          class: 'z-2 p-3 rounded-full h-full w-full duration-400 ease-in-out aspect-square  hover:scale-101 hover:opacity-85 object-cover object-center relative transition',
+          loading: 'lazy',
+          sizes: sizes,
+          widths: '375, 750, 1100, 1500, 1780, 2000, 3000, 3840',
+          alt: image_alt
+      }}
+    {% else %}
+      {%- render 'placeholder-render', type: 'blog' -%}
+    {% endif %}
+  </div>
+  {% if block_st.title != blank %}
+    <h4 class="m-0! text-2xl! lg:mt-24! mt-16!">
+      {{ block.settings.title | escape }}
+    </h4>
+  {% endif %}
+</item-preview>
+
+{% schema %}
+{
+  "name": "t:sections.shopable-social.block.item_preview.name",
+  "settings": [
+    {
+      "type": "image_picker",
+      "id": "image",
+      "label": "t:sections.all.image.label"
+    },
+    {
+      "type": "text",
+      "id": "title",
+      "label": "t:sections.all.content_setting.heading.label",
+      "default": "#Hashtag"
+    }
+  ],
+  "presets": [
+    {
+      "name": "t:sections.shopable-social.block.item_preview.name"
+    }
+  ]
+}
+{% endschema %}

@@ -1,0 +1,627 @@
+{% doc %}
+  @prompt
+    create a gallery section 4 images in one row and on hover there is a light overlay and on clicking the image it shows the imae in popoup under this section should be an full widht image option , access full cutsomization option to the user to for this ection, there should be no distance in images , on hovwe overlay should be on that image only not any other and popup should be small, give custom option to enable and disable the full widht
+
+{% enddoc %}
+{% assign ai_gen_id = block.id | replace: '_', '' | downcase %}
+
+{% style %}
+  .ai-gallery-section-{{ ai_gen_id }} {
+    padding: {{ block.settings.section_padding_top }}px 0 {{ block.settings.section_padding_bottom }}px;background-color: {{ block.settings.section_background }};
+  }
+
+  .ai-gallery-container-{{ ai_gen_id }} {
+    max-width: {{ block.settings.container_width }}px;
+    margin: 0 auto;
+    padding: 0 20px;
+  }
+
+  .ai-gallery-grid-{{ ai_gen_id }} {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 0;
+    {% if block.settings.show_full_width_image %}
+      margin-bottom: {{ block.settings.spacing_between_sections }}px;
+    {% endif %}
+  }
+
+  .ai-gallery-item-{{ ai_gen_id }} {
+    position: relative;
+    cursor: pointer;
+    overflow: hidden;
+    aspect-ratio: {{ block.settings.image_aspect_ratio }};
+  }
+
+  .ai-gallery-item-{{ ai_gen_id }} img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform {{ block.settings.hover_animation_duration }}s ease;
+  }
+
+  .ai-gallery-item-placeholder-{{ ai_gen_id }} {
+    width: 100%;
+    height: 100%;
+    background-color: #f4f4f4;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+  }
+
+  .ai-gallery-item-placeholder-{{ ai_gen_id }} svg {
+    width: 60%;
+    height: 60%;
+    opacity: 0.3;
+  }
+
+  .ai-gallery-empty-state-{{ ai_gen_id }} {
+    position: absolute;
+    bottom: 10px;
+    left: 50%;
+    transform: translateX(-50%);
+    font-size: 12px;
+    color: #666;
+    text-align: center;
+    pointer-events: none;
+  }
+
+  .ai-gallery-overlay-{{ ai_gen_id }} {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: {{ block.settings.overlay_color }};
+    opacity: 0;
+    transition: opacity {{ block.settings.hover_animation_duration }}s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    pointer-events: none;
+  }
+
+  .ai-gallery-item-{{ ai_gen_id }}:hover .ai-gallery-overlay-{{ ai_gen_id }} {
+    opacity: {{ block.settings.overlay_opacity }};
+  }
+
+  .ai-gallery-item-{{ ai_gen_id }}:hover img {
+    transform: scale({{ block.settings.hover_scale }});
+  }
+
+  .ai-gallery-zoom-icon-{{ ai_gen_id }} {
+    color: {{ block.settings.zoom_icon_color }};
+    width: {{ block.settings.zoom_icon_size }}px;
+    height: {{ block.settings.zoom_icon_size }}px;
+  }
+
+  .ai-gallery-full-width-{{ ai_gen_id }} {
+    width: 100%;
+    margin-top: {{ block.settings.spacing_between_sections }}px;
+  }
+
+  .ai-gallery-full-width-image-{{ ai_gen_id }} {
+    width: 100%;
+    height: {{ block.settings.full_width_height }}px;
+    object-fit: cover;
+    border-radius: {{ block.settings.full_width_border_radius }}px;
+  }
+
+  .ai-gallery-full-width-placeholder-{{ ai_gen_id }} {
+    width: 100%;
+    height: {{ block.settings.full_width_height }}px;
+    background-color: #f4f4f4;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: {{ block.settings.full_width_border_radius }}px;
+    position: relative;
+  }
+
+  .ai-gallery-full-width-placeholder-{{ ai_gen_id }} svg {
+    width: 200px;
+    height: 200px;
+    opacity: 0.3;
+  }
+
+  .ai-gallery-popup-{{ ai_gen_id }} {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: {{ block.settings.popup_background }};
+    z-index: 9999;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity0.3s ease, visibility 0.3s ease;
+  }
+
+  .ai-gallery-popup-{{ ai_gen_id }}.active {
+    opacity: 1;
+    visibility: visible;
+  }
+
+  .ai-gallery-popup-content-{{ ai_gen_id }} {
+    position: relative;
+    max-width: {{ block.settings.popup_max_width }}px;
+    max-height: {{ block.settings.popup_max_height }}px;
+    border-radius: {{ block.settings.popup_border_radius }}px;
+    overflow: hidden;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+  }
+
+  .ai-gallery-popup-image-{{ ai_gen_id }} {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    display: block;
+  }
+
+  .ai-gallery-popup-close-{{ ai_gen_id }} {
+    position: absolute;
+    top: 15px;
+    right: 15px;
+    background: {{ block.settings.close_button_background }};
+    color: {{ block.settings.close_button_color }};
+    border: none;
+    width: 35px;
+    height: 35px;
+    border-radius: 50%;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 18px;
+    z-index: 10000;
+    transition: background-color 0.2s ease;
+  }
+
+  .ai-gallery-popup-close-{{ ai_gen_id }}:hover {
+    background: {{ block.settings.close_button_hover_background }};
+  }
+
+  @media screen and (max-width: 768px) {
+    .ai-gallery-grid-{{ ai_gen_id }} {
+      grid-template-columns: repeat({{ block.settings.mobile_columns }}, 1fr);
+    }
+
+    .ai-gallery-container-{{ ai_gen_id }} {
+      padding: 0 15px;
+    }
+
+    .ai-gallery-full-width-image-{{ ai_gen_id }},
+    .ai-gallery-full-width-placeholder-{{ ai_gen_id }} {
+      height: {{ block.settings.mobile_full_width_height }}px;
+    }
+
+    .ai-gallery-popup-content-{{ ai_gen_id }} {
+      max-width: 90%;
+      max-height: 70%;
+    }
+  }
+{% endstyle %}
+
+<gallery-section-{{ ai_gen_id }}
+  class="ai-gallery-section-{{ ai_gen_id }}"
+  {{ block.shopify_attributes }}
+>
+  <div class="ai-gallery-container-{{ ai_gen_id }}">
+    <div class="ai-gallery-grid-{{ ai_gen_id }}">
+      {% for i in (1..4) %}
+        {% assign image_key = 'gallery_image_' | append: i %}
+        {% assign image = block.settings[image_key] %}
+        
+        <div class="ai-gallery-item-{{ ai_gen_id }}" data-image-index="{{ i }}">
+          {% if image %}
+            <img
+              src="{{ image | image_url: width: 800}}"
+              alt="{{ image.alt | escape }}"
+              loading="lazy"
+              width="{{ image.width }}"
+              height="{{ image.height }}"
+            ><div class="ai-gallery-overlay-{{ ai_gen_id }}">
+              <svg class="ai-gallery-zoom-icon-{{ ai_gen_id }}" fill="currentColor" viewBox="0 0 24 24">
+                <path d="M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"/>
+                <path d="M12 10h-2v2H9v-2H7V9h2V7h1v2h2v1z"/>
+              </svg>
+            </div>
+          {% else %}
+            <div class="ai-gallery-item-placeholder-{{ ai_gen_id }}">
+              {{ 'image' | placeholder_svg_tag }}<div class="ai-gallery-empty-state-{{ ai_gen_id }}">
+                Add image {{ i }}
+              </div>
+            </div>
+          {% endif %}
+        </div>
+      {% endfor %}
+    </div>
+
+    {% if block.settings.show_full_width_image %}
+      <div class="ai-gallery-full-width-{{ ai_gen_id }}">
+        {% if block.settings.full_width_image %}
+          <img
+            src="{{ block.settings.full_width_image | image_url: width: 2000 }}"
+            alt="{{ block.settings.full_width_image.alt | escape }}"
+            class="ai-gallery-full-width-image-{{ ai_gen_id }}"
+            loading="lazy"
+            width="{{ block.settings.full_width_image.width }}"
+            height="{{ block.settings.full_width_image.height }}"
+          >
+        {% else %}
+          <div class="ai-gallery-full-width-placeholder-{{ ai_gen_id }}">
+            {{ 'hero-apparel-1' | placeholder_svg_tag }}<div class="ai-gallery-empty-state-{{ ai_gen_id }}">
+              Add full width image
+            </div>
+          </div>
+        {% endif %}
+      </div>
+    {% endif %}
+  </div>
+
+  <div class="ai-gallery-popup-{{ ai_gen_id }}" id="ai-gallery-popup-{{ ai_gen_id }}">
+    <div class="ai-gallery-popup-content-{{ ai_gen_id }}">
+      <button class="ai-gallery-popup-close-{{ ai_gen_id }}" aria-label="Close popup">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+          <path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/>
+        </svg>
+      </button>
+      <img class="ai-gallery-popup-image-{{ ai_gen_id }}" src="" alt="">
+    </div>
+  </div>
+</gallery-section-{{ ai_gen_id }}>
+
+<script>
+  (function() {
+    class GallerySection{{ ai_gen_id }} extends HTMLElement {
+      constructor() {
+        super();
+      }
+
+      connectedCallback() {
+        this.galleryItems = this.querySelectorAll('.ai-gallery-item-{{ ai_gen_id }}');
+        this.popup = this.querySelector('.ai-gallery-popup-{{ ai_gen_id }}');
+        this.popupImage = this.querySelector('.ai-gallery-popup-image-{{ ai_gen_id }}');
+        this.closeButton = this.querySelector('.ai-gallery-popup-close-{{ ai_gen_id }}');
+        
+        this.setupEventListeners();
+      }
+
+      setupEventListeners() {
+        this.galleryItems.forEach((item) => {
+          item.addEventListener('click', (e) => {
+            const img = item.querySelector('img');
+            if (img && !item.querySelector('.ai-gallery-item-placeholder-{{ ai_gen_id }}')) {
+              this.openPopup(img.src, img.alt);
+            }
+          });
+        });
+
+        this.closeButton.addEventListener('click', () => {
+          this.closePopup();
+        });
+
+        this.popup.addEventListener('click', (e) => {
+          if (e.target === this.popup) {
+            this.closePopup();
+          }
+        });document.addEventListener('keydown', (e) => {
+          if (e.key === 'Escape' && this.popup.classList.contains('active')) {
+            this.closePopup();
+          }
+        });
+      }
+
+      openPopup(src, alt) {
+        this.popupImage.src = src;
+        this.popupImage.alt = alt;
+        this.popup.classList.add('active');document.body.style.overflow = 'hidden';
+      }
+
+      closePopup() {
+        this.popup.classList.remove('active');
+        document.body.style.overflow = '';setTimeout(() => {
+          this.popupImage.src = '';
+          this.popupImage.alt = '';
+        }, 300);
+      }
+    }
+
+    customElements.define('gallery-section-{{ ai_gen_id }}', GallerySection{{ ai_gen_id }});
+  })();
+</script>
+
+{% schema %}
+{
+  "name": "Image gallery",
+  "settings": [
+    {
+      "type": "header",
+      "content": "Gallery images"
+    },
+    {
+      "type": "image_picker",
+      "id": "gallery_image_1",
+      "label": "Gallery image 1"
+    },
+    {
+      "type": "image_picker",
+      "id": "gallery_image_2",
+      "label": "Gallery image 2"
+    },
+    {
+      "type": "image_picker",
+      "id": "gallery_image_3",
+      "label": "Gallery image 3"
+    },
+    {
+      "type": "image_picker",
+      "id": "gallery_image_4",
+      "label": "Gallery image 4"
+    },
+    {
+      "type": "header",
+      "content": "Full width image"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_full_width_image",
+      "label": "Enable full width image",
+      "default": false
+    },
+    {
+      "type": "image_picker",
+      "id": "full_width_image",
+      "label": "Full width image"
+    },
+    {
+      "type": "range",
+      "id": "full_width_height",
+      "min": 200,
+      "max": 800,
+      "step": 50,
+      "unit": "px",
+      "label": "Full width image height",
+      "default": 400
+    },
+    {
+      "type": "range",
+      "id": "mobile_full_width_height",
+      "min": 150,
+      "max": 500,
+      "step": 25,
+      "unit": "px",
+      "label": "Mobile full width height",
+      "default": 250
+    },
+    {
+      "type": "range",
+      "id": "full_width_border_radius",
+      "min": 0,
+      "max": 50,
+      "step": 5,
+      "unit": "px",
+      "label": "Full width border radius",
+      "default": 0
+    },
+    {
+      "type": "header",
+      "content": "Layout"
+    },
+    {
+      "type": "range",
+      "id": "container_width",
+      "min": 800,
+      "max": 1600,
+      "step": 50,
+      "unit": "px",
+      "label": "Container width",
+      "default": 1200
+    },
+    {
+      "type": "range",
+      "id": "spacing_between_sections",
+      "min": 20,
+      "max": 100,
+      "step": 10,
+      "unit": "px",
+      "label": "Spacing between sections",
+      "default": 40
+    },
+    {
+      "type": "select",
+      "id": "image_aspect_ratio",
+      "label": "Image aspect ratio",
+      "options": [
+        {
+          "value": "1/1",
+          "label": "Square (1:1)"
+        },
+        {
+          "value": "4/3",
+          "label": "Landscape (4:3)"
+        },
+        {
+          "value": "3/4",
+          "label": "Portrait (3:4)"
+        },
+        {
+          "value": "16/9",
+          "label": "Wide (16:9)"
+        }
+      ],
+      "default": "1/1"
+    },
+    {
+      "type": "header",
+      "content": "Mobile layout"
+    },
+    {
+      "type": "select",
+      "id": "mobile_columns",
+      "label": "Columns on mobile",
+      "options": [
+        {
+          "value": "1",
+          "label": "1"
+        },
+        {
+          "value": "2",
+          "label": "2"
+        }
+      ],
+      "default": "2"
+    },
+    {
+      "type": "header",
+      "content": "Hover effects"
+    },
+    {
+      "type": "color",
+      "id": "overlay_color",
+      "label": "Overlay color",
+      "default": "#000000"
+    },
+    {
+      "type": "range",
+      "id": "overlay_opacity",
+      "min": 0,
+      "max": 1,
+      "step": 0.1,
+      "label": "Overlay opacity",
+      "default": 0.3
+    },
+    {
+      "type": "range",
+      "id": "hover_scale",
+      "min": 1,
+      "max": 1.5,
+      "step": 0.1,
+      "label": "Hover scale",
+      "default": 1.1
+    },
+    {
+      "type": "range",
+      "id": "hover_animation_duration",
+      "min": 0.1,
+      "max": 1,
+      "step": 0.1,
+      "unit": "s",
+      "label": "Animation duration",
+      "default": 0.3
+    },
+    {
+      "type": "color",
+      "id": "zoom_icon_color",
+      "label": "Zoom icon color",
+      "default": "#ffffff"
+    },
+    {
+      "type": "range",
+      "id": "zoom_icon_size",
+      "min": 20,
+      "max": 60,
+      "step": 5,
+      "unit": "px",
+      "label": "Zoom icon size",
+      "default": 30
+    },
+    {
+      "type": "header",
+      "content": "Popup style"
+    },
+    {
+      "type": "color",
+      "id": "popup_background",
+      "label": "Popup background",
+      "default": "rgba(0, 0, 0, 0.9)"
+    },
+    {
+      "type": "range",
+      "id": "popup_max_width",
+      "min": 300,
+      "max": 800,
+      "step": 50,
+      "unit": "px",
+      "label": "Popup max width",
+      "default": 500
+    },
+    {
+      "type": "range",
+      "id": "popup_max_height",
+      "min": 300,
+      "max": 600,
+      "step": 50,
+      "unit": "px",
+      "label": "Popup max height",
+      "default": 400
+    },
+    {
+      "type": "range",
+      "id": "popup_border_radius",
+      "min": 0,
+      "max": 30,
+      "step": 2,
+      "unit": "px",
+      "label": "Popup border radius",
+      "default": 8
+    },
+    {
+      "type": "color",
+      "id": "close_button_background",
+      "label": "Close button background",
+      "default": "rgba(255, 255, 255, 0.2)"
+    },
+    {
+      "type": "color",
+      "id": "close_button_hover_background",
+      "label": "Close button hover background",
+      "default": "rgba(255, 255, 255, 0.4)"
+    },
+    {
+      "type": "color",
+      "id": "close_button_color",
+      "label": "Close button color",
+      "default": "#ffffff"
+    },
+    {
+      "type": "header",
+      "content": "Section style"
+    },
+    {
+      "type": "color",
+      "id": "section_background",
+      "label": "Section background",
+      "default": "#ffffff"
+    },
+    {
+      "type": "range",
+      "id": "section_padding_top",
+      "min": 0,
+      "max": 100,
+      "step": 5,
+      "unit": "px",
+      "label": "Top padding",
+      "default": 50
+    },
+    {
+      "type": "range",
+      "id": "section_padding_bottom",
+      "min": 0,
+      "max": 100,
+      "step": 5,
+      "unit": "px",
+      "label": "Bottom padding",
+      "default": 50
+    }
+  ],
+  "presets": [
+    {
+      "name": "Image gallery"
+    }
+  ]
+}
+{% endschema %}

@@ -1,0 +1,226 @@
+{% comment %}
+  Remaining Gallery Section
+  - Identical to Advanced Custom Gallery
+  - Initially hidden
+  - Shows when first gallery's load more is clicked
+  - Lightbox enabled
+{% endcomment %}
+
+<section id="remaining-gallery-{{ section.id }}" class="custom-gallery-wrapper remaining-gallery" style="display:none;"
+         data-items-per-page="{{ section.settings.items_per_page }}">
+  <div class="custom-gallery"
+       style="--gallery-cols-desktop: {{ section.settings.columns_desktop }};
+              --gallery-cols-mobile: {{ section.settings.columns_mobile }};
+              gap: {{ section.settings.grid_gap }}px;">
+    {% for block in section.blocks %}
+      {% if block.settings.gallery_image != blank %}
+        <div class="gallery-item" {{ block.shopify_attributes }}>
+          <a href="{{ block.settings.gallery_image | image_url: width: 1600 }}" class="lightbox-link">
+            <img src="{{ block.settings.gallery_image | image_url: width: 1200 }}" 
+                 alt="{{ block.settings.caption_1 | escape }}" 
+                 loading="lazy">
+            <div class="gallery-overlay"><span class="plus-sign">+</span></div>
+          </a>
+          <div class="gallery-captions">
+            {% for i in (1..3) %}
+              {% assign caption_key = 'caption_' | append: i %}
+              {% assign caption_text = block.settings[caption_key] %}
+              {% assign link_key = 'caption_link_' | append: i %}
+              {% assign caption_link = block.settings[link_key] %}
+              {% if caption_text != blank %}
+                {% if caption_link != blank %}
+                  <a href="{{ caption_link }}" class="gallery-caption" target="_blank">{{ caption_text }}</a>
+                {% else %}
+                  <div class="gallery-caption">{{ caption_text }}</div>
+                {% endif %}
+              {% endif %}
+            {% endfor %}
+          </div>
+        </div>
+      {% endif %}
+    {% endfor %}
+  </div>
+</section>
+
+<style>
+/* Gallery grid */
+.remaining-gallery .custom-gallery {
+  display: grid;
+  grid-template-columns: repeat(var(--gallery-cols-mobile), 1fr);
+  gap: {{ section.settings.grid_gap }}px;
+}
+
+/* Gallery item */
+.remaining-gallery .gallery-item {
+  position: relative;
+  overflow: hidden;
+  border-radius: {{ section.settings.image_radius }}px;
+}
+
+/* Image wrapper for overlay */
+.remaining-gallery .gallery-item a {
+  display: block;
+  position: relative;
+}
+
+/* Images */
+.remaining-gallery .gallery-item img {
+  width: 100%;
+  height: 30vw;
+  min-height: 180px;
+  max-height: 670px;
+  object-fit: cover;
+  display: block;
+  border: 1px solid #E0E0E0;
+  transition: transform 0.3s ease, filter 0.3s ease, box-shadow 0.3s ease, opacity 0.3s ease;
+}
+
+/* Overlay & plus sign on image only */
+.remaining-gallery .gallery-item a .gallery-overlay {
+  position: absolute;
+  top: 0; left: 0;
+  width: 100%; height: 100%;
+  background: rgba(0,0,0,0.4);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+  border-radius: {{ section.settings.image_radius }}px;
+}
+
+.remaining-gallery .gallery-item a .plus-sign {
+  font-size: 3rem;
+  color: #fff;
+  font-weight: bold;
+  pointer-events: none;
+  transform: scale(0.8);
+  transition: transform 0.3s ease;
+}
+
+.remaining-gallery .gallery-item a:hover .gallery-overlay { opacity: 1; }
+.remaining-gallery .gallery-item a:hover .plus-sign { transform: scale(1); }
+
+/* Hover effects on image */
+.remaining-gallery .gallery-item img:hover {
+  transform: scale({{ section.settings.hover_scale }});
+  filter: brightness({{ section.settings.hover_brightness }}%);
+  box-shadow: {{ section.settings.hover_shadow }};
+  opacity: {{ section.settings.hover_opacity | divided_by: 100 }};
+  border: 1px solid #C49B37;
+}
+
+/* Captions blue */
+.remaining-gallery .gallery-caption {
+  font-size: {{ section.settings.caption_font_size }}px;
+  color:  #1e355b !important;
+  text-align: {{ section.settings.caption_alignment }};
+  text-decoration: none;
+  display: block;
+}
+
+.remaining-gallery .gallery-caption:hover { text-decoration: underline; }
+
+@media (min-width: 768px) {
+  .remaining-gallery .custom-gallery {
+    grid-template-columns: repeat(var(--gallery-cols-desktop), 1fr);
+  }
+}
+</style>
+
+<script>
+(function() {
+  // 1️⃣ Show remaining galleries on first gallery load more
+  const mainBtn = document.querySelector('.custom-gallery-wrapper .load-more');
+  const remainingSections = document.querySelectorAll('.remaining-gallery');
+  if(mainBtn) {
+    mainBtn.addEventListener('click', function() {
+      remainingSections.forEach(sec => sec.style.display = 'block');
+    });
+  }
+
+  // 2️⃣ Create single reusable lightbox
+  if (!document.querySelector('.custom-lightbox')) {
+    const lightbox = document.createElement('div');
+    lightbox.className = 'custom-lightbox';
+    lightbox.style.display = 'none';
+    lightbox.innerHTML = `
+      <div class="lightbox-overlay" style="
+        position:fixed; top:0; left:0;
+        width:100%; height:100%;
+        background:rgba(0,0,0,0.8);
+        display:flex; justify-content:center; align-items:center;
+        z-index:9999;
+      ">
+        <img class="lightbox-content" src="" style="max-width:90%; max-height:90%;">
+        <span class="lightbox-close" style="
+          position:absolute; top:20px; right:30px;
+          font-size:40px; color:#fff; cursor:pointer;
+        ">×</span>
+      </div>
+    `;
+    document.body.appendChild(lightbox);
+  }
+
+  const lightbox = document.querySelector('.custom-lightbox');
+  const lightboxImg = lightbox.querySelector('.lightbox-content');
+  const closeBtn = lightbox.querySelector('.lightbox-close');
+  const overlay = lightbox.querySelector('.lightbox-overlay');
+
+  // Close lightbox
+  closeBtn.addEventListener('click', () => lightbox.style.display = 'none');
+  overlay.addEventListener('click', (e) => {
+    if (e.target === overlay) lightbox.style.display = 'none';
+  });
+
+  // Attach click to all gallery links
+  const links = document.querySelectorAll('.remaining-gallery .lightbox-link');
+  links.forEach(link => {
+    link.addEventListener('click', function(e) {
+      e.preventDefault();
+      lightbox.style.display = 'flex';
+      lightboxImg.src = link.getAttribute('href');
+    });
+  });
+
+})();
+</script>
+
+
+{% schema %}
+{
+  "name": "Remaining Gallery",
+  "settings": [
+    { "type": "header", "content": "Layout" },
+    { "type": "range", "id": "columns_desktop", "label": "Columns on desktop", "min": 2, "max": 6, "step": 1, "default": 3 },
+    { "type": "select", "id": "columns_mobile", "label": "Columns on mobile", "options":[{"value":"1","label":"1"},{"value":"2","label":"2"},{"value":"3","label":"3"}], "default": "2" },
+    { "type": "range", "id": "grid_gap", "label": "Grid gap (px)", "min":0,"max":100,"step":2,"default":16 },
+    { "type": "range","id": "image_radius","label":"Image corner radius px","min":0,"max":50,"step":1,"default":6},
+    { "type":"header","content":"Caption Styling" },
+    { "type":"color","id":"caption_color","label":"Caption text color","default":"#ffffff"},
+    { "type":"range","id":"caption_font_size","label":"Caption font size (px)","min":8,"max":50,"step":1,"default":14},
+    { "type":"select","id":"caption_alignment","label":"Caption alignment","options":[{"value":"left","label":"Left"},{"value":"center","label":"Center"},{"value":"right","label":"Right"}],"default":"center"},
+    { "type": "header","content": "Image Hover Effects" },
+    { "type":"range","id":"hover_scale","label":"Scale on hover","min":1,"max":2,"step":0.1,"default":1},
+    { "type":"range","id":"hover_brightness","label":"Brightness % on hover","min":50,"max":150,"step":5,"default":100},
+    { "type":"text","id":"hover_shadow","label":"Box shadow on hover","default":"0 4px 12px rgba(0,0,0,0.15)"},
+    { "type":"range","id":"hover_opacity","label":"Opacity on hover (%)","min":50,"max":100,"step":5,"default":100}
+  ],
+  "blocks":[
+    {
+      "type":"image",
+      "name":"Gallery item",
+      "settings":[
+        { "type":"image_picker","id":"gallery_image","label":"Image" },
+        { "type":"text","id":"caption_1","label":"Caption 1","default":"Caption 1" },
+        { "type":"url","id":"caption_link_1","label":"Caption 1 link (optional)" },
+        { "type":"text","id":"caption_2","label":"Caption 2","default":"Caption 2" },
+        { "type":"url","id":"caption_link_2","label":"Caption 2 link (optional)" },
+        { "type":"text","id":"caption_3","label":"Caption 3","default":"Caption 3" },
+        { "type":"url","id":"caption_link_3","label":"Caption 3 link (optional)" }
+      ]
+    }
+  ],
+  "presets":[{"name":"Remaining Gallery"}]
+}
+{% endschema %}

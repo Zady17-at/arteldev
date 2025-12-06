@@ -1,0 +1,45 @@
+<div class="p-6 shopable-social__item">
+  {% content_for 'block', type: '_item-preview', id: 'item' %}
+  {% content_for 'blocks' %}
+</div>
+{% schema %}
+{
+  "name": "t:sections.shopable-social.block.shopable_item.name",
+  "settings": [],
+  "blocks": [
+    {
+      "type": "_group-shopable"
+    }
+  ],
+  "presets": [
+    {
+      "name": "t:sections.shopable-social.block.shopable_item.name",
+      "blocks": {
+        "item": {
+          "type": "_item-preview",
+          "static": true
+        },
+        "_group-shopable": {
+          "type": "_group-shopable",
+          "blocks": {
+            "_modal-content-shopable": {
+              "type": "_modal-content-shopable",
+              "blocks": {
+                "_social-post": {
+                  "type": "_social-post"
+                },
+                "_social-image-with-product": {
+                  "type": "_social-image-with-product"
+                }
+              },
+              "block_order": ["_social-post", "_social-image-with-product"]
+            }
+          },
+          "block_order": ["_modal-content-shopable"]
+        }
+      },
+      "block_order": ["_group-shopable"]
+    }
+  ]
+}
+{% endschema %}
