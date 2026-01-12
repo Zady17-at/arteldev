@@ -188,20 +188,6 @@ fieldset.js input[name="color"] + label {
 }
 </style>
 
-
-
-.swatch-group-wrapper label .value:hover,
-label .value:hover {
-  border: 1px solid #1e335b !important; /* !important to override inline style */
-  box-sizing: border-box;
-}
-  /* Hide all default color inputs and labels inside your fieldset */
-fieldset.js input[name="color"],
-fieldset.js input[name="color"] + label {
-  display: none !important;
-}
-</style>
-
 <section
   id="MainProduct-{{ section.id }}"
   class="color-{{ section.settings.color_scheme }} gradient  section-{{ section.id }}-padding product product__item-js main__product section-padding{% if section.settings.image_zoom == 'external_zoom' %} external{% endif %}"
