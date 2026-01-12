@@ -23,12 +23,12 @@
 
 <script>
 document.addEventListener('DOMContentLoaded', () => {
-  const colorMap = {
+onst colorMap = {
     "Primary Colors": {
-      "White": "#FFFFFF",
-      "Black": "#000000",
-      "Black Matte": "#1C1C1C",
       "Clear": "linear-gradient(45deg, #ffffff 30%, #e8e8e8 60%, #ffffff 90%)",
+      "Black": "#000000",
+      "White": "#FFFFFF",
+      "Black Matte": "#1C1C1C",
       "Gold": "linear-gradient(to right, #a37a1b, #f2e6a4, #a37a1b)",
       "Silver": "linear-gradient(to right, #aaa, #eee, #aaa)",
       "Platinum": "linear-gradient(to right, #847d78, #d8d4d2, #847d78)",
@@ -53,20 +53,17 @@ document.addEventListener('DOMContentLoaded', () => {
       "Azure": "#007FFF",
       "Cherry": "#DE3163",
       "Emerald": "#50C878",
-      "Rust": "#B7410E",
-      {% comment %} "Fuchsia": "#FF00FF", {% endcomment %}
+      "Fuchsia": "#FF00FF", // Odkomentováno a zařazeno podle katalogu
       "Orange": "#FFA500",
       "Teal": "#008080"
     },
     "Earth Colors": {
       "Grey": "#808080",
-      "Green": "#008000",
       "Khaki Green": "#8A9A5B",
-      "Mahogany": "#C04000",
       "Moss": "#8A9A5B",
+      "Rust": "#B7410E",
       "Sage": "#BCB88A",
       "Slate": "#708090",
-      "Byzantine Blue": "#355C7D",
       "Taupe": "#483C32",
       "Walnut": "#773F1A"
     },
@@ -81,14 +78,14 @@ document.addEventListener('DOMContentLoaded', () => {
       "Smoke": "#738276"
     },
     "Pastel Colors": {
-      "Salmon": "#FA8072",
-      "Peridot": "#E6E200",
-      "Lilac": "#C8A2C8",
-      "Rose": "#FF007F",
       "Aqua": "#00FFFF",
-      "Blush": "#DE5D83",
       "Blue": "#0000FF",
-      "Olive": "#808000"
+      "Blush": "#DE5D83",
+      "Lilac": "#C8A2C8",
+      "Olive": "#808000",
+      "Peridot": "#E6E200",
+      "Rose": "#FF007F",
+      "Salmon": "#FA8072"
     }
   };
 
