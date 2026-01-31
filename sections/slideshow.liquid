@@ -171,12 +171,50 @@
             <div class="slide-text loading-animation py-60 d-flex max-100 text-{{ blo_settings.text_alignment }} {{ blo_settings.desktop_content_position }}{% if sec_settings.show_text_bellow %} w-full{% endif %}{% if sec_settings.show_text_bellow and sec_settings.section_width == 'expand_full_width' %} px-20{% endif %}">
               <div class="slide-content bls__content relative z-1 max-100 word-wrap-bread-word size-{{ sec_settings.size }}{% if blo_settings.enable_split_layout %} split-layout-content{% endif %}">
                 {% if blo_settings.enable_split_layout %}
-                  <div class="split-layout-left" style="justify-content: {{ blo_settings.split_layout_left_vertical | default: 'center' }}; align-items: {{ blo_settings.split_layout_left_horizontal | default: 'flex-start' }};">
+                  {% liquid
+                    # Parse left position
+                    assign left_pos = blo_settings.split_left_position | default: 'middle-left'
+                    if left_pos contains 'top'
+                      assign left_vertical = 'flex-start'
+                    elsif left_pos contains 'bottom'
+                      assign left_vertical = 'flex-end'
+                    else
+                      assign left_vertical = 'center'
+                    endif
+                    
+                    if left_pos contains '-left'
+                      assign left_horizontal = 'flex-start'
+                    elsif left_pos contains '-right'
+                      assign left_horizontal = 'flex-end'
+                    else
+                      assign left_horizontal = 'center'
+                    endif
+                    
+                    # Parse right position
+                    assign right_pos = blo_settings.split_right_position | default: 'middle-center'
+                    if right_pos contains 'top'
+                      assign right_vertical = 'flex-start'
+                    elsif right_pos contains 'bottom'
+                      assign right_vertical = 'flex-end'
+                    else
+                      assign right_vertical = 'center'
+                    endif
+                    
+                    if right_pos contains '-left'
+                      assign right_horizontal = 'flex-start'
+                    elsif right_pos contains '-right'
+                      assign right_horizontal = 'flex-end'
+                    else
+                      assign right_horizontal = 'center'
+                    endif
+                  %}
+                  
+                  <div class="split-layout-left split-pos-{{ left_pos }}" style="justify-content: {{ left_vertical }}; align-items: {{ left_horizontal }};">
                     {%- if blo_settings.heading != blank -%}
                       <h2 class="mt-0 section-heading heading-letter-spacing" style="{{ heading_style }}">{{ blo_settings.heading }}</h2>
                     {%- endif -%}
                   </div>
-                  <div class="split-layout-right" style="justify-content: {{ blo_settings.split_layout_right_vertical | default: 'center' }}; align-items: {{ blo_settings.split_layout_right_horizontal | default: 'center' }};">
+                  <div class="split-layout-right split-pos-{{ right_pos }}" style="justify-content: {{ right_vertical }}; align-items: {{ right_horizontal }};">
                     {%- if blo_settings.subheading != blank -%}
                       <p class="mt-0 sub-heading text-base" style="{{ subheading_style }}">{{ blo_settings.subheading }}</p>
                     {%- endif -%}
@@ -570,86 +608,100 @@
           "default": false
         },
         {
+          "type": "header",
+          "content": "Left Side Content Position (Heading)"
+        },
+        {
           "type": "select",
-          "id": "split_layout_left_vertical",
-          "label": "Left Side Vertical Position",
-          "default": "center",
+          "id": "split_left_position",
+          "label": "Left Side Position",
+          "default": "middle-left",
           "info": "Only applies when Split Layout is enabled",
           "options": [
             {
-              "value": "flex-start",
-              "label": "Top"
+              "value": "top-left",
+              "label": "Top left"
             },
             {
-              "value": "center",
-              "label": "Center"
+              "value": "top-center",
+              "label": "Top center"
             },
             {
-              "value": "flex-end",
-              "label": "Bottom"
+              "value": "top-right",
+              "label": "Top right"
+            },
+            {
+              "value": "middle-left",
+              "label": "Middle left"
+            },
+            {
+              "value": "middle-center",
+              "label": "Middle center"
+            },
+            {
+              "value": "middle-right",
+              "label": "Middle right"
+            },
+            {
+              "value": "bottom-left",
+              "label": "Bottom left"
+            },
+            {
+              "value": "bottom-center",
+              "label": "Bottom center"
+            },
+            {
+              "value": "bottom-right",
+              "label": "Bottom right"
             }
           ]
         },
         {
-          "type": "select",
-          "id": "split_layout_left_horizontal",
-          "label": "Left Side Horizontal Position",
-          "default": "flex-start",
-          "info": "Only applies when Split Layout is enabled",
-          "options": [
-            {
-              "value": "flex-start",
-              "label": "Left"
-            },
-            {
-              "value": "center",
-              "label": "Center"
-            },
-            {
-              "value": "flex-end",
-              "label": "Right"
-            }
-          ]
+          "type": "header",
+          "content": "Right Side Content Position (Subheading & Button)"
         },
         {
           "type": "select",
-          "id": "split_layout_right_vertical",
-          "label": "Right Side Vertical Position",
-          "default": "center",
+          "id": "split_right_position",
+          "label": "Right Side Position",
+          "default": "middle-center",
           "info": "Only applies when Split Layout is enabled",
           "options": [
             {
-              "value": "flex-start",
-              "label": "Top"
+              "value": "top-left",
+              "label": "Top left"
             },
             {
-              "value": "center",
-              "label": "Center"
+              "value": "top-center",
+              "label": "Top center"
             },
             {
-              "value": "flex-end",
-              "label": "Bottom"
-            }
-          ]
-        },
-        {
-          "type": "select",
-          "id": "split_layout_right_horizontal",
-          "label": "Right Side Horizontal Position",
-          "default": "center",
-          "info": "Only applies when Split Layout is enabled",
-          "options": [
-            {
-              "value": "flex-start",
-              "label": "Left"
+              "value": "top-right",
+              "label": "Top right"
             },
             {
-              "value": "center",
-              "label": "Center"
+              "value": "middle-left",
+              "label": "Middle left"
             },
             {
-              "value": "flex-end",
-              "label": "Right"
+              "value": "middle-center",
+              "label": "Middle center"
+            },
+            {
+              "value": "middle-right",
+              "label": "Middle right"
+            },
+            {
+              "value": "bottom-left",
+              "label": "Bottom left"
+            },
+            {
+              "value": "bottom-center",
+              "label": "Bottom center"
+            },
+            {
+              "value": "bottom-right",
+              "label": "Bottom right"
             }
           ]
         },
@@ -1269,82 +1321,98 @@ span.text-base.transition-all.duration-300.content-navigation {
     width: 100% !important;
   }
 
-  .split-layout-enabled .split-layout-left {
-    flex: 0 0 45% !important;
+  .split-layout-enabled .split-layout-left,
+  .split-layout-enabled .split-layout-right {
     display: flex !important;
     flex-direction: column !important;
-    /* In flex-direction: column */
-    /* justify-content controls VERTICAL position */
-    /* align-items controls HORIZONTAL position */
+  }
+
+  .split-layout-enabled .split-layout-left {
+    flex: 0 0 45% !important;
   }
 
   .split-layout-enabled .split-layout-right {
     flex: 0 0 50% !important;
-    display: flex !important;
-    flex-direction: column !important;
     gap: 1rem !important;
-    /* In flex-direction: column */
-    /* justify-content controls VERTICAL position */
-    /* align-items controls HORIZONTAL position */
   }
 
-  .split-layout-enabled .split-layout-left h2 {
-    margin: 0 !important;
-    width: 100%;
-  }
-
-  /* Text alignment for LEFT side based on align-items (horizontal) */
-  .split-layout-enabled .split-layout-left[style*="align-items: flex-start"] h2 {
+  /* Text alignment based on position - LEFT side */
+  .split-layout-enabled .split-layout-left.split-pos-top-left h2,
+  .split-layout-enabled .split-layout-left.split-pos-middle-left h2,
+  .split-layout-enabled .split-layout-left.split-pos-bottom-left h2 {
     text-align: left !important;
   }
-  
-  .split-layout-enabled .split-layout-left[style*="align-items: center"] h2 {
+
+  .split-layout-enabled .split-layout-left.split-pos-top-center h2,
+  .split-layout-enabled .split-layout-left.split-pos-middle-center h2,
+  .split-layout-enabled .split-layout-left.split-pos-bottom-center h2 {
     text-align: center !important;
   }
-  
-  .split-layout-enabled .split-layout-left[style*="align-items: flex-end"] h2 {
+
+  .split-layout-enabled .split-layout-left.split-pos-top-right h2,
+  .split-layout-enabled .split-layout-left.split-pos-middle-right h2,
+  .split-layout-enabled .split-layout-left.split-pos-bottom-right h2 {
     text-align: right !important;
   }
 
-  /* Spacing for RIGHT side content */
+  /* Text alignment based on position - RIGHT side */
+  .split-layout-enabled .split-layout-right.split-pos-top-left .sub-heading,
+  .split-layout-enabled .split-layout-right.split-pos-middle-left .sub-heading,
+  .split-layout-enabled .split-layout-right.split-pos-bottom-left .sub-heading,
+  .split-layout-enabled .split-layout-right.split-pos-top-left .slide-description,
+  .split-layout-enabled .split-layout-right.split-pos-middle-left .slide-description,
+  .split-layout-enabled .split-layout-right.split-pos-bottom-left .slide-description {
+    text-align: left !important;
+  }
+
+  .split-layout-enabled .split-layout-right.split-pos-top-center .sub-heading,
+  .split-layout-enabled .split-layout-right.split-pos-middle-center .sub-heading,
+  .split-layout-enabled .split-layout-right.split-pos-bottom-center .sub-heading,
+  .split-layout-enabled .split-layout-right.split-pos-top-center .slide-description,
+  .split-layout-enabled .split-layout-right.split-pos-middle-center .slide-description,
+  .split-layout-enabled .split-layout-right.split-pos-bottom-center .slide-description {
+    text-align: center !important;
+  }
+
+  .split-layout-enabled .split-layout-right.split-pos-top-right .sub-heading,
+  .split-layout-enabled .split-layout-right.split-pos-middle-right .sub-heading,
+  .split-layout-enabled .split-layout-right.split-pos-bottom-right .sub-heading,
+  .split-layout-enabled .split-layout-right.split-pos-top-right .slide-description,
+  .split-layout-enabled .split-layout-right.split-pos-middle-right .slide-description,
+  .split-layout-enabled .split-layout-right.split-pos-bottom-right .slide-description {
+    text-align: right !important;
+  }
+
+  /* Button alignment - RIGHT side */
+  .split-layout-enabled .split-layout-right.split-pos-top-left .section-btn,
+  .split-layout-enabled .split-layout-right.split-pos-middle-left .section-btn,
+  .split-layout-enabled .split-layout-right.split-pos-bottom-left .section-btn {
+    justify-content: flex-start !important;
+  }
+
+  .split-layout-enabled .split-layout-right.split-pos-top-center .section-btn,
+  .split-layout-enabled .split-layout-right.split-pos-middle-center .section-btn,
+  .split-layout-enabled .split-layout-right.split-pos-bottom-center .section-btn {
+    justify-content: center !important;
+  }
+
+  .split-layout-enabled .split-layout-right.split-pos-top-right .section-btn,
+  .split-layout-enabled .split-layout-right.split-pos-middle-right .section-btn,
+  .split-layout-enabled .split-layout-right.split-pos-bottom-right .section-btn {
+    justify-content: flex-end !important;
+  }
+
+  /* Reset margins */
+  .split-layout-enabled .split-layout-left h2,
   .split-layout-enabled .split-layout-right .sub-heading,
   .split-layout-enabled .split-layout-right .slide-description {
-    margin-top: 0 !important;
+    margin: 0 !important;
     width: 100%;
   }
 
   .split-layout-enabled .split-layout-right .slide-description {
     margin-top: 0.5rem !important;
     margin-bottom: 0.5rem !important;
-  }
-
-  /* Text alignment for RIGHT side based on align-items (horizontal) */
-  .split-layout-enabled .split-layout-right[style*="align-items: flex-start"] .sub-heading,
-  .split-layout-enabled .split-layout-right[style*="align-items: flex-start"] .slide-description {
-    text-align: left !important;
-  }
-  
-  .split-layout-enabled .split-layout-right[style*="align-items: center"] .sub-heading,
-  .split-layout-enabled .split-layout-right[style*="align-items: center"] .slide-description {
-    text-align: center !important;
-  }
-  
-  .split-layout-enabled .split-layout-right[style*="align-items: flex-end"] .sub-heading,
-  .split-layout-enabled .split-layout-right[style*="align-items: flex-end"] .slide-description {
-    text-align: right !important;
-  }
-
-  /* Button alignment based on RIGHT side align-items (horizontal) */
-  .split-layout-enabled .split-layout-right[style*="align-items: flex-start"] .section-btn {
-    justify-content: flex-start !important;
-  }
-  
-  .split-layout-enabled .split-layout-right[style*="align-items: center"] .section-btn {
-    justify-content: center !important;
-  }
-  
-  .split-layout-enabled .split-layout-right[style*="align-items: flex-end"] .section-btn {
-    justify-content: flex-end !important;
   }
 
   .split-layout-enabled .split-layout-right .section-btn {
