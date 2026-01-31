@@ -97,13 +97,14 @@
           # Get split layout gap setting (default to 50px if not set)
           assign split_gap = blo_settings.split_layout_gap | default: 50
           
-          # Get split edge padding setting (default to 80px if not set)
-          assign split_edge_padding = blo_settings.split_edge_padding | default: 80
+          # Get split edge padding settings (defaults to 80px if not set)
+          assign split_left_padding = blo_settings.split_left_padding | default: 80
+          assign split_right_padding = blo_settings.split_right_padding | default: 80
         %}
         <div class="slide-carousel">
           <div
             class="slideshow-item d-flex relative overlay-bg {{ blo_settings.desktop_content_position }}{% if sec_settings.show_text_bellow %} flex-column flex-md-row text-bellow-mb{% endif %} mobile-{{ blo_settings.mobile_content_position | default: blo_settings.desktop_content_position }} item-hero-{{ sec_settings.image_height }}{% if blo_settings.image_overlay_opacity == 0 and blo_settings.desktop_content_position == 'bottom-left' or blo_settings.desktop_content_position == 'bottom-right' or blo_settings.desktop_content_position == 'bottom-center' %} grandient-bg{% endif %}{% if blo_settings.enable_split_layout %} split-layout-enabled{% endif %}"
-            style="{{ style | strip | strip_newlines }}--overlay-opacity: {{ blo_settings.image_overlay_opacity }}%; --split-layout-gap: {{ split_gap }}px; --split-edge-padding: {{ split_edge_padding }}px;"
+            style="{{ style | strip | strip_newlines }}--overlay-opacity: {{ blo_settings.image_overlay_opacity }}%; --split-layout-gap: {{ split_gap }}px; --split-left-padding: {{ split_left_padding }}px; --split-right-padding: {{ split_right_padding }}px;"
             data-content-navigation="{% if sec_settings.navigation_style == 'group' %}{{ blo_settings.navigation_group_name | default: default_content }}{% endif %}"
           >
             <div
@@ -626,13 +627,24 @@
         },
         {
           "type": "range",
-          "id": "split_edge_padding",
+          "id": "split_left_padding",
           "min": 0,
-          "max": 200,
+          "max": 400,
           "step": 10,
           "unit": "px",
-          "label": "Edge padding (left and right)",
-          "info": "Distance from screen edges to content (only applies when split layout is enabled)",
+          "label": "Left edge padding",
+          "info": "Distance from left screen edge to left content (only applies when split layout is enabled)",
+          "default": 80
+        },
+        {
+          "type": "range",
+          "id": "split_right_padding",
+          "min": 0,
+          "max": 400,
+          "step": 10,
+          "unit": "px",
+          "label": "Right edge padding",
+          "info": "Distance from right screen edge to right content (only applies when split layout is enabled)",
           "default": 80
         },
         {
@@ -1347,9 +1359,9 @@ span.text-base.transition-all.duration-300.content-navigation {
     align-items: center !important;
     gap: var(--split-layout-gap, 3rem) !important;
     width: 100% !important;
-    max-width: calc(100% - (var(--split-edge-padding, 5rem) * 2)) !important;
-    margin-left: var(--split-edge-padding, 5rem) !important;
-    margin-right: var(--split-edge-padding, 5rem) !important;
+    max-width: calc(100% - var(--split-left-padding, 5rem) - var(--split-right-padding, 5rem)) !important;
+    margin-left: var(--split-left-padding, 5rem) !important;
+    margin-right: var(--split-right-padding, 5rem) !important;
   }
 
   .split-layout-enabled .split-layout-left,
