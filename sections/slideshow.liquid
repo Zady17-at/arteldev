@@ -94,8 +94,8 @@
             assign description_style = description_style | append: 'font-family: ' | append: blo_settings.description_font_family | append: ' !important; '
           endif
           
-          # Get split layout gap setting (default to 48px if not set)
-          assign split_gap = blo_settings.split_layout_gap | default: 48
+          # Get split layout gap setting (default to 50px if not set)
+          assign split_gap = blo_settings.split_layout_gap | default: 50
         %}
         <div class="slide-carousel">
           <div
