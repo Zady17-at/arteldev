@@ -171,12 +171,12 @@
             <div class="slide-text loading-animation py-60 d-flex max-100 text-{{ blo_settings.text_alignment }} {{ blo_settings.desktop_content_position }}{% if sec_settings.show_text_bellow %} w-full{% endif %}{% if sec_settings.show_text_bellow and sec_settings.section_width == 'expand_full_width' %} px-20{% endif %}">
               <div class="slide-content bls__content relative z-1 max-100 word-wrap-bread-word size-{{ sec_settings.size }}{% if blo_settings.enable_split_layout %} split-layout-content{% endif %}">
                 {% if blo_settings.enable_split_layout %}
-                  <div class="split-layout-left" style="align-items: {{ blo_settings.split_layout_left_vertical | default: 'center' }}; justify-content: {{ blo_settings.split_layout_left_horizontal | default: 'flex-start' }};">
+                  <div class="split-layout-left" style="justify-content: {{ blo_settings.split_layout_left_vertical | default: 'center' }}; align-items: {{ blo_settings.split_layout_left_horizontal | default: 'flex-start' }};">
                     {%- if blo_settings.heading != blank -%}
                       <h2 class="mt-0 section-heading heading-letter-spacing" style="{{ heading_style }}">{{ blo_settings.heading }}</h2>
                     {%- endif -%}
                   </div>
-                  <div class="split-layout-right" style="align-items: {{ blo_settings.split_layout_right_horizontal | default: 'center' }}; justify-content: {{ blo_settings.split_layout_right_vertical | default: 'center' }};">
+                  <div class="split-layout-right" style="justify-content: {{ blo_settings.split_layout_right_vertical | default: 'center' }}; align-items: {{ blo_settings.split_layout_right_horizontal | default: 'center' }};">
                     {%- if blo_settings.subheading != blank -%}
                       <p class="mt-0 sub-heading text-base" style="{{ subheading_style }}">{{ blo_settings.subheading }}</p>
                     {%- endif -%}
@@ -1273,7 +1273,9 @@ span.text-base.transition-all.duration-300.content-navigation {
     flex: 0 0 45% !important;
     display: flex !important;
     flex-direction: column !important;
-    /* align-items and justify-content will be set via inline styles */
+    /* In flex-direction: column */
+    /* justify-content controls VERTICAL position */
+    /* align-items controls HORIZONTAL position */
   }
 
   .split-layout-enabled .split-layout-right {
@@ -1281,30 +1283,34 @@ span.text-base.transition-all.duration-300.content-navigation {
     display: flex !important;
     flex-direction: column !important;
     gap: 1rem !important;
-    /* align-items and justify-content will be set via inline styles */
-    /* Content will be grouped and positioned as a block */
+    /* In flex-direction: column */
+    /* justify-content controls VERTICAL position */
+    /* align-items controls HORIZONTAL position */
   }
 
   .split-layout-enabled .split-layout-left h2 {
     margin: 0 !important;
+    width: 100%;
   }
 
-  /* Text alignment based on horizontal position */
-  .split-layout-enabled .split-layout-left[style*="justify-content: flex-start"] h2 {
+  /* Text alignment for LEFT side based on align-items (horizontal) */
+  .split-layout-enabled .split-layout-left[style*="align-items: flex-start"] h2 {
     text-align: left !important;
   }
   
-  .split-layout-enabled .split-layout-left[style*="justify-content: center"] h2 {
+  .split-layout-enabled .split-layout-left[style*="align-items: center"] h2 {
     text-align: center !important;
   }
   
-  .split-layout-enabled .split-layout-left[style*="justify-content: flex-end"] h2 {
+  .split-layout-enabled .split-layout-left[style*="align-items: flex-end"] h2 {
     text-align: right !important;
   }
 
+  /* Spacing for RIGHT side content */
   .split-layout-enabled .split-layout-right .sub-heading,
   .split-layout-enabled .split-layout-right .slide-description {
     margin-top: 0 !important;
+    width: 100%;
   }
 
   .split-layout-enabled .split-layout-right .slide-description {
@@ -1312,31 +1318,37 @@ span.text-base.transition-all.duration-300.content-navigation {
     margin-bottom: 0.5rem !important;
   }
 
-  /* Center content horizontally within right side when align-items is center */
-  .split-layout-enabled .split-layout-right[style*="align-items: center"] {
+  /* Text alignment for RIGHT side based on align-items (horizontal) */
+  .split-layout-enabled .split-layout-right[style*="align-items: flex-start"] .sub-heading,
+  .split-layout-enabled .split-layout-right[style*="align-items: flex-start"] .slide-description {
+    text-align: left !important;
+  }
+  
+  .split-layout-enabled .split-layout-right[style*="align-items: center"] .sub-heading,
+  .split-layout-enabled .split-layout-right[style*="align-items: center"] .slide-description {
     text-align: center !important;
+  }
+  
+  .split-layout-enabled .split-layout-right[style*="align-items: flex-end"] .sub-heading,
+  .split-layout-enabled .split-layout-right[style*="align-items: flex-end"] .slide-description {
+    text-align: right !important;
+  }
+
+  /* Button alignment based on RIGHT side align-items (horizontal) */
+  .split-layout-enabled .split-layout-right[style*="align-items: flex-start"] .section-btn {
+    justify-content: flex-start !important;
   }
   
   .split-layout-enabled .split-layout-right[style*="align-items: center"] .section-btn {
     justify-content: center !important;
   }
-
-  /* Left align content when align-items is flex-start */
-  .split-layout-enabled .split-layout-right[style*="align-items: flex-start"] {
-    text-align: left !important;
-  }
-  
-  .split-layout-enabled .split-layout-right[style*="align-items: flex-start"] .section-btn {
-    justify-content: flex-start !important;
-  }
-
-  /* Right align content when align-items is flex-end */
-  .split-layout-enabled .split-layout-right[style*="align-items: flex-end"] {
-    text-align: right !important;
-  }
   
   .split-layout-enabled .split-layout-right[style*="align-items: flex-end"] .section-btn {
     justify-content: flex-end !important;
+  }
+
+  .split-layout-enabled .split-layout-right .section-btn {
+    width: 100%;
   }
 }
 
