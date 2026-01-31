@@ -652,7 +652,7 @@
             "image_overlay_opacity": 0,
             "enable_split_layout": true,
             "split_layout_gap": 860,
-            "split_left_padding": 50,
+            "split_left_padding": 40,
             "split_right_padding": 0,
             "split_left_position": "middle-left",
             "split_right_position": "middle-center",
