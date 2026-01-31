@@ -171,12 +171,12 @@
             <div class="slide-text loading-animation py-60 d-flex max-100 text-{{ blo_settings.text_alignment }} {{ blo_settings.desktop_content_position }}{% if sec_settings.show_text_bellow %} w-full{% endif %}{% if sec_settings.show_text_bellow and sec_settings.section_width == 'expand_full_width' %} px-20{% endif %}">
               <div class="slide-content bls__content relative z-1 max-100 word-wrap-bread-word size-{{ sec_settings.size }}{% if blo_settings.enable_split_layout %} split-layout-content{% endif %}">
                 {% if blo_settings.enable_split_layout %}
-                  <div class="split-layout-left" style="align-items: {{ blo_settings.split_layout_left_vertical | default: 'center' }}; justify-content: {{ blo_settings.split_layout_left_horizontal | default: 'start' }};">
+                  <div class="split-layout-left" style="align-items: {{ blo_settings.split_layout_left_vertical | default: 'center' }}; justify-content: {{ blo_settings.split_layout_left_horizontal | default: 'flex-start' }};">
                     {%- if blo_settings.heading != blank -%}
                       <h2 class="mt-0 section-heading heading-letter-spacing" style="{{ heading_style }}">{{ blo_settings.heading }}</h2>
                     {%- endif -%}
                   </div>
-                  <div class="split-layout-right" style="align-items: {{ blo_settings.split_layout_right_horizontal | default: 'start' }}; justify-content: {{ blo_settings.split_layout_right_vertical | default: 'center' }};">
+                  <div class="split-layout-right" style="align-items: {{ blo_settings.split_layout_right_horizontal | default: 'flex-start' }}; justify-content: {{ blo_settings.split_layout_right_vertical | default: 'center' }};">
                     {%- if blo_settings.subheading != blank -%}
                       <p class="mt-0 sub-heading text-base" style="{{ subheading_style }}">{{ blo_settings.subheading }}</p>
                     {%- endif -%}
@@ -577,7 +577,7 @@
           "info": "Only applies when Split Layout is enabled",
           "options": [
             {
-              "value": "start",
+              "value": "flex-start",
               "label": "Top"
             },
             {
@@ -585,7 +585,7 @@
               "label": "Center"
             },
             {
-              "value": "end",
+              "value": "flex-end",
               "label": "Bottom"
             }
           ]
@@ -594,11 +594,11 @@
           "type": "select",
           "id": "split_layout_left_horizontal",
           "label": "Left Side Horizontal Position",
-          "default": "start",
+          "default": "flex-start",
           "info": "Only applies when Split Layout is enabled",
           "options": [
             {
-              "value": "start",
+              "value": "flex-start",
               "label": "Left"
             },
             {
@@ -606,7 +606,7 @@
               "label": "Center"
             },
             {
-              "value": "end",
+              "value": "flex-end",
               "label": "Right"
             }
           ]
@@ -619,7 +619,7 @@
           "info": "Only applies when Split Layout is enabled",
           "options": [
             {
-              "value": "start",
+              "value": "flex-start",
               "label": "Top"
             },
             {
@@ -627,7 +627,7 @@
               "label": "Center"
             },
             {
-              "value": "end",
+              "value": "flex-end",
               "label": "Bottom"
             }
           ]
@@ -636,11 +636,11 @@
           "type": "select",
           "id": "split_layout_right_horizontal",
           "label": "Right Side Horizontal Position",
-          "default": "start",
+          "default": "flex-start",
           "info": "Only applies when Split Layout is enabled",
           "options": [
             {
-              "value": "start",
+              "value": "flex-start",
               "label": "Left"
             },
             {
@@ -648,7 +648,7 @@
               "label": "Center"
             },
             {
-              "value": "end",
+              "value": "flex-end",
               "label": "Right"
             }
           ]
@@ -1272,6 +1272,7 @@ span.text-base.transition-all.duration-300.content-navigation {
   .split-layout-enabled .split-layout-left {
     flex: 0 0 45% !important;
     display: flex !important;
+    flex-direction: column !important;
     /* align-items and justify-content will be set via inline styles */
   }
 
@@ -1285,21 +1286,57 @@ span.text-base.transition-all.duration-300.content-navigation {
 
   .split-layout-enabled .split-layout-left h2 {
     margin: 0 !important;
-    width: 100%;
   }
 
-  .split-layout-enabled .split-layout-right .sub-heading {
+  /* Text alignment based on horizontal position */
+  .split-layout-enabled .split-layout-left[style*="justify-content: flex-start"] h2 {
+    text-align: left !important;
+  }
+  
+  .split-layout-enabled .split-layout-left[style*="justify-content: center"] h2 {
+    text-align: center !important;
+  }
+  
+  .split-layout-enabled .split-layout-left[style*="justify-content: flex-end"] h2 {
+    text-align: right !important;
+  }
+
+  .split-layout-enabled .split-layout-right .sub-heading,
+  .split-layout-enabled .split-layout-right .slide-description {
     margin-top: 0 !important;
-    width: 100%;
   }
 
   .split-layout-enabled .split-layout-right .slide-description {
     margin-top: 0.5rem !important;
-    width: 100%;
   }
 
-  .split-layout-enabled .split-layout-right .section-btn {
-    width: 100%;
+  /* Button alignment based on right side horizontal position */
+  .split-layout-enabled .split-layout-right[style*="align-items: flex-start"] .section-btn {
+    justify-content: flex-start !important;
+  }
+  
+  .split-layout-enabled .split-layout-right[style*="align-items: center"] .section-btn {
+    justify-content: center !important;
+  }
+  
+  .split-layout-enabled .split-layout-right[style*="align-items: flex-end"] .section-btn {
+    justify-content: flex-end !important;
+  }
+
+  /* Text alignment for right side content */
+  .split-layout-enabled .split-layout-right[style*="align-items: flex-start"] .sub-heading,
+  .split-layout-enabled .split-layout-right[style*="align-items: flex-start"] .slide-description {
+    text-align: left !important;
+  }
+  
+  .split-layout-enabled .split-layout-right[style*="align-items: center"] .sub-heading,
+  .split-layout-enabled .split-layout-right[style*="align-items: center"] .slide-description {
+    text-align: center !important;
+  }
+  
+  .split-layout-enabled .split-layout-right[style*="align-items: flex-end"] .sub-heading,
+  .split-layout-enabled .split-layout-right[style*="align-items: flex-end"] .slide-description {
+    text-align: right !important;
   }
 }
 
