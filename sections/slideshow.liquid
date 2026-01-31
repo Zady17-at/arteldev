@@ -96,7 +96,7 @@
         %}
         <div class="slide-carousel">
           <div
-            class="slideshow-item d-flex relative overlay-bg {{ blo_settings.desktop_content_position }}{% if sec_settings.show_text_bellow %} flex-column flex-md-row text-bellow-mb{% endif %} mobile-{{ blo_settings.mobile_content_position | default: blo_settings.desktop_content_position }} item-hero-{{ sec_settings.image_height }}{% if blo_settings.image_overlay_opacity == 0 and blo_settings.desktop_content_position == 'bottom-left' or blo_settings.desktop_content_position == 'bottom-right' or blo_settings.desktop_content_position == 'bottom-center' %} grandient-bg{% endif %}"
+            class="slideshow-item d-flex relative overlay-bg {{ blo_settings.desktop_content_position }}{% if sec_settings.show_text_bellow %} flex-column flex-md-row text-bellow-mb{% endif %} mobile-{{ blo_settings.mobile_content_position | default: blo_settings.desktop_content_position }} item-hero-{{ sec_settings.image_height }}{% if blo_settings.image_overlay_opacity == 0 and blo_settings.desktop_content_position == 'bottom-left' or blo_settings.desktop_content_position == 'bottom-right' or blo_settings.desktop_content_position == 'bottom-center' %} grandient-bg{% endif %}{% if blo_settings.enable_split_layout %} split-layout-enabled{% endif %}"
             style="{{ style | strip | strip_newlines }}--overlay-opacity: {{ blo_settings.image_overlay_opacity }}%;"
             data-content-navigation="{% if sec_settings.navigation_style == 'group' %}{{ blo_settings.navigation_group_name | default: default_content }}{% endif %}"
           >
@@ -169,45 +169,91 @@
             </div>
 
             <div class="slide-text loading-animation py-60 d-flex max-100 text-{{ blo_settings.text_alignment }} {{ blo_settings.desktop_content_position }}{% if sec_settings.show_text_bellow %} w-full{% endif %}{% if sec_settings.show_text_bellow and sec_settings.section_width == 'expand_full_width' %} px-20{% endif %}">
-              <div class="slide-content bls__content relative z-1 max-100 word-wrap-bread-word size-{{ sec_settings.size }}">
-                {%- if blo_settings.subheading != blank -%}
-                  <p class="mt-0 sub-heading text-base" style="{{ subheading_style }}">{{ blo_settings.subheading }}</p>
-                {%- endif -%}
-                {%- if blo_settings.heading != blank -%}
-                  <h2 class="mt-0 section-heading heading-letter-spacing" style="{{ heading_style }}">{{ blo_settings.heading }}</h2>
-                {%- endif -%}
-                {%- if blo_settings.description != blank -%}
-                  <div class="mt-0 sec-des slide-description" style="{{ description_style }}">{{ blo_settings.description }}</div>
-                {%- endif -%}
-                {% if blo_settings.first_button_label != blank or blo_settings.second_button_label != blank %}
-                  <div class="section-btn btn-slideshow d-flex flex-wrap gap-10 {% if blo_settings.text_alignment == 'center' %}justify-content-center{% elsif blo_settings.text_alignment == 'right' %}justify-content-end{% endif %}">
-                    {% if blo_settings.first_button_label != blank %}
-                      <a
-                        {% if blo_settings.first_button_link == blank %}
-                          role="link" aria-disabled="true"
-                        {% else %}
-                          href="{{ blo_settings.first_button_link | default: "#" }}"
+              <div class="slide-content bls__content relative z-1 max-100 word-wrap-bread-word size-{{ sec_settings.size }}{% if blo_settings.enable_split_layout %} split-layout-content{% endif %}">
+                {% if blo_settings.enable_split_layout %}
+                  <div class="split-layout-left">
+                    {%- if blo_settings.heading != blank -%}
+                      <h2 class="mt-0 section-heading heading-letter-spacing" style="{{ heading_style }}">{{ blo_settings.heading }}</h2>
+                    {%- endif -%}
+                  </div>
+                  <div class="split-layout-right">
+                    {%- if blo_settings.subheading != blank -%}
+                      <p class="mt-0 sub-heading text-base" style="{{ subheading_style }}">{{ blo_settings.subheading }}</p>
+                    {%- endif -%}
+                    {%- if blo_settings.description != blank -%}
+                      <div class="mt-0 sec-des slide-description" style="{{ description_style }}">{{ blo_settings.description }}</div>
+                    {%- endif -%}
+                    {% if blo_settings.first_button_label != blank or blo_settings.second_button_label != blank %}
+                      <div class="section-btn btn-slideshow d-flex flex-wrap gap-10">
+                        {% if blo_settings.first_button_label != blank %}
+                          <a
+                            {% if blo_settings.first_button_link == blank %}
+                              role="link" aria-disabled="true"
+                            {% else %}
+                              href="{{ blo_settings.first_button_link | default: "#" }}"
+                            {% endif %}
+                            aria-label="{{ blo_settings.first_button_label }}"
+                            class="btn remove-underline{% if block.settings.first_button_style %} btn-outline{% else %} btn-primary{% endif %}"
+                          >
+                            {{ blo_settings.first_button_label }}
+                          </a>
                         {% endif %}
-                        aria-label="{{ blo_settings.first_button_label }}"
-                        class="btn remove-underline{% if block.settings.first_button_style %} btn-outline{% else %} btn-primary{% endif %}"
-                      >
-                        {{ blo_settings.first_button_label }}
-                      </a>
-                    {% endif %}
-                    {% if blo_settings.second_button_label != blank %}
-                      <a
-                        {% if blo_settings.second_button_link == blank %}
-                          role="link" aria-disabled="true"
-                        {% else %}
-                          href="{{ blo_settings.second_button_link | default: "#" }}"
+                        {% if blo_settings.second_button_label != blank %}
+                          <a
+                            {% if blo_settings.second_button_link == blank %}
+                              role="link" aria-disabled="true"
+                            {% else %}
+                              href="{{ blo_settings.second_button_link | default: "#" }}"
+                            {% endif %}
+                            aria-label="{{ blo_settings.second_button_label }}"
+                            class="btn remove-underline {% if block.settings.second_button_style %} btn-outline{% else %} btn-primary{% endif %}"
+                          >
+                            {{ blo_settings.second_button_label }}
+                          </a>
                         {% endif %}
-                        aria-label="{{ blo_settings.second_button_label }}"
-                        class="btn remove-underline {% if block.settings.second_button_style %} btn-outline{% else %} btn-primary{% endif %}"
-                      >
-                        {{ blo_settings.second_button_label }}
-                      </a>
+                      </div>
                     {% endif %}
                   </div>
+                {% else %}
+                  {%- if blo_settings.subheading != blank -%}
+                    <p class="mt-0 sub-heading text-base" style="{{ subheading_style }}">{{ blo_settings.subheading }}</p>
+                  {%- endif -%}
+                  {%- if blo_settings.heading != blank -%}
+                    <h2 class="mt-0 section-heading heading-letter-spacing" style="{{ heading_style }}">{{ blo_settings.heading }}</h2>
+                  {%- endif -%}
+                  {%- if blo_settings.description != blank -%}
+                    <div class="mt-0 sec-des slide-description" style="{{ description_style }}">{{ blo_settings.description }}</div>
+                  {%- endif -%}
+                  {% if blo_settings.first_button_label != blank or blo_settings.second_button_label != blank %}
+                    <div class="section-btn btn-slideshow d-flex flex-wrap gap-10 {% if blo_settings.text_alignment == 'center' %}justify-content-center{% elsif blo_settings.text_alignment == 'right' %}justify-content-end{% endif %}">
+                      {% if blo_settings.first_button_label != blank %}
+                        <a
+                          {% if blo_settings.first_button_link == blank %}
+                            role="link" aria-disabled="true"
+                          {% else %}
+                            href="{{ blo_settings.first_button_link | default: "#" }}"
+                          {% endif %}
+                          aria-label="{{ blo_settings.first_button_label }}"
+                          class="btn remove-underline{% if block.settings.first_button_style %} btn-outline{% else %} btn-primary{% endif %}"
+                        >
+                          {{ blo_settings.first_button_label }}
+                        </a>
+                      {% endif %}
+                      {% if blo_settings.second_button_label != blank %}
+                        <a
+                          {% if blo_settings.second_button_link == blank %}
+                            role="link" aria-disabled="true"
+                          {% else %}
+                            href="{{ blo_settings.second_button_link | default: "#" }}"
+                          {% endif %}
+                          aria-label="{{ blo_settings.second_button_label }}"
+                          class="btn remove-underline {% if block.settings.second_button_style %} btn-outline{% else %} btn-primary{% endif %}"
+                        >
+                          {{ blo_settings.second_button_label }}
+                        </a>
+                      {% endif %}
+                    </div>
+                  {% endif %}
                 {% endif %}
               </div>
             </div>
@@ -511,6 +557,17 @@
           "unit": "%",
           "label": "t:sections.main-collection-banner.settings.image_overlay_opacity.label",
           "default": 0
+        },
+        {
+          "type": "header",
+          "content": "Special Layout Options"
+        },
+        {
+          "type": "checkbox",
+          "id": "enable_split_layout",
+          "label": "Enable Split Layout",
+          "info": "When enabled, heading will be on the left, subheading and button on the right, aligned horizontally",
+          "default": false
         },
         {
           "type": "header",
@@ -1114,6 +1171,57 @@ span.text-base.transition-all.duration-300.content-navigation {
 @media (max-width: 991px) {
   .custom-navigation__slideshow.w-full.absolute.left-0.right-0.bottom-90.sm\:-translate-y-20.flex.items-center.justify-between.px-4 {
       bottom: 60px !important;
+  }
+}
+
+/* ========== SPLIT LAYOUT STYLES ========== */
+/* Desktop Split Layout */
+@media (min-width: 768px) {
+  .split-layout-enabled .split-layout-content {
+    display: flex !important;
+    flex-direction: row !important;
+    align-items: center !important;
+    gap: 3rem !important;
+    width: 100% !important;
+  }
+
+  .split-layout-enabled .split-layout-left {
+    flex: 0 0 45% !important;
+    display: flex !important;
+    align-items: center !important;
+  }
+
+  .split-layout-enabled .split-layout-right {
+    flex: 0 0 50% !important;
+    display: flex !important;
+    flex-direction: column !important;
+    gap: 1rem !important;
+  }
+
+  .split-layout-enabled .split-layout-left h2 {
+    margin: 0 !important;
+  }
+
+  .split-layout-enabled .split-layout-right .sub-heading {
+    margin-top: 0 !important;
+  }
+
+  .split-layout-enabled .split-layout-right .slide-description {
+    margin-top: 0.5rem !important;
+  }
+}
+
+/* Mobile - Stack vertically */
+@media (max-width: 767px) {
+  .split-layout-enabled .split-layout-content {
+    display: flex !important;
+    flex-direction: column !important;
+    gap: 1.5rem !important;
+  }
+
+  .split-layout-enabled .split-layout-left,
+  .split-layout-enabled .split-layout-right {
+    width: 100% !important;
   }
 }
 </style>
