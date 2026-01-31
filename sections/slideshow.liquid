@@ -93,11 +93,14 @@
           if blo_settings.description_font_family != blank and blo_settings.description_font_family != 'inherit'
             assign description_style = description_style | append: 'font-family: ' | append: blo_settings.description_font_family | append: ' !important; '
           endif
+          
+          # Get split layout gap setting (default to 48px if not set)
+          assign split_gap = blo_settings.split_layout_gap | default: 48
         %}
         <div class="slide-carousel">
           <div
             class="slideshow-item d-flex relative overlay-bg {{ blo_settings.desktop_content_position }}{% if sec_settings.show_text_bellow %} flex-column flex-md-row text-bellow-mb{% endif %} mobile-{{ blo_settings.mobile_content_position | default: blo_settings.desktop_content_position }} item-hero-{{ sec_settings.image_height }}{% if blo_settings.image_overlay_opacity == 0 and blo_settings.desktop_content_position == 'bottom-left' or blo_settings.desktop_content_position == 'bottom-right' or blo_settings.desktop_content_position == 'bottom-center' %} grandient-bg{% endif %}{% if blo_settings.enable_split_layout %} split-layout-enabled{% endif %}"
-            style="{{ style | strip | strip_newlines }}--overlay-opacity: {{ blo_settings.image_overlay_opacity }}%;"
+            style="{{ style | strip | strip_newlines }}--overlay-opacity: {{ blo_settings.image_overlay_opacity }}%; --split-layout-gap: {{ split_gap }}px;"
             data-content-navigation="{% if sec_settings.navigation_style == 'group' %}{{ blo_settings.navigation_group_name | default: default_content }}{% endif %}"
           >
             <div
@@ -606,6 +609,17 @@
           "label": "Enable Split Layout",
           "info": "When enabled, heading will be on the left, subheading and button on the right, aligned horizontally",
           "default": false
+        },
+        {
+          "type": "range",
+          "id": "split_layout_gap",
+          "min": 0,
+          "max": 200,
+          "step": 10,
+          "unit": "px",
+          "label": "Space between left and right sections",
+          "info": "Adjust the gap between heading and content sections (only applies when split layout is enabled)",
+          "default": 50
         },
         {
           "type": "header",
@@ -1317,7 +1331,7 @@ span.text-base.transition-all.duration-300.content-navigation {
     display: flex !important;
     flex-direction: row !important;
     align-items: center !important;
-    gap: 3rem !important;
+    gap: var(--split-layout-gap, 3rem) !important;
     width: 100% !important;
   }
 
