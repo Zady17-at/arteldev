@@ -176,7 +176,7 @@
                       <h2 class="mt-0 section-heading heading-letter-spacing" style="{{ heading_style }}">{{ blo_settings.heading }}</h2>
                     {%- endif -%}
                   </div>
-                  <div class="split-layout-right" style="align-items: {{ blo_settings.split_layout_right_horizontal | default: 'flex-start' }}; justify-content: {{ blo_settings.split_layout_right_vertical | default: 'center' }};">
+                  <div class="split-layout-right" style="align-items: {{ blo_settings.split_layout_right_horizontal | default: 'center' }}; justify-content: {{ blo_settings.split_layout_right_vertical | default: 'center' }};">
                     {%- if blo_settings.subheading != blank -%}
                       <p class="mt-0 sub-heading text-base" style="{{ subheading_style }}">{{ blo_settings.subheading }}</p>
                     {%- endif -%}
@@ -636,7 +636,7 @@
           "type": "select",
           "id": "split_layout_right_horizontal",
           "label": "Right Side Horizontal Position",
-          "default": "flex-start",
+          "default": "center",
           "info": "Only applies when Split Layout is enabled",
           "options": [
             {
@@ -1282,6 +1282,7 @@ span.text-base.transition-all.duration-300.content-navigation {
     flex-direction: column !important;
     gap: 1rem !important;
     /* align-items and justify-content will be set via inline styles */
+    /* Content will be grouped and positioned as a block */
   }
 
   .split-layout-enabled .split-layout-left h2 {
@@ -1308,35 +1309,34 @@ span.text-base.transition-all.duration-300.content-navigation {
 
   .split-layout-enabled .split-layout-right .slide-description {
     margin-top: 0.5rem !important;
+    margin-bottom: 0.5rem !important;
   }
 
-  /* Button alignment based on right side horizontal position */
-  .split-layout-enabled .split-layout-right[style*="align-items: flex-start"] .section-btn {
-    justify-content: flex-start !important;
+  /* Center content horizontally within right side when align-items is center */
+  .split-layout-enabled .split-layout-right[style*="align-items: center"] {
+    text-align: center !important;
   }
   
   .split-layout-enabled .split-layout-right[style*="align-items: center"] .section-btn {
     justify-content: center !important;
   }
-  
-  .split-layout-enabled .split-layout-right[style*="align-items: flex-end"] .section-btn {
-    justify-content: flex-end !important;
-  }
 
-  /* Text alignment for right side content */
-  .split-layout-enabled .split-layout-right[style*="align-items: flex-start"] .sub-heading,
-  .split-layout-enabled .split-layout-right[style*="align-items: flex-start"] .slide-description {
+  /* Left align content when align-items is flex-start */
+  .split-layout-enabled .split-layout-right[style*="align-items: flex-start"] {
     text-align: left !important;
   }
   
-  .split-layout-enabled .split-layout-right[style*="align-items: center"] .sub-heading,
-  .split-layout-enabled .split-layout-right[style*="align-items: center"] .slide-description {
-    text-align: center !important;
+  .split-layout-enabled .split-layout-right[style*="align-items: flex-start"] .section-btn {
+    justify-content: flex-start !important;
+  }
+
+  /* Right align content when align-items is flex-end */
+  .split-layout-enabled .split-layout-right[style*="align-items: flex-end"] {
+    text-align: right !important;
   }
   
-  .split-layout-enabled .split-layout-right[style*="align-items: flex-end"] .sub-heading,
-  .split-layout-enabled .split-layout-right[style*="align-items: flex-end"] .slide-description {
-    text-align: right !important;
+  .split-layout-enabled .split-layout-right[style*="align-items: flex-end"] .section-btn {
+    justify-content: flex-end !important;
   }
 }
 
