@@ -171,12 +171,12 @@
             <div class="slide-text loading-animation py-60 d-flex max-100 text-{{ blo_settings.text_alignment }} {{ blo_settings.desktop_content_position }}{% if sec_settings.show_text_bellow %} w-full{% endif %}{% if sec_settings.show_text_bellow and sec_settings.section_width == 'expand_full_width' %} px-20{% endif %}">
               <div class="slide-content bls__content relative z-1 max-100 word-wrap-bread-word size-{{ sec_settings.size }}{% if blo_settings.enable_split_layout %} split-layout-content{% endif %}">
                 {% if blo_settings.enable_split_layout %}
-                  <div class="split-layout-left">
+                  <div class="split-layout-left" style="align-items: {{ blo_settings.split_layout_left_vertical | default: 'center' }}; justify-content: {{ blo_settings.split_layout_left_horizontal | default: 'start' }};">
                     {%- if blo_settings.heading != blank -%}
                       <h2 class="mt-0 section-heading heading-letter-spacing" style="{{ heading_style }}">{{ blo_settings.heading }}</h2>
                     {%- endif -%}
                   </div>
-                  <div class="split-layout-right">
+                  <div class="split-layout-right" style="align-items: {{ blo_settings.split_layout_right_horizontal | default: 'start' }}; justify-content: {{ blo_settings.split_layout_right_vertical | default: 'center' }};">
                     {%- if blo_settings.subheading != blank -%}
                       <p class="mt-0 sub-heading text-base" style="{{ subheading_style }}">{{ blo_settings.subheading }}</p>
                     {%- endif -%}
@@ -568,6 +568,90 @@
           "label": "Enable Split Layout",
           "info": "When enabled, heading will be on the left, subheading and button on the right, aligned horizontally",
           "default": false
+        },
+        {
+          "type": "select",
+          "id": "split_layout_left_vertical",
+          "label": "Left Side Vertical Position",
+          "default": "center",
+          "info": "Only applies when Split Layout is enabled",
+          "options": [
+            {
+              "value": "start",
+              "label": "Top"
+            },
+            {
+              "value": "center",
+              "label": "Center"
+            },
+            {
+              "value": "end",
+              "label": "Bottom"
+            }
+          ]
+        },
+        {
+          "type": "select",
+          "id": "split_layout_left_horizontal",
+          "label": "Left Side Horizontal Position",
+          "default": "start",
+          "info": "Only applies when Split Layout is enabled",
+          "options": [
+            {
+              "value": "start",
+              "label": "Left"
+            },
+            {
+              "value": "center",
+              "label": "Center"
+            },
+            {
+              "value": "end",
+              "label": "Right"
+            }
+          ]
+        },
+        {
+          "type": "select",
+          "id": "split_layout_right_vertical",
+          "label": "Right Side Vertical Position",
+          "default": "center",
+          "info": "Only applies when Split Layout is enabled",
+          "options": [
+            {
+              "value": "start",
+              "label": "Top"
+            },
+            {
+              "value": "center",
+              "label": "Center"
+            },
+            {
+              "value": "end",
+              "label": "Bottom"
+            }
+          ]
+        },
+        {
+          "type": "select",
+          "id": "split_layout_right_horizontal",
+          "label": "Right Side Horizontal Position",
+          "default": "start",
+          "info": "Only applies when Split Layout is enabled",
+          "options": [
+            {
+              "value": "start",
+              "label": "Left"
+            },
+            {
+              "value": "center",
+              "label": "Center"
+            },
+            {
+              "value": "end",
+              "label": "Right"
+            }
+          ]
         },
         {
           "type": "header",
@@ -1188,7 +1272,7 @@ span.text-base.transition-all.duration-300.content-navigation {
   .split-layout-enabled .split-layout-left {
     flex: 0 0 45% !important;
     display: flex !important;
-    align-items: center !important;
+    /* align-items and justify-content will be set via inline styles */
   }
 
   .split-layout-enabled .split-layout-right {
@@ -1196,18 +1280,26 @@ span.text-base.transition-all.duration-300.content-navigation {
     display: flex !important;
     flex-direction: column !important;
     gap: 1rem !important;
+    /* align-items and justify-content will be set via inline styles */
   }
 
   .split-layout-enabled .split-layout-left h2 {
     margin: 0 !important;
+    width: 100%;
   }
 
   .split-layout-enabled .split-layout-right .sub-heading {
     margin-top: 0 !important;
+    width: 100%;
   }
 
   .split-layout-enabled .split-layout-right .slide-description {
     margin-top: 0.5rem !important;
+    width: 100%;
+  }
+
+  .split-layout-enabled .split-layout-right .section-btn {
+    width: 100%;
   }
 }
 
