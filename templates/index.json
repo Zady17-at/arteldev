@@ -640,7 +640,7 @@
             "image_overlay_opacity": 0,
             "enable_split_layout": true,
             "split_layout_gap": 200,
-            "split_edge_padding": 0,
+            "split_edge_padding": 60,
             "split_left_position": "middle-left",
             "split_right_position": "middle-center",
             "subheading": "Subheading",
