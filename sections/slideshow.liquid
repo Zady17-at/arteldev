@@ -1460,15 +1460,27 @@ span.text-base.transition-all.duration-300.content-navigation {
 
 /* Mobile - Keep horizontal split layout */
 @media (max-width: 767px) {
+  /* Override any conflicting mobile positioning */
+  .split-layout-enabled .slide-text {
+    position: relative !important;
+    transform: none !important;
+  }
+
+  .split-layout-enabled .slide-content {
+    width: 100% !important;
+    max-width: 100% !important;
+  }
+
   .split-layout-enabled .split-layout-content {
     display: flex !important;
     flex-direction: row !important;
     align-items: center !important;
-    gap: var(--split-layout-gap, 2rem) !important;
+    justify-content: space-between !important;
+    gap: calc(var(--split-layout-gap, 50px) * 0.3) !important;
     width: 100% !important;
-    max-width: calc(100% - var(--split-left-padding, 2rem) - var(--split-right-padding, 2rem)) !important;
-    margin-left: var(--split-left-padding, 2rem) !important;
-    margin-right: var(--split-right-padding, 2rem) !important;
+    max-width: calc(100% - calc(var(--split-left-padding, 80px) * 0.3) - calc(var(--split-right-padding, 80px) * 0.3)) !important;
+    margin-left: calc(var(--split-left-padding, 80px) * 0.3) !important;
+    margin-right: calc(var(--split-right-padding, 80px) * 0.3) !important;
     padding: 0 !important;
   }
 
@@ -1476,16 +1488,17 @@ span.text-base.transition-all.duration-300.content-navigation {
   .split-layout-enabled .split-layout-right {
     display: flex !important;
     flex-direction: column !important;
+    flex-shrink: 1 !important;
   }
 
   .split-layout-enabled .split-layout-left {
-    flex: 1 1 0% !important;
+    flex: 1 1 45% !important;
     min-width: 0 !important;
   }
 
   .split-layout-enabled .split-layout-right {
-    flex: 1 1 0% !important;
-    gap: 1rem !important;
+    flex: 1 1 55% !important;
+    gap: 0.75rem !important;
     min-width: 0 !important;
   }
 
@@ -1554,14 +1567,35 @@ span.text-base.transition-all.duration-300.content-navigation {
     justify-content: flex-end !important;
   }
 
-  /* Reduce font sizes on mobile for better fit */
-  .split-layout-enabled .split-layout-left h2 {
-    font-size: clamp(1.5rem, 5vw, 2.5rem) !important;
-  }
-
+  /* Reset margins and ensure proper sizing */
+  .split-layout-enabled .split-layout-left h2,
   .split-layout-enabled .split-layout-right .sub-heading,
   .split-layout-enabled .split-layout-right .slide-description {
-    font-size: clamp(0.875rem, 3vw, 1rem) !important;
+    margin: 0 !important;
+    width: 100%;
+  }
+
+  .split-layout-enabled .split-layout-right .slide-description {
+    margin-top: 0.5rem !important;
+    margin-bottom: 0.5rem !important;
+  }
+
+  .split-layout-enabled .split-layout-right .section-btn {
+    width: 100%;
+  }
+
+  /* Responsive font sizes on mobile */
+  .split-layout-enabled .split-layout-left h2 {
+    font-size: clamp(1.25rem, 4vw, 2rem) !important;
+    line-height: 1.2 !important;
+  }
+
+  .split-layout-enabled .split-layout-right .sub-heading {
+    font-size: clamp(0.75rem, 2.5vw, 0.9rem) !important;
+  }
+
+  .split-layout-enabled .split-layout-right .slide-description {
+    font-size: clamp(0.75rem, 2.5vw, 0.9rem) !important;
   }
 }
 </style>
