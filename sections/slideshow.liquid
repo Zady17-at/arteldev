@@ -1468,7 +1468,7 @@ span.text-base.transition-all.duration-300.content-navigation {
     max-width: 100% !important;
     margin-left: 0 !important;
     margin-right: 0 !important;
-    padding: 3rem 2rem !important;
+    padding: 2rem 2rem 3rem 2rem !important;
   }
 
   .split-layout-enabled .split-layout-left,
@@ -1479,7 +1479,7 @@ span.text-base.transition-all.duration-300.content-navigation {
   }
 
   .split-layout-enabled .split-layout-left {
-    margin-bottom: 2rem !important;
+    margin-bottom: 2.5rem !important;
   }
 
   .split-layout-enabled .split-layout-right {
@@ -1496,46 +1496,54 @@ span.text-base.transition-all.duration-300.content-navigation {
   }
 
   .split-layout-enabled .split-layout-right .sub-heading {
-    margin-bottom: 1rem !important;
+    margin-bottom: 1.25rem !important;
   }
 
   .split-layout-enabled .split-layout-right .slide-description {
-    margin-top: 1rem !important;
-    margin-bottom: 1.5rem !important;
+    margin-top: 1.25rem !important;
+    margin-bottom: 2rem !important;
   }
 
   /* Center buttons on mobile */
   .split-layout-enabled .split-layout-right .section-btn {
     justify-content: center !important;
     width: 100%;
-    margin-top: 1.5rem !important;
+    margin-top: 2rem !important;
   }
 
   /* Responsive font sizes on mobile */
   .split-layout-enabled .split-layout-left h2 {
-    font-size: clamp(1.75rem, 6vw, 2.5rem) !important;
-    line-height: 1.2 !important;
-    margin-bottom: 1rem !important;
+    font-size: clamp(2rem, 7vw, 3rem) !important;
+    line-height: 1.1 !important;
+    margin-bottom: 0 !important;
   }
 
   .split-layout-enabled .split-layout-right .sub-heading {
-    font-size: clamp(0.875rem, 3vw, 1.125rem) !important;
+    font-size: clamp(1rem, 3.5vw, 1.25rem) !important;
     line-height: 1.4 !important;
   }
 
   .split-layout-enabled .split-layout-right .slide-description {
-    font-size: clamp(0.875rem, 3vw, 1.125rem) !important;
+    font-size: clamp(1rem, 3.5vw, 1.25rem) !important;
     line-height: 1.5 !important;
   }
   
-  /* Ensure the slide has minimum height on mobile */
+  /* Ensure the slide has proper height on mobile and content positioned higher */
   .split-layout-enabled.slideshow-item {
-    min-height: 70vh !important;
+    min-height: 85vh !important;
   }
   
   .split-layout-enabled .slide-text {
-    padding-top: 4rem !important;
-    padding-bottom: 4rem !important;
+    padding-top: 6rem !important;
+    padding-bottom: 6rem !important;
+    justify-content: flex-start !important;
+    align-items: center !important;
+  }
+  
+  /* Position content in upper portion of the slide */
+  .split-layout-enabled.slideshow-item.mobile-middle-center .slide-text,
+  .split-layout-enabled.slideshow-item.middle-center .slide-text {
+    padding-top: 8rem !important;
   }
 }
 </style>
