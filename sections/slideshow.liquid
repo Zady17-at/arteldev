@@ -1459,144 +1459,69 @@ span.text-base.transition-all.duration-300.content-navigation {
   }
 }
 
-/* Mobile - Keep horizontal split layout */
+/* Mobile - Stack vertically like normal layout */
 @media (max-width: 767px) {
-  /* Override any conflicting mobile positioning */
-  .split-layout-enabled .slide-text {
-    position: relative !important;
-    transform: none !important;
-  }
-
-  .split-layout-enabled .slide-content {
+  /* Disable split layout on mobile - revert to normal vertical stacking */
+  .split-layout-enabled .split-layout-content {
+    display: block !important;
     width: 100% !important;
     max-width: 100% !important;
-  }
-
-  .split-layout-enabled .split-layout-content {
-    display: flex !important;
-    flex-direction: row !important;
-    align-items: center !important;
-    justify-content: space-between !important;
-    gap: calc(var(--split-layout-gap, 50px) * 0.3) !important;
-    width: 100% !important;
-    max-width: calc(100% - calc(var(--split-left-padding, 80px) * 0.3) - calc(var(--split-right-padding, 80px) * 0.3)) !important;
-    margin-left: calc(var(--split-left-padding, 80px) * 0.3) !important;
-    margin-right: calc(var(--split-right-padding, 80px) * 0.3) !important;
-    padding: 0 !important;
+    margin-left: 0 !important;
+    margin-right: 0 !important;
+    padding: 0 2rem !important;
   }
 
   .split-layout-enabled .split-layout-left,
   .split-layout-enabled .split-layout-right {
-    display: flex !important;
-    flex-direction: column !important;
-    flex-shrink: 1 !important;
+    display: block !important;
+    width: 100% !important;
+    flex: none !important;
   }
 
   .split-layout-enabled .split-layout-left {
-    flex: 1 1 45% !important;
-    min-width: 0 !important;
+    margin-bottom: 1rem !important;
   }
 
   .split-layout-enabled .split-layout-right {
-    flex: 1 1 55% !important;
-    gap: 0.75rem !important;
-    min-width: 0 !important;
+    gap: 0 !important;
   }
 
-  /* Mobile text alignment - preserve desktop alignment */
-  .split-layout-enabled .split-layout-left.split-pos-top-left h2,
-  .split-layout-enabled .split-layout-left.split-pos-middle-left h2,
-  .split-layout-enabled .split-layout-left.split-pos-bottom-left h2 {
-    text-align: left !important;
-  }
-
-  .split-layout-enabled .split-layout-left.split-pos-top-center h2,
-  .split-layout-enabled .split-layout-left.split-pos-middle-center h2,
-  .split-layout-enabled .split-layout-left.split-pos-bottom-center h2 {
-    text-align: center !important;
-  }
-
-  .split-layout-enabled .split-layout-left.split-pos-top-right h2,
-  .split-layout-enabled .split-layout-left.split-pos-middle-right h2,
-  .split-layout-enabled .split-layout-left.split-pos-bottom-right h2 {
-    text-align: right !important;
-  }
-
-  .split-layout-enabled .split-layout-right.split-pos-top-left .sub-heading,
-  .split-layout-enabled .split-layout-right.split-pos-middle-left .sub-heading,
-  .split-layout-enabled .split-layout-right.split-pos-bottom-left .sub-heading,
-  .split-layout-enabled .split-layout-right.split-pos-top-left .slide-description,
-  .split-layout-enabled .split-layout-right.split-pos-middle-left .slide-description,
-  .split-layout-enabled .split-layout-right.split-pos-bottom-left .slide-description {
-    text-align: left !important;
-  }
-
-  .split-layout-enabled .split-layout-right.split-pos-top-center .sub-heading,
-  .split-layout-enabled .split-layout-right.split-pos-middle-center .sub-heading,
-  .split-layout-enabled .split-layout-right.split-pos-bottom-center .sub-heading,
-  .split-layout-enabled .split-layout-right.split-pos-top-center .slide-description,
-  .split-layout-enabled .split-layout-right.split-pos-middle-center .slide-description,
-  .split-layout-enabled .split-layout-right.split-pos-bottom-center .slide-description {
-    text-align: center !important;
-  }
-
-  .split-layout-enabled .split-layout-right.split-pos-top-right .sub-heading,
-  .split-layout-enabled .split-layout-right.split-pos-middle-right .sub-heading,
-  .split-layout-enabled .split-layout-right.split-pos-bottom-right .sub-heading,
-  .split-layout-enabled .split-layout-right.split-pos-top-right .slide-description,
-  .split-layout-enabled .split-layout-right.split-pos-middle-right .slide-description,
-  .split-layout-enabled .split-layout-right.split-pos-bottom-right .slide-description {
-    text-align: right !important;
-  }
-
-  /* Button alignment */
-  .split-layout-enabled .split-layout-right.split-pos-top-left .section-btn,
-  .split-layout-enabled .split-layout-right.split-pos-middle-left .section-btn,
-  .split-layout-enabled .split-layout-right.split-pos-bottom-left .section-btn {
-    justify-content: flex-start !important;
-  }
-
-  .split-layout-enabled .split-layout-right.split-pos-top-center .section-btn,
-  .split-layout-enabled .split-layout-right.split-pos-middle-center .section-btn,
-  .split-layout-enabled .split-layout-right.split-pos-bottom-center .section-btn {
-    justify-content: center !important;
-  }
-
-  .split-layout-enabled .split-layout-right.split-pos-top-right .section-btn,
-  .split-layout-enabled .split-layout-right.split-pos-middle-right .section-btn,
-  .split-layout-enabled .split-layout-right.split-pos-bottom-right .section-btn {
-    justify-content: flex-end !important;
-  }
-
-  /* Reset margins and ensure proper sizing */
+  /* Center all text on mobile */
   .split-layout-enabled .split-layout-left h2,
   .split-layout-enabled .split-layout-right .sub-heading,
   .split-layout-enabled .split-layout-right .slide-description {
-    margin: 0 !important;
+    text-align: center !important;
     width: 100%;
+    margin: 0 auto !important;
+  }
+
+  .split-layout-enabled .split-layout-right .sub-heading {
+    margin-bottom: 0.5rem !important;
   }
 
   .split-layout-enabled .split-layout-right .slide-description {
     margin-top: 0.5rem !important;
-    margin-bottom: 0.5rem !important;
+    margin-bottom: 1rem !important;
   }
 
+  /* Center buttons on mobile */
   .split-layout-enabled .split-layout-right .section-btn {
+    justify-content: center !important;
     width: 100%;
   }
 
   /* Responsive font sizes on mobile */
   .split-layout-enabled .split-layout-left h2 {
-    font-size: clamp(1.25rem, 4vw, 2rem) !important;
+    font-size: clamp(1.5rem, 5vw, 2.5rem) !important;
     line-height: 1.2 !important;
   }
 
   .split-layout-enabled .split-layout-right .sub-heading {
-    font-size: clamp(0.75rem, 2.5vw, 0.9rem) !important;
+    font-size: clamp(0.875rem, 3vw, 1rem) !important;
   }
 
   .split-layout-enabled .split-layout-right .slide-description {
-    font-size: clamp(0.75rem, 2.5vw, 0.9rem) !important;
+    font-size: clamp(0.875rem, 3vw, 1rem) !important;
   }
 }
 </style>
