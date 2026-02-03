@@ -1188,10 +1188,6 @@ span.text-base.transition-all.duration-300.content-navigation {
     display: none;
 }
 
-span.text-base.transition-all.duration-300.content-navigation {
-    display: none;
-}
-
 .tns-nav button.btn::before {
   content: none !important;
   display: none !important;
@@ -1202,7 +1198,7 @@ span.text-base.transition-all.duration-300.content-navigation {
 }
 
 .tns-nav button.tns-nav-active {
-  background-color: #C49B37 !important; /* yellow */
+  background-color: #C49B37 !important;
   border: none !important;
   box-shadow: none !important;
   outline: none !important;
@@ -1305,7 +1301,7 @@ span.text-base.transition-all.duration-300.content-navigation {
 }
 
 .tns-nav button.btn {
-  background-color: #C49B37 !important;  /* yellow for inactive */
+  background-color: #C49B37 !important;
   border: none !important;
   box-shadow: none !important;
   outline: none !important;
@@ -1324,15 +1320,13 @@ span.text-base.transition-all.duration-300.content-navigation {
   display: none !important;
 }
 
-
 .tns-nav button.tns-nav-active {
-  background-color: #1E355B !important; /* your blue tone */
+  background-color: #1E355B !important;
   border: none !important;
   box-shadow: none !important;
   outline: none !important;
   transform: scale(1.2);
 }
-
 
 .tns-nav button.btn:hover {
   transform: scale(1.1);
@@ -1342,7 +1336,6 @@ span.text-base.transition-all.duration-300.content-navigation {
   outline: none !important;
   box-shadow: none !important;
 }
-
 
 @media (max-width: 991px) {
   .custom-navigation__slideshow.w-full.absolute.left-0.right-0.bottom-90.sm\:-translate-y-20.flex.items-center.justify-between.px-4 {
@@ -1471,11 +1464,24 @@ span.text-base.transition-all.duration-300.content-navigation {
     display: flex !important;
     flex-direction: column !important;
     gap: 1.5rem !important;
+    padding-left: 1rem !important;
+    padding-right: 1rem !important;
   }
 
   .split-layout-enabled .split-layout-left,
   .split-layout-enabled .split-layout-right {
     width: 100% !important;
+  }
+
+  /* Mobile text alignment */
+  .split-layout-enabled .split-layout-left h2,
+  .split-layout-enabled .split-layout-right .sub-heading,
+  .split-layout-enabled .split-layout-right .slide-description {
+    text-align: left !important;
+  }
+
+  .split-layout-enabled .split-layout-right .section-btn {
+    justify-content: flex-start !important;
   }
 }
 </style>
