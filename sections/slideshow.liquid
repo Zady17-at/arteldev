@@ -614,7 +614,7 @@
           "type": "checkbox",
           "id": "enable_split_layout",
           "label": "Enable Split Layout",
-          "info": "When enabled, heading will be on the left, subheading and button on the right, aligned horizontally",
+          "info": "When enabled, heading will be on the left, subheading and button on the right, aligned horizontally on desktop. On mobile, content stacks vertically.",
           "default": false
         },
         {
@@ -624,7 +624,7 @@
           "max": 1000,
           "step": 10,
           "unit": "px",
-          "label": "Space between left and right sections",
+          "label": "Space between left and right sections (Desktop only)",
           "info": "Adjust the gap between heading and content sections (only applies when split layout is enabled)",
           "default": 50
         },
@@ -635,7 +635,7 @@
           "max": 400,
           "step": 10,
           "unit": "px",
-          "label": "Left edge padding",
+          "label": "Left edge padding (Desktop only)",
           "info": "Distance from left screen edge to left content (only applies when split layout is enabled)",
           "default": 80
         },
@@ -646,7 +646,7 @@
           "max": 400,
           "step": 10,
           "unit": "px",
-          "label": "Right edge padding",
+          "label": "Right edge padding (Desktop only)",
           "info": "Distance from right screen edge to right content (only applies when split layout is enabled)",
           "default": 80
         },
@@ -668,7 +668,7 @@
         {
           "type": "select",
           "id": "split_left_position",
-          "label": "Left Side Position",
+          "label": "Left Side Position (Desktop only)",
           "default": "middle-left",
           "info": "Only applies when Split Layout is enabled",
           "options": [
@@ -717,7 +717,7 @@
         {
           "type": "select",
           "id": "split_right_position",
-          "label": "Right Side Position",
+          "label": "Right Side Position (Desktop only)",
           "default": "middle-center",
           "info": "Only applies when Split Layout is enabled",
           "options": [
