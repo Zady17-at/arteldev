@@ -1542,21 +1542,22 @@ span.text-base.transition-all.duration-300.content-navigation {
     line-height: 1.5 !important;
   }
   
-  /* Ensure the slide has proper height on mobile and content positioned higher */
-  .split-layout-enabled.slideshow-item {
+  /* ========== APPLY TALL MOBILE LAYOUT TO ALL SLIDES ========== */
+  /* Ensure ALL slides have proper height on mobile and content positioned higher */
+  .slideshow-item {
     min-height: 100vh !important;
   }
   
-  .split-layout-enabled .slide-text {
+  .slideshow-item .slide-text {
     padding-top: 8rem !important;
     padding-bottom: 8rem !important;
     justify-content: flex-start !important;
     align-items: center !important;
   }
   
-  /* Position content in upper portion of the slide */
-  .split-layout-enabled.slideshow-item.mobile-middle-center .slide-text,
-  .split-layout-enabled.slideshow-item.middle-center .slide-text {
+  /* Position content in upper portion of the slide for centered content */
+  .slideshow-item.mobile-middle-center .slide-text,
+  .slideshow-item.middle-center .slide-text {
     padding-top: 10rem !important;
   }
 }
