@@ -1163,12 +1163,19 @@ span.text-base.transition-all.duration-300.content-navigation {
 /* Mobile/Tablet - Stack vertically */
 /* Below 1024px: matches the desktop split layout breakpoint */
 @media (max-width: 1023px) {
+  /* Center the entire text block when split layout stacks */
+  .split-layout-enabled .slide-text {
+    justify-content: center !important;
+    align-items: center !important;
+    text-align: center !important;
+  }
+
   .split-layout-enabled .split-layout-content {
     display: block !important;
     width: 100% !important;
     max-width: 100% !important;
-    margin-left: 0 !important;
-    margin-right: 0 !important;
+    margin-left: auto !important;
+    margin-right: auto !important;
     padding: 2rem 2rem 3rem 2rem !important;
   }
 
