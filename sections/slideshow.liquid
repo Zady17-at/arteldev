@@ -1259,12 +1259,14 @@ span.text-base.transition-all.duration-300.content-navigation {
   box-shadow: none !important;
 }
 
+/* NAVIGATION BREAKPOINT FROM ORIGINAL CODE */
 @media (max-width: 991px) {
   .custom-navigation__slideshow.w-full.absolute.left-0.right-0.bottom-90.sm\:-translate-y-20.flex.items-center.justify-between.px-4 {
       bottom: 60px !important;
   }
 }
 
+/* MOBILE CONTENT POSITIONING - FROM ORIGINAL CODE */
 @media (max-width: 768px) {
   .custom-navigation__slideshow.w-full.absolute.left-0.right-0.bottom-90.sm\:-translate-y-20.flex.items-center.justify-between.px-4 {
       bottom: 60px !important;
@@ -1359,8 +1361,9 @@ span.text-base.transition-all.duration-300.content-navigation {
 }
 
 /* ========== SPLIT LAYOUT STYLES ========== */
-/* Desktop Split Layout */
-@media (min-width: 768px) {
+/* Desktop Split Layout - ONLY ACTIVATES ABOVE TABLET WIDTH */
+/* Changed from 768px to 769px to prevent conflict with tablet view */
+@media (min-width: 769px) {
   .split-layout-enabled .split-layout-content {
     display: flex !important;
     flex-direction: row !important;
@@ -1473,9 +1476,10 @@ span.text-base.transition-all.duration-300.content-navigation {
   }
 }
 
-/* Mobile - Stack vertically like normal layout */
-@media (max-width: 767px) {
-  /* Disable split layout on mobile - revert to normal vertical stacking */
+/* Mobile/Tablet - Stack vertically like normal layout */
+/* Changed from 767px to 768px to ensure tablet matches original mobile view */
+@media (max-width: 768px) {
+  /* Disable split layout on mobile/tablet - revert to normal vertical stacking */
   .split-layout-enabled .split-layout-content {
     display: block !important;
     width: 100% !important;
