@@ -1085,8 +1085,11 @@ span.text-base.transition-all.duration-300.content-navigation {
   .slideshow-item.split-content-center .split-layout-right .section-btn.btn-slideshow {
     width: var(--content-text-width, 300px) !important;
     max-width: var(--content-text-width, 300px) !important;
-    flex-direction: column !important;
-    align-items: center !important;
+    justify-content: center !important;
+  }
+  .slideshow-item.split-content-center .split-layout-right .section-btn.btn-slideshow .btn {
+    flex: 0 0 auto !important;
+    width: auto !important;
   }
 
   /* Description alignment: Right */
