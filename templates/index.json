@@ -667,7 +667,7 @@
             "split_layout_gap": 860,
             "split_left_padding": 30,
             "split_right_padding": 0,
-            "heading_description_gap": 330,
+            "heading_description_gap": 400,
             "split_left_position": "middle-left",
             "split_right_position": "middle-center",
             "subheading": "",
