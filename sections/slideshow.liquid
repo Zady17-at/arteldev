@@ -1170,6 +1170,31 @@ span.text-base.transition-all.duration-300.content-navigation {
     text-align: center !important;
   }
 
+  /* Override ALL desktop content position classes for split layout */
+  .slideshow-item.split-layout-enabled.top-left .slide-text,
+  .slideshow-item.split-layout-enabled.top-center .slide-text,
+  .slideshow-item.split-layout-enabled.top-right .slide-text,
+  .slideshow-item.split-layout-enabled.middle-left .slide-text,
+  .slideshow-item.split-layout-enabled.middle-center .slide-text,
+  .slideshow-item.split-layout-enabled.middle-right .slide-text,
+  .slideshow-item.split-layout-enabled.bottom-left .slide-text,
+  .slideshow-item.split-layout-enabled.bottom-center .slide-text,
+  .slideshow-item.split-layout-enabled.bottom-right .slide-text,
+  .split-layout-enabled .slide-text.top-left,
+  .split-layout-enabled .slide-text.top-center,
+  .split-layout-enabled .slide-text.top-right,
+  .split-layout-enabled .slide-text.middle-left,
+  .split-layout-enabled .slide-text.middle-center,
+  .split-layout-enabled .slide-text.middle-right,
+  .split-layout-enabled .slide-text.bottom-left,
+  .split-layout-enabled .slide-text.bottom-center,
+  .split-layout-enabled .slide-text.bottom-right {
+    justify-content: center !important;
+    align-items: center !important;
+    text-align: center !important;
+    width: 100% !important;
+  }
+
   .split-layout-enabled .split-layout-content {
     display: block !important;
     width: 100% !important;
