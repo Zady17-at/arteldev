@@ -193,7 +193,7 @@
                       assign left_horizontal = 'center'
                     endif
                     
-                    assign right_pos = blo_settings.split_right_position | default: 'middle-center'
+                    assign right_pos = blo_settings.split_right_position | default: 'middle-right'
                     if right_pos contains 'top'
                       assign right_vertical = 'flex-start'
                     elsif right_pos contains 'bottom'
@@ -606,7 +606,7 @@
           "type": "select",
           "id": "split_right_position",
           "label": "Right Side Position (Desktop only)",
-          "default": "middle-center",
+          "default": "middle-right",
           "info": "Only applies when Split Layout is enabled",
           "options": [
             { "value": "top-left", "label": "Top left" },
