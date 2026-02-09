@@ -1051,7 +1051,9 @@ span.text-base.transition-all.duration-300.content-navigation {
   .split-layout-enabled .split-layout-content {
     display: flex !important;
     flex-direction: row !important;
+    flex-wrap: wrap !important;
     align-items: center !important;
+    justify-content: center !important;
     gap: var(--split-layout-gap, 3rem) !important;
     width: 100% !important;
     max-width: calc(100% - var(--split-left-padding, 5rem) - var(--split-right-padding, 5rem)) !important;
@@ -1066,14 +1068,14 @@ span.text-base.transition-all.duration-300.content-navigation {
   }
 
   .split-layout-enabled .split-layout-left {
-    flex: 1 1 0% !important;
-    min-width: 0 !important;
+    flex: 1 1 350px !important;
+    min-width: 300px !important;
   }
 
   .split-layout-enabled .split-layout-right {
-    flex: 1 1 0% !important;
+    flex: 1 1 350px !important;
     gap: 1rem !important;
-    min-width: 0 !important;
+    min-width: 300px !important;
   }
 
   /* Text alignment - LEFT side */
