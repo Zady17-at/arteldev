@@ -103,12 +103,13 @@
             assign content_text_width = content_text_width_val | append: 'px'
           endif
           assign split_content_alignment = blo_settings.split_content_alignment | default: 'center'
-          assign mobile_content_margin = blo_settings.mobile_content_margin | default: 30
+          assign mobile_top_distance = blo_settings.mobile_top_distance | default: 30
+          assign mobile_bottom_distance = blo_settings.mobile_bottom_distance | default: 30
         %}
         <div class="slide-carousel">
           <div
             class="slideshow-item d-flex relative overlay-bg {{ blo_settings.desktop_content_position }}{% if sec_settings.show_text_bellow %} flex-column flex-md-row text-bellow-mb{% endif %} mobile-{{ blo_settings.mobile_content_position | default: blo_settings.desktop_content_position }} item-hero-{{ sec_settings.image_height }}{% if blo_settings.image_overlay_opacity == 0 and blo_settings.desktop_content_position == 'bottom-left' or blo_settings.desktop_content_position == 'bottom-right' or blo_settings.desktop_content_position == 'bottom-center' %} grandient-bg{% endif %}{% if blo_settings.enable_split_layout %} split-layout-enabled split-content-{{ split_content_alignment }}{% endif %}"
-            style="{{ style | strip | strip_newlines }}--overlay-opacity: {{ blo_settings.image_overlay_opacity }}%; --heading-edge-distance: {{ heading_edge_distance }}px; --content-edge-distance: {{ content_edge_distance }}px; --content-text-width: {{ content_text_width }}; --mobile-content-margin: {{ mobile_content_margin }}px;"
+            style="{{ style | strip | strip_newlines }}--overlay-opacity: {{ blo_settings.image_overlay_opacity }}%; --heading-edge-distance: {{ heading_edge_distance }}px; --content-edge-distance: {{ content_edge_distance }}px; --content-text-width: {{ content_text_width }}; --mobile-top-distance: {{ mobile_top_distance }}px; --mobile-bottom-distance: {{ mobile_bottom_distance }}px;"
             data-content-navigation="{% if sec_settings.navigation_style == 'group' %}{{ blo_settings.navigation_group_name | default: default_content }}{% endif %}"
           >
             <div
@@ -574,10 +575,18 @@
         },
         {
           "type": "range",
-          "id": "mobile_content_margin",
-          "min": 0, "max": 100, "step": 5, "unit": "px",
-          "label": "Content margin (Mobile only)",
-          "info": "Distance from screen edges on mobile to prevent text distortion",
+          "id": "mobile_top_distance",
+          "min": 0, "max": 200, "step": 5, "unit": "px",
+          "label": "Heading & Subheading distance from top (Mobile only)",
+          "info": "Controls how far the heading and subheading sit from the top screen edge on mobile",
+          "default": 30
+        },
+        {
+          "type": "range",
+          "id": "mobile_bottom_distance",
+          "min": 0, "max": 200, "step": 5, "unit": "px",
+          "label": "Description & Button distance from bottom (Mobile only)",
+          "info": "Controls how far the description and button sit from the bottom screen edge on mobile",
           "default": 30
         },
         {
@@ -1108,13 +1117,23 @@ span.text-base.transition-all.duration-300.content-navigation {
 /* Changed from 767px to 768px to ensure tablet matches original mobile view */
 @media (max-width: 768px) {
   /* Disable split layout on mobile/tablet - revert to normal vertical stacking */
+  .split-layout-enabled .slide-text {
+    height: 100% !important;
+    flex: 1 !important;
+  }
+
   .split-layout-enabled .split-layout-content {
-    display: block !important;
+    display: flex !important;
+    flex-direction: column !important;
+    justify-content: space-between !important;
     width: 100% !important;
     max-width: 100% !important;
+    height: 100% !important;
     margin-left: 0 !important;
     margin-right: 0 !important;
-    padding: var(--mobile-content-margin, 30px) !important;
+    padding: 0 2rem !important;
+    padding-top: var(--mobile-top-distance, 30px) !important;
+    padding-bottom: var(--mobile-bottom-distance, 30px) !important;
   }
 
   .split-layout-enabled .split-layout-left,
@@ -1125,7 +1144,7 @@ span.text-base.transition-all.duration-300.content-navigation {
   }
 
   .split-layout-enabled .split-layout-left {
-    margin-bottom: 1.5rem !important;
+    margin-bottom: 0 !important;
   }
 
   .split-layout-enabled .split-layout-right {
