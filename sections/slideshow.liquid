@@ -94,14 +94,14 @@
             assign description_style = description_style | append: 'font-family: ' | append: blo_settings.description_font_family | append: ' !important; '
           endif
           
-          assign split_left_padding = blo_settings.split_left_padding | default: 80
-          assign split_right_padding = blo_settings.split_right_padding | default: 80
+          assign heading_edge_distance = blo_settings.heading_edge_distance | default: 80
+          assign content_edge_distance = blo_settings.content_edge_distance | default: 80
           assign heading_description_gap = blo_settings.heading_description_gap | default: 40
         %}
         <div class="slide-carousel">
           <div
             class="slideshow-item d-flex relative overlay-bg {{ blo_settings.desktop_content_position }}{% if sec_settings.show_text_bellow %} flex-column flex-md-row text-bellow-mb{% endif %} mobile-{{ blo_settings.mobile_content_position | default: blo_settings.desktop_content_position }} item-hero-{{ sec_settings.image_height }}{% if blo_settings.image_overlay_opacity == 0 and blo_settings.desktop_content_position == 'bottom-left' or blo_settings.desktop_content_position == 'bottom-right' or blo_settings.desktop_content_position == 'bottom-center' %} grandient-bg{% endif %}{% if blo_settings.enable_split_layout %} split-layout-enabled{% endif %}"
-            style="{{ style | strip | strip_newlines }}--overlay-opacity: {{ blo_settings.image_overlay_opacity }}%; --split-left-padding: {{ split_left_padding }}px; --split-right-padding: {{ split_right_padding }}px; --heading-description-gap: {{ heading_description_gap }}px;"
+            style="{{ style | strip | strip_newlines }}--overlay-opacity: {{ blo_settings.image_overlay_opacity }}%; --heading-edge-distance: {{ heading_edge_distance }}px; --content-edge-distance: {{ content_edge_distance }}px; --heading-description-gap: {{ heading_description_gap }}px;"
             data-content-navigation="{% if sec_settings.navigation_style == 'group' %}{{ blo_settings.navigation_group_name | default: default_content }}{% endif %}"
           >
             <div
@@ -175,48 +175,12 @@
             <div class="slide-text loading-animation py-60 d-flex max-100 text-{{ blo_settings.text_alignment }} {{ blo_settings.desktop_content_position }}{% if sec_settings.show_text_bellow %} w-full{% endif %}{% if sec_settings.show_text_bellow and sec_settings.section_width == 'expand_full_width' %} px-20{% endif %}">
               <div class="slide-content bls__content relative z-1 max-100 word-wrap-bread-word size-{{ sec_settings.size }}{% if blo_settings.enable_split_layout %} split-layout-content{% endif %}">
                 {% if blo_settings.enable_split_layout %}
-                  {% liquid
-                    assign left_pos = blo_settings.split_left_position | default: 'middle-left'
-                    if left_pos contains 'top'
-                      assign left_vertical = 'flex-start'
-                    elsif left_pos contains 'bottom'
-                      assign left_vertical = 'flex-end'
-                    else
-                      assign left_vertical = 'center'
-                    endif
-                    
-                    if left_pos contains '-left'
-                      assign left_horizontal = 'flex-start'
-                    elsif left_pos contains '-right'
-                      assign left_horizontal = 'flex-end'
-                    else
-                      assign left_horizontal = 'center'
-                    endif
-                    
-                    assign right_pos = blo_settings.split_right_position | default: 'middle-right'
-                    if right_pos contains 'top'
-                      assign right_vertical = 'flex-start'
-                    elsif right_pos contains 'bottom'
-                      assign right_vertical = 'flex-end'
-                    else
-                      assign right_vertical = 'center'
-                    endif
-                    
-                    if right_pos contains '-left'
-                      assign right_horizontal = 'flex-start'
-                    elsif right_pos contains '-right'
-                      assign right_horizontal = 'flex-end'
-                    else
-                      assign right_horizontal = 'center'
-                    endif
-                  %}
-                  
-                  <div class="split-layout-left split-pos-{{ left_pos }}" style="justify-content: {{ left_vertical }}; align-items: {{ left_horizontal }};">
+                  <div class="split-layout-left">
                     {%- if blo_settings.heading != blank -%}
                       <h2 class="mt-0 section-heading heading-letter-spacing" style="{{ heading_style }}">{{ blo_settings.heading }}</h2>
                     {%- endif -%}
                   </div>
-                  <div class="split-layout-right split-pos-{{ right_pos }}" style="justify-content: {{ right_vertical }}; align-items: {{ right_horizontal }};">
+                  <div class="split-layout-right">
                     {%- if blo_settings.subheading != blank -%}
                       <p class="mt-0 sub-heading text-base" style="{{ subheading_style }}">{{ blo_settings.subheading }}</p>
                     {%- endif -%}
@@ -553,19 +517,27 @@
           "default": false
         },
         {
-          "type": "range",
-          "id": "split_left_padding",
-          "min": 0, "max": 400, "step": 10, "unit": "px",
-          "label": "Left edge padding (Desktop only)",
-          "info": "Distance from left screen edge to left content (only applies when split layout is enabled)",
-          "default": 80
+          "type": "header",
+          "content": "Heading Edge Distance"
         },
         {
           "type": "range",
-          "id": "split_right_padding",
+          "id": "heading_edge_distance",
           "min": 0, "max": 400, "step": 10, "unit": "px",
-          "label": "Right edge padding (Desktop only)",
-          "info": "Distance from right screen edge to right content (only applies when split layout is enabled)",
+          "label": "Heading distance from left edge (Desktop only)",
+          "info": "Controls how far the heading sits from the left screen edge (only applies when split layout is enabled)",
+          "default": 80
+        },
+        {
+          "type": "header",
+          "content": "Subheading, Description & Button Edge Distance"
+        },
+        {
+          "type": "range",
+          "id": "content_edge_distance",
+          "min": 0, "max": 400, "step": 10, "unit": "px",
+          "label": "Content distance from right edge (Desktop only)",
+          "info": "Controls how far the subheading, description and button sit from the right screen edge (only applies when split layout is enabled)",
           "default": 80
         },
         {
@@ -575,50 +547,6 @@
           "label": "Gap between heading and description (Mobile only)",
           "info": "Adjust spacing between heading and description/subheading text on mobile devices",
           "default": 40
-        },
-        {
-          "type": "header",
-          "content": "Left Side Content Position (Heading)"
-        },
-        {
-          "type": "select",
-          "id": "split_left_position",
-          "label": "Left Side Position (Desktop only)",
-          "default": "middle-left",
-          "info": "Only applies when Split Layout is enabled",
-          "options": [
-            { "value": "top-left", "label": "Top left" },
-            { "value": "top-center", "label": "Top center" },
-            { "value": "top-right", "label": "Top right" },
-            { "value": "middle-left", "label": "Middle left" },
-            { "value": "middle-center", "label": "Middle center" },
-            { "value": "middle-right", "label": "Middle right" },
-            { "value": "bottom-left", "label": "Bottom left" },
-            { "value": "bottom-center", "label": "Bottom center" },
-            { "value": "bottom-right", "label": "Bottom right" }
-          ]
-        },
-        {
-          "type": "header",
-          "content": "Right Side Content Position (Subheading & Button)"
-        },
-        {
-          "type": "select",
-          "id": "split_right_position",
-          "label": "Right Side Position (Desktop only)",
-          "default": "middle-right",
-          "info": "Only applies when Split Layout is enabled",
-          "options": [
-            { "value": "top-left", "label": "Top left" },
-            { "value": "top-center", "label": "Top center" },
-            { "value": "top-right", "label": "Top right" },
-            { "value": "middle-left", "label": "Middle left" },
-            { "value": "middle-center", "label": "Middle center" },
-            { "value": "middle-right", "label": "Middle right" },
-            { "value": "bottom-left", "label": "Bottom left" },
-            { "value": "bottom-center", "label": "Bottom center" },
-            { "value": "bottom-right", "label": "Bottom right" }
-          ]
         },
         {
           "type": "header",
@@ -1037,67 +965,35 @@ span.text-base.transition-all.duration-300.content-navigation {
 }
 
 /* ========== SPLIT LAYOUT STYLES ========== */
-/* Desktop Split Layout - ONLY ACTIVATES ABOVE TABLET WIDTH */
-/* Changed from 768px to 769px to prevent conflict with tablet view */
+/* Desktop Split Layout */
 @media (min-width: 769px) {
   .split-layout-enabled .split-layout-content {
     display: flex !important;
     flex-direction: row !important;
     align-items: center !important;
-    gap: 0 !important;
     width: 100% !important;
-    max-width: calc(100% - var(--split-left-padding, 5rem) - var(--split-right-padding, 5rem)) !important;
-    margin-left: var(--split-left-padding, 5rem) !important;
-    margin-right: var(--split-right-padding, 5rem) !important;
-  }
-
-  .split-layout-enabled .split-layout-left,
-  .split-layout-enabled .split-layout-right {
-    display: flex !important;
-    flex-direction: column !important;
   }
 
   .split-layout-enabled .split-layout-left {
     flex: 1 1 0% !important;
     min-width: 0 !important;
+    display: flex !important;
+    flex-direction: column !important;
+    justify-content: center !important;
+    padding-left: var(--heading-edge-distance, 5rem) !important;
+    text-align: left !important;
   }
 
   .split-layout-enabled .split-layout-right {
     flex: 1 1 0% !important;
-    gap: 1rem !important;
     min-width: 0 !important;
+    display: flex !important;
+    flex-direction: column !important;
+    justify-content: center !important;
     align-items: flex-end !important;
+    padding-right: var(--content-edge-distance, 5rem) !important;
     text-align: right !important;
-  }
-
-  /* Text alignment - LEFT side */
-  .split-layout-enabled .split-layout-left.split-pos-top-left h2,
-  .split-layout-enabled .split-layout-left.split-pos-middle-left h2,
-  .split-layout-enabled .split-layout-left.split-pos-bottom-left h2 {
-    text-align: left !important;
-  }
-
-  .split-layout-enabled .split-layout-left.split-pos-top-center h2,
-  .split-layout-enabled .split-layout-left.split-pos-middle-center h2,
-  .split-layout-enabled .split-layout-left.split-pos-bottom-center h2 {
-    text-align: center !important;
-  }
-
-  .split-layout-enabled .split-layout-left.split-pos-top-right h2,
-  .split-layout-enabled .split-layout-left.split-pos-middle-right h2,
-  .split-layout-enabled .split-layout-left.split-pos-bottom-right h2 {
-    text-align: right !important;
-  }
-
-  /* Text alignment - RIGHT side: always right-aligned */
-  .split-layout-enabled .split-layout-right .sub-heading,
-  .split-layout-enabled .split-layout-right .slide-description {
-    text-align: right !important;
-  }
-
-  /* Button alignment - RIGHT side: always right-aligned */
-  .split-layout-enabled .split-layout-right .section-btn {
-    justify-content: flex-end !important;
+    gap: 1rem !important;
   }
 
   /* Reset margins */
