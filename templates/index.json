@@ -668,7 +668,7 @@
             "content_edge_distance": 40,
             "content_text_width": "300",
             "split_content_alignment": "center",
-            "mobile_top_distance": 30,
+            "mobile_top_distance": 50,
             "mobile_bottom_distance": 0,
             "subheading": "",
             "heading": "ARTĚL GIFT CARD",
