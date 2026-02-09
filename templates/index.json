@@ -629,7 +629,7 @@
             "image_overlay_opacity": 0,
             "enable_split_layout": true,
             "heading_edge_distance": 80,
-            "content_edge_distance": 0,
+            "content_edge_distance": 400,
             "heading_description_gap": 400,
             "subheading": "",
             "heading": "ARTĚL GIFT CARD",
