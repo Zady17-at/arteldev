@@ -653,7 +653,7 @@
             "image_overlay_opacity": 0,
             "enable_split_layout": true,
             "heading_edge_distance": 80,
-            "content_edge_distance": 0,
+            "content_edge_distance": 80,
             "content_text_width": "300",
             "split_content_alignment": "center",
             "heading_description_gap": 500,
