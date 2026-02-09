@@ -640,7 +640,7 @@
             "second_button_label": "",
             "second_button_link": "",
             "second_button_style": false,
-            "desktop_content_position": "middle-center",
+            "desktop_content_position": "middle-left",
             "mobile_content_position": "middle-left",
             "subheading_color": "#ffffff",
             "subheading_font_size": 16,
