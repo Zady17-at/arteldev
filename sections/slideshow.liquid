@@ -967,14 +967,22 @@ span.text-base.transition-all.duration-300.content-navigation {
 /* ========== SPLIT LAYOUT STYLES ========== */
 /* Desktop Split Layout */
 @media (min-width: 769px) {
-  /* Override size-* max-width so split layout spans full width */
+  /* Override slideshow-item positioning — split layout handles its own alignment */
+  .slideshow-item.split-layout-enabled {
+    align-items: stretch !important;
+    justify-content: stretch !important;
+  }
+
+  /* Force slide-text to span full width regardless of position class */
   .split-layout-enabled .slide-text {
     width: 100% !important;
     max-width: 100% !important;
+    flex: 1 !important;
     padding-left: 0 !important;
     padding-right: 0 !important;
   }
 
+  /* Force split-layout-content to span full width regardless of size-* class */
   .split-layout-enabled .split-layout-content {
     display: flex !important;
     flex-direction: row !important;
