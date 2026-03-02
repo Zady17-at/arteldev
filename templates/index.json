@@ -744,7 +744,7 @@
             "content_text_width": "300",
             "split_content_alignment": "center",
             "mobile_top_distance": 85,
-            "mobile_bottom_distance": 30,
+            "mobile_bottom_distance": 10,
             "subheading": "",
             "heading": "VERDURE",
             "description": "<p>EARTH COLORS</p>",
