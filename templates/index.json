@@ -743,7 +743,7 @@
             "content_edge_distance": 80,
             "content_text_width": "300",
             "split_content_alignment": "center",
-            "mobile_top_distance": 60,
+            "mobile_top_distance": 85,
             "mobile_bottom_distance": 30,
             "subheading": "",
             "heading": "VERDURE",
