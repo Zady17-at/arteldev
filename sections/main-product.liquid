@@ -1,4 +1,4 @@
-{{ 'section-main-product.css' | asset_url | stylesheet_tag }}
+{{ 'section-main-product.css' | asset_url | stylesheet_tag }} 
 {%- liquid
   assign section_width = ''
   if section.settings.section_width == 'fix_width'
@@ -23,72 +23,54 @@
 
 <script>
 document.addEventListener('DOMContentLoaded', () => {
+  // Reorganized to match catalog order
   const colorMap = {
-    "Primary Colors": {
-      "White": "#FFFFFF",
-      "Black": "#000000",
-      "Black Matte": "#1C1C1C",
+    "Overlaid Colors": {
       "Clear": "linear-gradient(45deg, #ffffff 30%, #e8e8e8 60%, #ffffff 90%)",
-      "Gold": "linear-gradient(to right, #a37a1b, #f2e6a4, #a37a1b)",
-      "Silver": "linear-gradient(to right, #aaa, #eee, #aaa)",
-      "Platinum": "linear-gradient(to right, #847d78, #d8d4d2, #847d78)",
-      "Gilded Gold and Platinum in Clear": "linear-gradient(to right, #d4af37, #f5f5f5, #e5e4e2)",
-      "Gilded Gold and Platinum in Smoke": "linear-gradient(to right, #d4af37, #888, #e5e4e2)",
-      "Gilded Gold in Clear": "linear-gradient(to right, #d4af37, #fff, #d4af37)",
-      "Gilded Gold in Smoke": "linear-gradient(to right, #d4af37, #888, #d4af37)",
-      "Gilded Platinum in Clear": "linear-gradient(to right, #e5e4e2, #fff, #e5e4e2)",
-      "Gilded Platinum in Smoke": "linear-gradient(to right, #e5e4e2, #888, #e5e4e2)",
-      "Metallic Titanium Green": "linear-gradient(to right, #4b6f44, #a0b58c, #4b6f44)",
-      "Frosted": "linear-gradient(135deg, #f2f2f2, #e6e6e6, #cccccc)",
-      "Glass": "linear-gradient(135deg, #e8f0ff, #f8f8f8)",
-      "Amethyst": "#9966CC",
-      "Chartreuse": "#DFFF00",
-      "Painted": "#F5F5F5",      
-      "Painted 2": "#E0E0E0",    
-      "Solid": "#D9D9D9",       
-      "Striped": "#C0C0C0"
+      "Black": "#000000"
     },
     "Bright Colors": {
-      "Amber": "#FFBF00",
-      "Azure": "#007FFF",
-      "Cherry": "#DE3163",
-      "Emerald": "#50C878",
-      "Rust": "#B7410E",
-      {% comment %} "Fuchsia": "#FF00FF", {% endcomment %}
-      "Orange": "#FFA500",
-      "Teal": "#008080"
+      "Amber": "#E1A11A",
+      "Azure": "#0055FF",
+      "Cherry": "#C80032",
+      "Emerald": "#00C040",
+      "Fuchsia": "#b30b6f",
+      "Orange": "#FF7000",
+      "Teal": "#00D0B0"
     },
     "Earth Colors": {
-      "Grey": "#808080",
-      "Green": "#008000",
-      "Khaki Green": "#8A9A5B",
-      "Mahogany": "#C04000",
-      "Moss": "#8A9A5B",
-      "Sage": "#BCB88A",
-      "Slate": "#708090",
-      "Byzantine Blue": "#355C7D",
-      "Taupe": "#483C32",
-      "Walnut": "#773F1A"
+      "Grey": "#8B9A8B",
+      "Khaki Green": "#77A055",
+      "Moss": "#2A2E10",
+      "Rust": "#B7410E",
+      "Sage": "#76B892",
+      "Slate": "#9EBED3",
+      "Taupe": "#D4AF37",
+      "Walnut": "#704214"
     },
     "Jewel Colors": {
-      "British Racer Green": "#004225",
-      "Burnt Orange": "#CC5500",
-      "Ink": "#0A1172",
-      "Mahogany": "#C04000",
-      "Peacock": "#33A1C9",
-      "Purple": "#800080",
-      "Red": "#FF0000",
-      "Smoke": "#738276"
+      "British Racer Green": "#006400",
+      "Burnt Orange": "#FF4500",
+      "Ink": "#002366",
+      "Mahogany": "#8B4513",
+      "Peacock": "#0097A7",
+      "Purple": "#8B008B",
+      "Red": "#B22222",
+      "Smoke": "#5E615E"
     },
     "Pastel Colors": {
-      "Salmon": "#FA8072",
-      "Peridot": "#E6E200",
-      "Lilac": "#C8A2C8",
-      "Rose": "#FF007F",
-      "Aqua": "#00FFFF",
-      "Blush": "#DE5D83",
-      "Blue": "#0000FF",
-      "Olive": "#808000"
+      "Aqua": "#ADD8E6",
+      "Blue": "#1E90FF",
+      "Blush": "#FF69B4",
+      "Lilac": "#B19CD9",
+      "Olive": "#C9D143",
+      "Peridot": "#A8D1A3",
+      "Rose": "#E2583E",
+      "Salmon": "#FA8072"
+    },
+    "Glass Colors": {
+      "Amethyst": "#912A4E",
+      "Chartreuse": "#D4E18E"
     }
   };
 
@@ -126,7 +108,6 @@ document.addEventListener('DOMContentLoaded', () => {
     for (let colorName in colorMap[category]) {
       const originalLabel = labelGroups[colorName];
       if (originalLabel) {
-        // Clone the label so we don't move the original
         const label = originalLabel.cloneNode(true);
         const span = label.querySelector('.value') || document.createElement('span');
         span.classList.add('value');
@@ -139,7 +120,7 @@ document.addEventListener('DOMContentLoaded', () => {
           Object.assign(span.style, {
             width: '25px',
             height: '25px',
-            margin :  '10px' ,
+            margin: '10px',
             border: '2px solid #1e335b',
             borderRadius: '50%',
             display: 'flex',
@@ -157,7 +138,7 @@ document.addEventListener('DOMContentLoaded', () => {
           Object.assign(span.style, {
             background: colorHex || '#fff',
             width: '25px',
-            margin :  '10px' ,
+            margin: '10px',
             height: '25px',
             borderRadius: '50%',
             border: '1px solid #ccc',
@@ -176,28 +157,35 @@ document.addEventListener('DOMContentLoaded', () => {
 
   fieldset.appendChild(parentContainer);
 
-  document.head.appendChild(style);
-
   // Hide original inputs & labels only inside this fieldset
   fieldset.querySelectorAll('input[name="color"], input[name="color"] + label').forEach(el => {
     el.style.display = 'none';
   });
 });
-
-
-
 </script>
 
 <style>
+.swatch-group-wrapper {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+  margin-top: 15px;
+}
 
-
+.swatch-group {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 5px;
+}
 
 .swatch-group-wrapper label .value:hover,
 label .value:hover {
-  border: 1px solid #1e335b !important; /* !important to override inline style */
+  border: 1px solid #1e335b !important;
   box-sizing: border-box;
+  transform: scale(1.1);
+  transition: all 0.2s ease;
 }
-  /* Hide all default color inputs and labels inside your fieldset */
+
 fieldset.js input[name="color"],
 fieldset.js input[name="color"] + label {
   display: none !important;

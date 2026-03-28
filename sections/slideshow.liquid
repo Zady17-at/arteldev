@@ -52,7 +52,7 @@
     style="--process-time: {{ sec_settings.change_slide_every }}s"
   >
     <div class="slide-container">
-              {%- for block in sec_blocks -%}
+      {%- for block in sec_blocks -%}
         {% liquid
           assign blo_settings = block.settings
           assign fetchpriority_item = 'low'
@@ -93,11 +93,23 @@
           if blo_settings.description_font_family != blank and blo_settings.description_font_family != 'inherit'
             assign description_style = description_style | append: 'font-family: ' | append: blo_settings.description_font_family | append: ' !important; '
           endif
+          
+          assign heading_edge_distance = blo_settings.heading_edge_distance | default: 80
+          assign content_edge_distance = blo_settings.content_edge_distance | default: 80
+          assign content_text_width_val = blo_settings.content_text_width | default: '300'
+          if content_text_width_val == 'none'
+            assign content_text_width = 'none'
+          else
+            assign content_text_width = content_text_width_val | append: 'px'
+          endif
+          assign split_content_alignment = blo_settings.split_content_alignment | default: 'center'
+          assign mobile_top_distance = blo_settings.mobile_top_distance | default: 30
+          assign mobile_bottom_distance = blo_settings.mobile_bottom_distance | default: 30
         %}
         <div class="slide-carousel">
           <div
-            class="slideshow-item d-flex relative overlay-bg {{ blo_settings.desktop_content_position }}{% if sec_settings.show_text_bellow %} flex-column flex-md-row text-bellow-mb{% endif %} mobile-{{ blo_settings.mobile_content_position | default: blo_settings.desktop_content_position }} item-hero-{{ sec_settings.image_height }}{% if blo_settings.image_overlay_opacity == 0 and blo_settings.desktop_content_position == 'bottom-left' or blo_settings.desktop_content_position == 'bottom-right' or blo_settings.desktop_content_position == 'bottom-center' %} grandient-bg{% endif %}"
-            style="{{ style | strip | strip_newlines }}--overlay-opacity: {{ blo_settings.image_overlay_opacity }}%;"
+            class="slideshow-item d-flex relative overlay-bg {{ blo_settings.desktop_content_position }}{% if sec_settings.show_text_bellow %} flex-column flex-md-row text-bellow-mb{% endif %} mobile-{{ blo_settings.mobile_content_position | default: blo_settings.desktop_content_position }} item-hero-{{ sec_settings.image_height }}{% if blo_settings.image_overlay_opacity == 0 and blo_settings.desktop_content_position == 'bottom-left' or blo_settings.desktop_content_position == 'bottom-right' or blo_settings.desktop_content_position == 'bottom-center' %} grandient-bg{% endif %}{% if blo_settings.enable_split_layout %} split-layout-enabled split-content-{{ split_content_alignment }}{% endif %}"
+            style="{{ style | strip | strip_newlines }}--overlay-opacity: {{ blo_settings.image_overlay_opacity }}%; --heading-edge-distance: {{ heading_edge_distance }}px; --content-edge-distance: {{ content_edge_distance }}px; --content-text-width: {{ content_text_width }}; --mobile-top-distance: {{ mobile_top_distance }}px; --mobile-bottom-distance: {{ mobile_bottom_distance }}px;"
             data-content-navigation="{% if sec_settings.navigation_style == 'group' %}{{ blo_settings.navigation_group_name | default: default_content }}{% endif %}"
           >
             <div
@@ -135,7 +147,7 @@
                       class: 'loading-animation'
                   }}
                 {%- else -%}
-                        {%- render 'placeholder-render', type: 'lifestyle' -%}
+                  {%- render 'placeholder-render', type: 'lifestyle' -%}
                 {%- endif -%}
               </div>
               {%- if blo_settings.mobile_image -%}
@@ -169,45 +181,91 @@
             </div>
 
             <div class="slide-text loading-animation py-60 d-flex max-100 text-{{ blo_settings.text_alignment }} {{ blo_settings.desktop_content_position }}{% if sec_settings.show_text_bellow %} w-full{% endif %}{% if sec_settings.show_text_bellow and sec_settings.section_width == 'expand_full_width' %} px-20{% endif %}">
-              <div class="slide-content bls__content relative z-1 max-100 word-wrap-bread-word size-{{ sec_settings.size }}">
-                {%- if blo_settings.subheading != blank -%}
-                  <p class="mt-0 sub-heading text-base" style="{{ subheading_style }}">{{ blo_settings.subheading }}</p>
-                {%- endif -%}
-                {%- if blo_settings.heading != blank -%}
-                  <h2 class="mt-0 section-heading heading-letter-spacing" style="{{ heading_style }}">{{ blo_settings.heading }}</h2>
-                {%- endif -%}
-                {%- if blo_settings.description != blank -%}
-                  <div class="mt-0 sec-des slide-description" style="{{ description_style }}">{{ blo_settings.description }}</div>
-                {%- endif -%}
-                {% if blo_settings.first_button_label != blank or blo_settings.second_button_label != blank %}
-                  <div class="section-btn btn-slideshow d-flex flex-wrap gap-10 {% if blo_settings.text_alignment == 'center' %}justify-content-center{% elsif blo_settings.text_alignment == 'right' %}justify-content-end{% endif %}">
-                    {% if blo_settings.first_button_label != blank %}
-                      <a
-                        {% if blo_settings.first_button_link == blank %}
-                          role="link" aria-disabled="true"
-                        {% else %}
-                          href="{{ blo_settings.first_button_link | default: "#" }}"
+              <div class="slide-content bls__content relative z-1 max-100 word-wrap-bread-word size-{{ sec_settings.size }}{% if blo_settings.enable_split_layout %} split-layout-content{% endif %}">
+                {% if blo_settings.enable_split_layout %}
+                  <div class="split-layout-left">
+                    {%- if blo_settings.heading != blank -%}
+                      <h2 class="mt-0 section-heading heading-letter-spacing" style="{{ heading_style }}">{{ blo_settings.heading }}</h2>
+                    {%- endif -%}
+                  </div>
+                  <div class="split-layout-right">
+                    {%- if blo_settings.subheading != blank -%}
+                      <p class="mt-0 sub-heading text-base" style="{{ subheading_style }}">{{ blo_settings.subheading }}</p>
+                    {%- endif -%}
+                    {%- if blo_settings.description != blank -%}
+                      <div class="mt-0 sec-des slide-description" style="{{ description_style }}">{{ blo_settings.description }}</div>
+                    {%- endif -%}
+                    {% if blo_settings.first_button_label != blank or blo_settings.second_button_label != blank %}
+                      <div class="section-btn btn-slideshow d-flex flex-wrap gap-10">
+                        {% if blo_settings.first_button_label != blank %}
+                          <a
+                            {% if blo_settings.first_button_link == blank %}
+                              role="link" aria-disabled="true"
+                            {% else %}
+                              href="{{ blo_settings.first_button_link | default: "#" }}"
+                            {% endif %}
+                            aria-label="{{ blo_settings.first_button_label }}"
+                            class="btn remove-underline{% if block.settings.first_button_style %} btn-outline{% else %} btn-primary{% endif %}"
+                          >
+                            {{ blo_settings.first_button_label }}
+                          </a>
                         {% endif %}
-                        aria-label="{{ blo_settings.first_button_label }}"
-                        class="btn remove-underline{% if block.settings.first_button_style %} btn-outline{% else %} btn-primary{% endif %}"
-                      >
-                        {{ blo_settings.first_button_label }}
-                      </a>
-                    {% endif %}
-                    {% if blo_settings.second_button_label != blank %}
-                      <a
-                        {% if blo_settings.second_button_link == blank %}
-                          role="link" aria-disabled="true"
-                        {% else %}
-                          href="{{ blo_settings.second_button_link | default: "#" }}"
+                        {% if blo_settings.second_button_label != blank %}
+                          <a
+                            {% if blo_settings.second_button_link == blank %}
+                              role="link" aria-disabled="true"
+                            {% else %}
+                              href="{{ blo_settings.second_button_link | default: "#" }}"
+                            {% endif %}
+                            aria-label="{{ blo_settings.second_button_label }}"
+                            class="btn remove-underline {% if block.settings.second_button_style %} btn-outline{% else %} btn-primary{% endif %}"
+                          >
+                            {{ blo_settings.second_button_label }}
+                          </a>
                         {% endif %}
-                        aria-label="{{ blo_settings.second_button_label }}"
-                        class="btn remove-underline {% if block.settings.second_button_style %} btn-outline{% else %} btn-primary{% endif %}"
-                      >
-                        {{ blo_settings.second_button_label }}
-                      </a>
+                      </div>
                     {% endif %}
                   </div>
+                {% else %}
+                  {%- if blo_settings.subheading != blank -%}
+                    <p class="mt-0 sub-heading text-base" style="{{ subheading_style }}">{{ blo_settings.subheading }}</p>
+                  {%- endif -%}
+                  {%- if blo_settings.heading != blank -%}
+                    <h2 class="mt-0 section-heading heading-letter-spacing" style="{{ heading_style }}">{{ blo_settings.heading }}</h2>
+                  {%- endif -%}
+                  {%- if blo_settings.description != blank -%}
+                    <div class="mt-0 sec-des slide-description" style="{{ description_style }}">{{ blo_settings.description }}</div>
+                  {%- endif -%}
+                  {% if blo_settings.first_button_label != blank or blo_settings.second_button_label != blank %}
+                    <div class="section-btn btn-slideshow d-flex flex-wrap gap-10 {% if blo_settings.text_alignment == 'center' %}justify-content-center{% elsif blo_settings.text_alignment == 'right' %}justify-content-end{% endif %}">
+                      {% if blo_settings.first_button_label != blank %}
+                        <a
+                          {% if blo_settings.first_button_link == blank %}
+                            role="link" aria-disabled="true"
+                          {% else %}
+                            href="{{ blo_settings.first_button_link | default: "#" }}"
+                          {% endif %}
+                          aria-label="{{ blo_settings.first_button_label }}"
+                          class="btn remove-underline{% if block.settings.first_button_style %} btn-outline{% else %} btn-primary{% endif %}"
+                        >
+                          {{ blo_settings.first_button_label }}
+                        </a>
+                      {% endif %}
+                      {% if blo_settings.second_button_label != blank %}
+                        <a
+                          {% if blo_settings.second_button_link == blank %}
+                            role="link" aria-disabled="true"
+                          {% else %}
+                            href="{{ blo_settings.second_button_link | default: "#" }}"
+                          {% endif %}
+                          aria-label="{{ blo_settings.second_button_label }}"
+                          class="btn remove-underline {% if block.settings.second_button_style %} btn-outline{% else %} btn-primary{% endif %}"
+                        >
+                          {{ blo_settings.second_button_label }}
+                        </a>
+                      {% endif %}
+                    </div>
+                  {% endif %}
                 {% endif %}
               </div>
             </div>
@@ -290,18 +348,9 @@
       "type": "select",
       "id": "section_width",
       "options": [
-        {
-          "value": "fix_width",
-          "label": "t:sections.all.layout.fix_width"
-        },
-        {
-          "value": "stretch_width",
-          "label": "t:sections.all.layout.stretch_width"
-        },
-        {
-          "value": "expand_full_width",
-          "label": "t:sections.all.layout.expand_full_width"
-        }
+        { "value": "fix_width", "label": "t:sections.all.layout.fix_width" },
+        { "value": "stretch_width", "label": "t:sections.all.layout.stretch_width" },
+        { "value": "expand_full_width", "label": "t:sections.all.layout.expand_full_width" }
       ],
       "default": "stretch_width",
       "label": "t:sections.all.layout.label"
@@ -320,18 +369,9 @@
       "type": "select",
       "id": "size",
       "options": [
-        {
-          "value": "small",
-          "label": "t:sections.all.size.small.label"
-        },
-        {
-          "value": "medium",
-          "label": "t:sections.all.size.medium.label"
-        },
-        {
-          "value": "large",
-          "label": "t:sections.all.size.large.label"
-        }
+        { "value": "small", "label": "t:sections.all.size.small.label" },
+        { "value": "medium", "label": "t:sections.all.size.medium.label" },
+        { "value": "large", "label": "t:sections.all.size.large.label" }
       ],
       "default": "medium",
       "label": "t:sections.all.size.label"
@@ -364,14 +404,8 @@
       "id": "navigation_style",
       "default": "default",
       "options": [
-        {
-          "value": "default",
-          "label": "t:sections.slideshow.settings.navigation_style.default"
-        },
-        {
-          "value": "group",
-          "label": "t:sections.slideshow.settings.navigation_style.group"
-        }
+        { "value": "default", "label": "t:sections.slideshow.settings.navigation_style.default" },
+        { "value": "group", "label": "t:sections.slideshow.settings.navigation_style.group" }
       ]
     },
     {
@@ -379,18 +413,9 @@
       "id": "desktop_panigation_position",
       "default": "center",
       "options": [
-        {
-          "value": "left",
-          "label": "t:sections.all.text_alignment.option_1.label"
-        },
-        {
-          "value": "center",
-          "label": "t:sections.all.text_alignment.option_2.label"
-        },
-        {
-          "value": "right",
-          "label": "t:sections.all.text_alignment.option_3.label"
-        }
+        { "value": "left", "label": "t:sections.all.text_alignment.option_1.label" },
+        { "value": "center", "label": "t:sections.all.text_alignment.option_2.label" },
+        { "value": "right", "label": "t:sections.all.text_alignment.option_3.label" }
       ],
       "label": "t:sections.all.carousel.desktop_panigation_position.label"
     },
@@ -417,26 +442,11 @@
       "type": "select",
       "id": "image_height",
       "options": [
-        {
-          "value": "full_screen",
-          "label": "t:sections.all.heigth.full_screen"
-        },
-        {
-          "value": "adapt",
-          "label": "t:sections.main-article.blocks.featured_image.settings.image_height.options__1.label"
-        },
-        {
-          "value": "small",
-          "label": "t:sections.main-article.blocks.featured_image.settings.image_height.options__2.label"
-        },
-        {
-          "value": "medium",
-          "label": "t:sections.main-article.blocks.featured_image.settings.image_height.options__3.label"
-        },
-        {
-          "value": "large",
-          "label": "t:sections.main-article.blocks.featured_image.settings.image_height.options__4.label"
-        }
+        { "value": "full_screen", "label": "t:sections.all.heigth.full_screen" },
+        { "value": "adapt", "label": "t:sections.main-article.blocks.featured_image.settings.image_height.options__1.label" },
+        { "value": "small", "label": "t:sections.main-article.blocks.featured_image.settings.image_height.options__2.label" },
+        { "value": "medium", "label": "t:sections.main-article.blocks.featured_image.settings.image_height.options__3.label" },
+        { "value": "large", "label": "t:sections.main-article.blocks.featured_image.settings.image_height.options__4.label" }
       ],
       "default": "full_screen",
       "label": "t:sections.main-article.blocks.featured_image.settings.image_height.label",
@@ -463,20 +473,14 @@
     {
       "type": "range",
       "id": "padding_top",
-      "min": 0,
-      "max": 100,
-      "step": 1,
-      "unit": "px",
+      "min": 0, "max": 100, "step": 1, "unit": "px",
       "label": "t:sections.all.padding.padding_top",
       "default": 40
     },
     {
       "type": "range",
       "id": "padding_bottom",
-      "min": 0,
-      "max": 100,
-      "step": 1,
-      "unit": "px",
+      "min": 0, "max": 100, "step": 1, "unit": "px",
       "label": "t:sections.all.padding.padding_bottom",
       "default": 40
     }
@@ -505,12 +509,85 @@
         {
           "type": "range",
           "id": "image_overlay_opacity",
-          "min": 0,
-          "max": 100,
-          "step": 1,
-          "unit": "%",
+          "min": 0, "max": 100, "step": 1, "unit": "%",
           "label": "t:sections.main-collection-banner.settings.image_overlay_opacity.label",
           "default": 0
+        },
+        {
+          "type": "header",
+          "content": "Special Layout Options"
+        },
+        {
+          "type": "checkbox",
+          "id": "enable_split_layout",
+          "label": "Enable Split Layout",
+          "info": "When enabled, heading will be on the left, subheading and button on the right, aligned horizontally on desktop.\nOn mobile, content stacks vertically.",
+          "default": false
+        },
+        {
+          "type": "header",
+          "content": "Heading Edge Distance"
+        },
+        {
+          "type": "range",
+          "id": "heading_edge_distance",
+          "min": 0, "max": 400, "step": 10, "unit": "px",
+          "label": "Heading distance from left edge (Desktop only)",
+          "info": "Controls how far the heading sits from the left screen edge (only applies when split layout is enabled)",
+          "default": 80
+        },
+        {
+          "type": "header",
+          "content": "Subheading, Description & Button Edge Distance"
+        },
+        {
+          "type": "range",
+          "id": "content_edge_distance",
+          "min": 0, "max": 400, "step": 10, "unit": "px",
+          "label": "Content distance from right edge (Desktop only)",
+          "info": "Controls how far the subheading, description and button sit from the right screen edge (only applies when split layout is enabled)",
+          "default": 80
+        },
+        {
+          "type": "select",
+          "id": "content_text_width",
+          "label": "Content text layout (Desktop only)",
+          "info": "Controls whether the description text wraps into multiple lines or stays in one row",
+          "default": "300",
+          "options": [
+            { "value": "200", "label": "Narrow (more wrapping)" },
+            { "value": "300", "label": "Medium" },
+            { "value": "400", "label": "Wide" },
+            { "value": "none", "label": "Full width (one row)" }
+          ]
+        },
+        {
+          "type": "select",
+          "id": "split_content_alignment",
+          "label": "Description alignment (Desktop only)",
+          "info": "Controls text alignment of description, subheading and button in split layout",
+          "default": "center",
+          "options": [
+            { "value": "left", "label": "Left" },
+            { "value": "center", "label": "Center" },
+            { "value": "right", "label": "Right" }
+          ]
+        },
+        {
+          "type": "range",
+          "id": "mobile_top_distance",
+          "min": 0, "max": 200, "step": 5, "unit": "px",
+          "label": "Heading & Subheading distance from top (Mobile only)",
+          "info": "Controls how far the heading and subheading sit from the top screen edge on mobile",
+          "default": 30
+        },
+        {
+          "type": "range",
+          "id": "mobile_bottom_distance",
+          "min": 0, "max": 200, "step": 5, "unit": "px",
+          "label": "Description & Button distance from bottom (Mobile only)",
+          "info": "Controls how far the description and button sit from the bottom screen edge on mobile",
+          "default": 30
         },
         {
           "type": "header",
@@ -578,42 +655,15 @@
           "label": "t:sections.all.desktop_content_position.label",
           "info": "t:sections.all.desktop_content_position.info",
           "options": [
-            {
-              "value": "top-left",
-              "label": "t:sections.all.desktop_content_position.options__1.label"
-            },
-            {
-              "value": "top-center",
-              "label": "t:sections.all.desktop_content_position.options__2.label"
-            },
-            {
-              "value": "top-right",
-              "label": "t:sections.all.desktop_content_position.options__3.label"
-            },
-            {
-              "value": "middle-left",
-              "label": "t:sections.all.desktop_content_position.options__4.label"
-            },
-            {
-              "value": "middle-center",
-              "label": "t:sections.all.desktop_content_position.options__5.label"
-            },
-            {
-              "value": "middle-right",
-              "label": "t:sections.all.desktop_content_position.options__6.label"
-            },
-            {
-              "value": "bottom-left",
-              "label": "t:sections.all.desktop_content_position.options__7.label"
-            },
-            {
-              "value": "bottom-center",
-              "label": "t:sections.all.desktop_content_position.options__8.label"
-            },
-            {
-              "value": "bottom-right",
-              "label": "t:sections.all.desktop_content_position.options__9.label"
-            }
+            { "value": "top-left", "label": "t:sections.all.desktop_content_position.options__1.label" },
+            { "value": "top-center", "label": "t:sections.all.desktop_content_position.options__2.label" },
+            { "value": "top-right", "label": "t:sections.all.desktop_content_position.options__3.label" },
+            { "value": "middle-left", "label": "t:sections.all.desktop_content_position.options__4.label" },
+            { "value": "middle-center", "label": "t:sections.all.desktop_content_position.options__5.label" },
+            { "value": "middle-right", "label": "t:sections.all.desktop_content_position.options__6.label" },
+            { "value": "bottom-left", "label": "t:sections.all.desktop_content_position.options__7.label" },
+            { "value": "bottom-center", "label": "t:sections.all.desktop_content_position.options__8.label" },
+            { "value": "bottom-right", "label": "t:sections.all.desktop_content_position.options__9.label" }
           ]
         },
         {
@@ -623,42 +673,15 @@
           "label": "Mobile content position",
           "info": "Choose where to position the content on mobile devices",
           "options": [
-            {
-              "value": "top-left",
-              "label": "Top left"
-            },
-            {
-              "value": "top-center",
-              "label": "Top center"
-            },
-            {
-              "value": "top-right",
-              "label": "Top right"
-            },
-            {
-              "value": "middle-left",
-              "label": "Middle left"
-            },
-            {
-              "value": "middle-center",
-              "label": "Middle center"
-            },
-            {
-              "value": "middle-right",
-              "label": "Middle right"
-            },
-            {
-              "value": "bottom-left",
-              "label": "Bottom left"
-            },
-            {
-              "value": "bottom-center",
-              "label": "Bottom center"
-            },
-            {
-              "value": "bottom-right",
-              "label": "Bottom right"
-            }
+            { "value": "top-left", "label": "Top left" },
+            { "value": "top-center", "label": "Top center" },
+            { "value": "top-right", "label": "Top right" },
+            { "value": "middle-left", "label": "Middle left" },
+            { "value": "middle-center", "label": "Middle center" },
+            { "value": "middle-right", "label": "Middle right" },
+            { "value": "bottom-left", "label": "Bottom left" },
+            { "value": "bottom-center", "label": "Bottom center" },
+            { "value": "bottom-right", "label": "Bottom right" }
           ]
         },
         {
@@ -678,10 +701,7 @@
         {
           "type": "range",
           "id": "subheading_font_size",
-          "min": 10,
-          "max": 40,
-          "step": 1,
-          "unit": "px",
+          "min": 10, "max": 40, "step": 1, "unit": "px",
           "label": "Subheading font size",
           "default": 16
         },
@@ -691,54 +711,18 @@
           "label": "Subheading font family",
           "default": "inherit",
           "options": [
-            {
-              "value": "inherit",
-              "label": "Theme default"
-            },
-            {
-              "value": "Arial, sans-serif",
-              "label": "Arial"
-            },
-            {
-              "value": "Helvetica, sans-serif",
-              "label": "Helvetica"
-            },
-            {
-              "value": "'Times New Roman', serif",
-              "label": "Times New Roman"
-            },
-            {
-              "value": "Georgia, serif",
-              "label": "Georgia"
-            },
-            {
-              "value": "'Courier New', monospace",
-              "label": "Courier New"
-            },
-            {
-              "value": "Verdana, sans-serif",
-              "label": "Verdana"
-            },
-            {
-              "value": "Trebuchet MS, sans-serif",
-              "label": "Trebuchet MS"
-            },
-            {
-              "value": "Impact, sans-serif",
-              "label": "Impact"
-            },
-            {
-              "value": "'Comic Sans MS', cursive",
-              "label": "Comic Sans MS"
-            },
-            {
-              "value": "'Palatino Linotype', serif",
-              "label": "Palatino"
-            },
-            {
-              "value": "Tahoma, sans-serif",
-              "label": "Tahoma"
-            }
+            { "value": "inherit", "label": "Theme default" },
+            { "value": "Arial, sans-serif", "label": "Arial" },
+            { "value": "Helvetica, sans-serif", "label": "Helvetica" },
+            { "value": "'Times New Roman', serif", "label": "Times New Roman" },
+            { "value": "Georgia, serif", "label": "Georgia" },
+            { "value": "'Courier New', monospace", "label": "Courier New" },
+            { "value": "Verdana, sans-serif", "label": "Verdana" },
+            { "value": "Trebuchet MS, sans-serif", "label": "Trebuchet MS" },
+            { "value": "Impact, sans-serif", "label": "Impact" },
+            { "value": "'Comic Sans MS', cursive", "label": "Comic Sans MS" },
+            { "value": "'Palatino Linotype', serif", "label": "Palatino" },
+            { "value": "Tahoma, sans-serif", "label": "Tahoma" }
           ]
         },
         {
@@ -754,10 +738,7 @@
         {
           "type": "range",
           "id": "heading_font_size",
-          "min": 16,
-          "max": 80,
-          "step": 1,
-          "unit": "px",
+          "min": 16, "max": 80, "step": 1, "unit": "px",
           "label": "Heading font size",
           "default": 32
         },
@@ -767,54 +748,18 @@
           "label": "Heading font family",
           "default": "inherit",
           "options": [
-            {
-              "value": "inherit",
-              "label": "Theme default"
-            },
-            {
-              "value": "Arial, sans-serif",
-              "label": "Arial"
-            },
-            {
-              "value": "Helvetica, sans-serif",
-              "label": "Helvetica"
-            },
-            {
-              "value": "'Times New Roman', serif",
-              "label": "Times New Roman"
-            },
-            {
-              "value": "Georgia, serif",
-              "label": "Georgia"
-            },
-            {
-              "value": "'Courier New', monospace",
-              "label": "Courier New"
-            },
-            {
-              "value": "Verdana, sans-serif",
-              "label": "Verdana"
-            },
-            {
-              "value": "Trebuchet MS, sans-serif",
-              "label": "Trebuchet MS"
-            },
-            {
-              "value": "Impact, sans-serif",
-              "label": "Impact"
-            },
-            {
-              "value": "'Comic Sans MS', cursive",
-              "label": "Comic Sans MS"
-            },
-            {
-              "value": "'Palatino Linotype', serif",
-              "label": "Palatino"
-            },
-            {
-              "value": "Tahoma, sans-serif",
-              "label": "Tahoma"
-            }
+            { "value": "inherit", "label": "Theme default" },
+            { "value": "Arial, sans-serif", "label": "Arial" },
+            { "value": "Helvetica, sans-serif", "label": "Helvetica" },
+            { "value": "'Times New Roman', serif", "label": "Times New Roman" },
+            { "value": "Georgia, serif", "label": "Georgia" },
+            { "value": "'Courier New', monospace", "label": "Courier New" },
+            { "value": "Verdana, sans-serif", "label": "Verdana" },
+            { "value": "Trebuchet MS, sans-serif", "label": "Trebuchet MS" },
+            { "value": "Impact, sans-serif", "label": "Impact" },
+            { "value": "'Comic Sans MS', cursive", "label": "Comic Sans MS" },
+            { "value": "'Palatino Linotype', serif", "label": "Palatino" },
+            { "value": "Tahoma, sans-serif", "label": "Tahoma" }
           ]
         },
         {
@@ -830,10 +775,7 @@
         {
           "type": "range",
           "id": "description_font_size",
-          "min": 10,
-          "max": 30,
-          "step": 1,
-          "unit": "px",
+          "min": 10, "max": 30, "step": 1, "unit": "px",
           "label": "Description font size",
           "default": 16
         },
@@ -843,72 +785,27 @@
           "label": "Description font family",
           "default": "inherit",
           "options": [
-            {
-              "value": "inherit",
-              "label": "Theme default"
-            },
-            {
-              "value": "Arial, sans-serif",
-              "label": "Arial"
-            },
-            {
-              "value": "Helvetica, sans-serif",
-              "label": "Helvetica"
-            },
-            {
-              "value": "'Times New Roman', serif",
-              "label": "Times New Roman"
-            },
-            {
-              "value": "Georgia, serif",
-              "label": "Georgia"
-            },
-            {
-              "value": "'Courier New', monospace",
-              "label": "Courier New"
-            },
-            {
-              "value": "Verdana, sans-serif",
-              "label": "Verdana"
-            },
-            {
-              "value": "Trebuchet MS, sans-serif",
-              "label": "Trebuchet MS"
-            },
-            {
-              "value": "Impact, sans-serif",
-              "label": "Impact"
-            },
-            {
-              "value": "'Comic Sans MS', cursive",
-              "label": "Comic Sans MS"
-            },
-            {
-              "value": "'Palatino Linotype', serif",
-              "label": "Palatino"
-            },
-            {
-              "value": "Tahoma, sans-serif",
-              "label": "Tahoma"
-            }
+            { "value": "inherit", "label": "Theme default" },
+            { "value": "Arial, sans-serif", "label": "Arial" },
+            { "value": "Helvetica, sans-serif", "label": "Helvetica" },
+            { "value": "'Times New Roman', serif", "label": "Times New Roman" },
+            { "value": "Georgia, serif", "label": "Georgia" },
+            { "value": "'Courier New', monospace", "label": "Courier New" },
+            { "value": "Verdana, sans-serif", "label": "Verdana" },
+            { "value": "Trebuchet MS, sans-serif", "label": "Trebuchet MS" },
+            { "value": "Impact, sans-serif", "label": "Impact" },
+            { "value": "'Comic Sans MS', cursive", "label": "Comic Sans MS" },
+            { "value": "'Palatino Linotype', serif", "label": "Palatino" },
+            { "value": "Tahoma, sans-serif", "label": "Tahoma" }
           ]
         },
         {
           "type": "select",
           "id": "text_alignment",
           "options": [
-            {
-              "value": "left",
-              "label": "t:sections.all.text_alignment.option_1.label"
-            },
-            {
-              "value": "center",
-              "label": "t:sections.all.text_alignment.option_2.label"
-            },
-            {
-              "value": "right",
-              "label": "t:sections.all.text_alignment.option_3.label"
-            }
+            { "value": "left", "label": "t:sections.all.text_alignment.option_1.label" },
+            { "value": "center", "label": "t:sections.all.text_alignment.option_2.label" },
+            { "value": "right", "label": "t:sections.all.text_alignment.option_3.label" }
           ],
           "default": "left",
           "label": "t:sections.all.text_alignment.label"
@@ -930,12 +827,8 @@
     {
       "name": "t:sections.slideshow.presets.name",
       "blocks": [
-        {
-          "type": "slide"
-        },
-        {
-          "type": "slide"
-        }
+        { "type": "slide" },
+        { "type": "slide" }
       ]
     }
   ]
@@ -955,10 +848,6 @@ span.text-base.transition-all.duration-300.content-navigation {
     display: none;
 }
 
-span.text-base.transition-all.duration-300.content-navigation {
-    display: none;
-}
-
 .tns-nav button.btn::before {
   content: none !important;
   display: none !important;
@@ -969,21 +858,66 @@ span.text-base.transition-all.duration-300.content-navigation {
 }
 
 .tns-nav button.tns-nav-active {
-  background-color: #C49B37 !important; /* yellow */
+  background-color: #C49B37 !important;
   border: none !important;
   box-shadow: none !important;
   outline: none !important;
-  transform: scale(1.2);                
+  transform: scale(1.2);
 }
 .custom-navigation__slideshow.w-full.absolute.left-0.right-0.bottom-90.sm\:-translate-y-20.flex.items-center.justify-between.px-4 {
     bottom: 25rem !important;
 }
+
+.tns-nav button.btn {
+  background-color: #C49B37 !important;
+  border: none !important;
+  box-shadow: none !important;
+  outline: none !important;
+  width: 12px !important;
+  height: 12px !important;
+  border-radius: 50% !important;
+  padding: 0 !important;
+  margin: 0 6px !important;
+  transition: background-color 0.3s, transform 0.3s;
+  cursor: pointer;
+  position: relative;
+}
+
+.tns-nav button.btn::before {
+  content: none !important;
+  display: none !important;
+}
+
+.tns-nav button.tns-nav-active {
+  background-color: #1E355B !important;
+  border: none !important;
+  box-shadow: none !important;
+  outline: none !important;
+  transform: scale(1.2);
+}
+
+.tns-nav button.btn:hover {
+  transform: scale(1.1);
+}
+
+.tns-nav button:focus {
+  outline: none !important;
+  box-shadow: none !important;
+}
+
+/* NAVIGATION BREAKPOINT */
+@media (max-width: 991px) {
+  .custom-navigation__slideshow.w-full.absolute.left-0.right-0.bottom-90.sm\:-translate-y-20.flex.items-center.justify-between.px-4 {
+      bottom: 60px !important;
+  }
+}
+
+/* MOBILE CONTENT POSITIONING */
 @media (max-width: 768px) {
   .custom-navigation__slideshow.w-full.absolute.left-0.right-0.bottom-90.sm\:-translate-y-20.flex.items-center.justify-between.px-4 {
       bottom: 60px !important;
   }
 
-  /* Mobile positioning overrides for content */
   .slideshow-item.mobile-top-left .slide-text {
     position: absolute !important;
     top: 2rem !important;
@@ -1071,49 +1005,194 @@ span.text-base.transition-all.duration-300.content-navigation {
   }
 }
 
-.tns-nav button.btn {
-  background-color: #C49B37 !important;  /* yellow for inactive */
-  border: none !important;
-  box-shadow: none !important;
-  outline: none !important;
-  width: 12px !important;
-  height: 12px !important;
-  border-radius: 50% !important;
-  padding: 0 !important;
-  margin: 0 6px !important;
-  transition: background-color 0.3s, transform 0.3s;
-  cursor: pointer;
-  position: relative;
+/* ========== SPLIT LAYOUT STYLES ========== */
+/* Desktop Split Layout */
+@media (min-width: 769px) {
+  /* Override slideshow-item positioning — split layout handles its own alignment */
+  .slideshow-item.split-layout-enabled {
+    align-items: stretch !important;
+    justify-content: stretch !important;
+  }
+
+  /* Force slide-text to span full width regardless of position class */
+  .split-layout-enabled .slide-text {
+    width: 100% !important;
+    max-width: 100% !important;
+    flex: 1 !important;
+    padding-left: 0 !important;
+    padding-right: 0 !important;
+  }
+
+  /* Force split-layout-content to span full width regardless of size-* class */
+  .split-layout-enabled .split-layout-content {
+    display: flex !important;
+    flex-direction: row !important;
+    align-items: center !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    margin: 0 !important;
+    padding: 0 !important;
+  }
+
+  .split-layout-enabled .split-layout-left {
+    flex: 1 1 0% !important;
+    min-width: 0 !important;
+    display: flex !important;
+    flex-direction: column !important;
+    justify-content: center !important;
+    padding-left: var(--heading-edge-distance, 5rem) !important;
+    text-align: left !important;
+  }
+
+  .split-layout-enabled .split-layout-right {
+    flex: 1 1 0% !important;
+    min-width: 0 !important;
+    display: flex !important;
+    flex-direction: column !important;
+    justify-content: center !important;
+    align-items: flex-end !important;
+    padding-right: var(--content-edge-distance, 5rem) !important;
+    text-align: right !important;
+    gap: 1rem !important;
+  }
+
+  /* Reset margins */
+  .split-layout-enabled .split-layout-left h2 {
+    margin: 0 !important;
+  }
+
+  .split-layout-enabled .split-layout-right .sub-heading,
+  .split-layout-enabled .split-layout-right .slide-description {
+    margin: 0 !important;
+    max-width: var(--content-text-width, 300px) !important;
+  }
+
+  .split-layout-enabled .split-layout-right .slide-description {
+    margin-top: 0.5rem !important;
+    margin-bottom: 0.5rem !important;
+  }
+
+  .split-layout-enabled .split-layout-right .section-btn {
+    width: 100%;
+    justify-content: flex-end !important;
+  }
+
+  /* Description alignment: Left */
+  .split-content-left .split-layout-right .sub-heading,
+  .split-content-left .split-layout-right .slide-description {
+    text-align: left !important;
+  }
+  .split-content-left .split-layout-right .section-btn {
+    justify-content: flex-start !important;
+  }
+
+  /* Description alignment: Center */
+  .split-content-center .split-layout-right .sub-heading,
+  .split-content-center .split-layout-right .slide-description {
+    text-align: center !important;
+    width: var(--content-text-width, 300px) !important;
+    max-width: 100% !important;
+  }
+  .slideshow-item.split-content-center .split-layout-right .section-btn.btn-slideshow {
+    width: var(--content-text-width, 300px) !important;
+    max-width: 100% !important;
+    justify-content: center !important;
+  }
+  .slideshow-item.split-content-center .split-layout-right .section-btn.btn-slideshow .btn {
+    flex: 0 0 auto !important;
+    width: auto !important;
+  }
+
+  /* Description alignment: Right */
+  .split-content-right .split-layout-right .sub-heading,
+  .split-content-right .split-layout-right .slide-description {
+    text-align: right !important;
+  }
+  .split-content-right .split-layout-right .section-btn {
+    justify-content: flex-end !important;
+  }
 }
 
-.tns-nav button.btn::before {
-  content: none !important;
-  display: none !important;
-}
+/* Mobile/Tablet - Stack vertically like normal layout */
+/* Changed from 767px to 768px to ensure tablet matches original mobile view */
+@media (max-width: 768px) {
+  /* Disable split layout on mobile/tablet - revert to normal vertical stacking */
+  .split-layout-enabled .slide-text {
+    height: 100% !important;
+    flex: 1 !important;
+    padding-top: 0 !important;
+    padding-bottom: 0 !important;
+  }
 
+  .split-layout-enabled .split-layout-content {
+    display: flex !important;
+    flex-direction: column !important;
+    justify-content: space-between !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    height: 100% !important;
+    margin-left: 0 !important;
+    margin-right: 0 !important;
+    padding: 0 2rem !important;
+    padding-top: var(--mobile-top-distance, 30px) !important;
+    padding-bottom: var(--mobile-bottom-distance, 30px) !important;
+  }
 
-.tns-nav button.tns-nav-active {
-  background-color: #1E355B !important; /* your blue tone */
-  border: none !important;
-  box-shadow: none !important;
-  outline: none !important;
-  transform: scale(1.2);
-}
+  .split-layout-enabled .split-layout-left,
+  .split-layout-enabled .split-layout-right {
+    display: block !important;
+    width: 100% !important;
+    flex: none !important;
+  }
 
+  .split-layout-enabled .split-layout-left {
+    margin-bottom: 0 !important;
+  }
 
-.tns-nav button.btn:hover {
-  transform: scale(1.1);
-}
+  .split-layout-enabled .split-layout-right {
+    gap: 0 !important;
+  }
 
-.tns-nav button:focus {
-  outline: none !important;
-  box-shadow: none !important;
-}
+  /* Center all text on mobile */
+  .split-layout-enabled .split-layout-left h2,
+  .split-layout-enabled .split-layout-right .sub-heading,
+  .split-layout-enabled .split-layout-right .slide-description {
+    text-align: center !important;
+    width: 100%;
+    margin: 0 auto !important;
+  }
 
+  .split-layout-enabled .split-layout-right .sub-heading {
+    margin-bottom: 1.25rem !important;
+  }
 
-@media (max-width: 991px) {
-  .custom-navigation__slideshow.w-full.absolute.left-0.right-0.bottom-90.sm\:-translate-y-20.flex.items-center.justify-between.px-4 {
-      bottom: 60px !important;
+  .split-layout-enabled .split-layout-right .slide-description {
+    margin-top: 1.25rem !important;
+    margin-bottom: 2rem !important;
+  }
+
+  /* Center buttons on mobile */
+  .split-layout-enabled .split-layout-right .section-btn {
+    justify-content: center !important;
+    width: 100%;
+    margin-top: 2rem !important;
+  }
+
+  /* Responsive font sizes on mobile */
+  .split-layout-enabled .split-layout-left h2 {
+    font-size: clamp(2rem, 7vw, 3rem) !important;
+    line-height: 1.1 !important;
+    margin-bottom: 0 !important;
+  }
+
+  .split-layout-enabled .split-layout-right .sub-heading {
+    font-size: clamp(1rem, 3.5vw, 1.25rem) !important;
+    line-height: 1.4 !important;
+  }
+
+  .split-layout-enabled .split-layout-right .slide-description {
+    font-size: clamp(1rem, 3.5vw, 1.25rem) !important;
+    line-height: 1.5 !important;
   }
 }
 </style>
